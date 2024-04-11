@@ -84,7 +84,7 @@ DATABASES = {
         'NAME': 'bugreports',
         'USER': 'root',
         'PASSWORD': 'your_password',
-        'HOST': '127.0.0.1',  # Or your Docker container's IP if not running locally
+        'HOST': 'db',  # Or your Docker container's IP if not running locally
         'PORT': '3306',
     }
 }
