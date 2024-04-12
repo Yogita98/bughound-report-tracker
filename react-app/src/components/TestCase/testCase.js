@@ -100,13 +100,28 @@ const TestCase = () => {
     { name: "Need More Information", id: "8" },
     { name: "Disagree with suggestions", id: "9" },
   ];
+  //Program options
+  const programOptions = [
+    { name: "Program 1", id: "1" },
+    { name: "Program 2", id: "2" },
+    { name: "Program 3", id: "3" },
+    { name: "Program 4", id: "4" },
+    { name: "Program 5", id: "5" },
+  ];
   // Handle changes in form inputs
   const handleChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const { name, value, type, checked, files } = event.target;
+    if(type === "file"){
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: files[0]  // Assumes single file upload
+      }));
+    }else{
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }  
   };
 
   // Submit the form data
@@ -165,7 +180,11 @@ const TestCase = () => {
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select Program</option>
-            {/* Dynamic options for programs */}
+            {programOptions.map((programOptions) => (
+              <option key={programOptions.id} value={programOptions.name}>
+                {programOptions.name}
+              </option>
+            ))}
           </select>
         </div>
         {/* Functional Area */}
@@ -471,6 +490,15 @@ const TestCase = () => {
             checked={formData.treatedAsDeferred}
             onChange={handleChange}
             className="mt-1"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Attachment:</label>
+          <input
+            type="file"
+            name="file"
+            onChange={handleChange}
+            className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-transparent"
           />
         </div>
 
