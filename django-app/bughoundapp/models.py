@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.hashers import make_password
+from django.db import models
+
 
 class EmployeeRole(models.Model):
     RoleName = models.CharField(max_length=255, unique=False)
