@@ -32,19 +32,19 @@
 FROM node:21-alpine
  
 # Set the working directory.
-WORKDIR /app
+WORKDIR /usr/src/app
  
 # Copy the package.json file.
-COPY package.json ./
+COPY package*.json ./
 
-COPY package-lock.json ./
+
  
-RUN npm install -g react-scripts
+# RUN npm install -g react-scripts
 # Install application dependencies.
 RUN npm install
  
 # Copy the rest of the application files.
-COPY . ./
+COPY . .
  
 # Expose the port.
 EXPOSE 3000
