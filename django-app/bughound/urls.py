@@ -14,10 +14,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from bughoundapp.views import (BugReportDelete, BugReportListView,
+                               EmployeeNameListView, FormDataAPIView,
+                               LoginAPIView, RegisterAPIView, SubmitAPIView)
 from django.contrib import admin
 from django.urls import path
-from bughoundapp.views import SubmitAPIView
-from bughoundapp.views import LoginAPIView, RegisterAPIView, BugReportListView, FormDataAPIView, BugReportDelete
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('submit/', SubmitAPIView.as_view(), name='submit-api'),
@@ -26,4 +28,6 @@ urlpatterns = [
     path('bug-reports/', BugReportListView.as_view(), name='bug-reports'),
     path('api/form-data/', FormDataAPIView.as_view(), name='form-data'),
     path('bug-reports/<int:report_id>/', BugReportDelete.as_view(), name='bug-report-delete'),
+    path('api/employees-names/', EmployeeNameListView.as_view(), name='employee-names'),
+
 ]

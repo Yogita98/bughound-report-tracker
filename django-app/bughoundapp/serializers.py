@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from .models import EmployeeRole, Program, FunctionalArea, Employee, BugReport, Attachment
+
+from .models import (Attachment, BugReport, Employee, EmployeeRole,
+                     FunctionalArea, Program)
+
 
 class EmployeeRoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,7 +43,11 @@ class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attachment
         fields = '__all__'
-
+        
+class EmployeeNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = ['Name']
 
 class EmployeeRegistrationSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,13 +1,18 @@
-from django.shortcuts import render
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from bughoundapp.serializers import BugReportSerializer  # Import your serializer
-from bughoundapp.models import Employee, BugReport, EmployeeRole,Program, FunctionalArea
-from bughoundapp.serializers import LoginSerializer, EmployeeRegistrationSerializer, EmployeeRoleSerializer, ProgramSerializer, FunctionalAreaSerializer, EmployeeSerializer
+from bughoundapp.models import (BugReport, Employee, EmployeeRole,
+                                FunctionalArea, Program)
+from bughoundapp.serializers import \
+    BugReportSerializer  # Import your serializer
+from bughoundapp.serializers import (EmployeeNameSerializer,
+                                     EmployeeRegistrationSerializer,
+                                     EmployeeRoleSerializer,
+                                     EmployeeSerializer,
+                                     FunctionalAreaSerializer, LoginSerializer,
+                                     ProgramSerializer)
 from django.contrib.auth.hashers import check_password
-from rest_framework import generics
+from django.shortcuts import render
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 
 class SubmitAPIView(APIView):
@@ -103,3 +108,9 @@ class BugReportDelete(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except BugReport.DoesNotExist:
             return Response({'error': 'BugReport not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+class EmployeeNameListView(APIView):
+    def get(self, request, *args, **kwargs):
+        employees = Employee.objects.all()
+        serializer = EmployeeNameSerializer(employees, many=True)
+        return Response(serializer.data)

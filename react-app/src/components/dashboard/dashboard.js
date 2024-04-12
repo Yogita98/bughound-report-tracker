@@ -15,7 +15,7 @@ import {
   Input,
   Typography,
 } from "@material-tailwind/react";
-import React, { useState, useEffect} from "react";
+import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -24,36 +24,45 @@ const Dashboard = () => {
   const [testCases, setTestCases] = useState([]);
   useEffect(() => {
     fetchBugReports();
-}, []); // The empty array ensures this effect runs only once after the initial render
+  }, []); // The empty array ensures this effect runs only once after the initial render
 
-const fetchBugReports = async () => {
+  const fetchBugReports = async () => {
     try {
-        const response = await fetch('http://localhost:8000/bug-reports/');
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        console.log(data)
-        setTestCases(data.map((report) => ({
-            id: report.ReportTypeID, // Assuming ReportTypeID can serve as a unique ID
-            description: report.ProblemDescription,
-            date: report.ReportedByDate, // Adjust according to your model if you have this field
-            status: report.Status,
-            testedBy: report.TestedByEmployee, // Adjust depending on how you've structured your data
-            comments: report.Comments,
-        })));
+      const response = await fetch("http://localhost:8000/bug-reports/");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      console.log(data);
+      setTestCases(
+        data.map((report) => ({
+          id: report.ReportTypeID, // Assuming ReportTypeID can serve as a unique ID
+          description: report.ProblemDescription,
+          date: report.ReportedByDate, // Adjust according to your model if you have this field
+          status: report.Status,
+          testedBy: report.TestedByEmployee, // Adjust depending on how you've structured your data
+          comments: report.Comments,
+        }))
+      );
     } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
+      console.error("There was a problem with the fetch operation:", error);
     }
-};
+  };
 
-  
   // Function to handle creating a new test case
   const handleCreateTestCase = () => {
     navigate("/createTestForm");
   };
+  // Navigate to Edit   test case - Temp (API for corresponding id)
+  const handleEditTestCase = () => {
+    navigate("/editTestForm");
+  };
+  // Navigate to Test Case Details - Temp (API for corresponding id)
+  const viewTestCase = () => {
+    navigate("/viewTestForm");
+  };
 
-  // Navigate to Test Case Details
+  // Navigate to Test Case Details - Temp (API for corresponding id)
   const navigateToTestCase = (testCaseId) => {
     navigate(`/testCaseDetail/${testCaseId}`);
   };
@@ -234,14 +243,14 @@ const fetchBugReports = async () => {
                       <Button
                         variant="text"
                         className="p-0"
-                        onClick={() => navigateToTestCase(testCases.id)}
+                        onClick={viewTestCase}
                       >
                         <EyeIcon className="h-5 w-5" />
                       </Button>
                       <Button
                         variant="text"
                         className="p-0"
-                        onClick={() => navigateToTestCase(testCases.id)}
+                        onClick={handleEditTestCase}
                       >
                         <PencilIcon className="h-5 w-5" />
                       </Button>
