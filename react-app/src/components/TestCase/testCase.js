@@ -11,7 +11,7 @@ const TestCase = () => {
   const generateBugId = () => {
     const timestamp = Date.now();
     const randomComponent = Math.floor(Math.random() * 1000); // Generate a random number between 0-999
-    return `${timestamp}-${randomComponent}`;
+    return `${timestamp}${randomComponent}`;
   };
   //API - generate employees names in the dropdown
   const [employees, setEmployees] = useState([]);
