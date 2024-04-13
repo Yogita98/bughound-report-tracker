@@ -25,25 +25,27 @@ const TestCase = () => {
     }, []);
   const [formData, setFormData] = useState({
     id:generateBugId(),
-    program: "",
-    functionalArea:"",
-    reportType: "",
-    severity: "",
-    problemSummary: "",
-    suggestedFix: "",
-    reportedBy: "",
-    reportedBydate:"",
-    assignedTo: "",
-    comments: "",
-    status: "",
-    priority: "",
-    resolution: "",
-    resolutionVersion: "",
-    resolvedBy: "",
-    resolvedBydate: "",
-    testedBy: "",
-    reproducible: false,
-    treatedAsDeferred: false,
+    Program_id: "",
+    FunctionalArea_id:"",
+    ReportTypeID: "",
+    Severity: "",
+    ProblemSummary: "",
+    ProblemDescription:"",
+    SuggestedFix: "",
+    ReportedByEmployee_id: "",
+    ReportedByDate:"",
+    AssignedToEmployee_id: "",
+    Comments: "",
+    Status: "",
+    Priority: "",
+    Resolution: "",
+    ResolutionVersion: "",
+    ResolvedByEmployee_id: "",
+    ResolvedByDate: "",
+    TestedByEmployee_id: "",
+    TestedByDate:"",
+    Reproducible: false,
+    TreatedAsDeferred: false,
   });
 
   
@@ -175,7 +177,7 @@ const TestCase = () => {
           </label>
           <select
             name="program"
-            value={formData.program}
+            value={formData.Program_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -194,7 +196,7 @@ const TestCase = () => {
           </label>
           <select
             name="functionalArea"
-            value={formData.functionalArea}
+            value={formData.FunctionalArea_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -214,7 +216,7 @@ const TestCase = () => {
           </label>
           <select
             name="reportType"
-            value={formData.reportType}
+            value={formData.ReportTypeID}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -234,7 +236,7 @@ const TestCase = () => {
           </label>
           <select
             name="severity"
-            value={formData.severity}
+            value={formData.Severity}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -250,11 +252,23 @@ const TestCase = () => {
         {/* Problem Summary input */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Problem Summary and How to Reproduce it?
+            Problem Summary:
           </label>
           <textarea
             name="problemSummary"
-            value={formData.problemSummary}
+            value={formData.ProblemSummary}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          ></textarea>
+        </div>
+        {/* Problem Summary input */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Problem Description and How to Reproduce it?
+          </label>
+          <textarea
+            name="problemDescription"
+            value={formData.ProblemDescription}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           ></textarea>
@@ -267,7 +281,7 @@ const TestCase = () => {
           </label>
           <textarea
             name="suggestedFix"
-            value={formData.suggestedFix}
+            value={formData.SuggestedFix}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           ></textarea>
@@ -280,7 +294,7 @@ const TestCase = () => {
           </label>
           <select
             name="reportedBy"
-            value={formData.reportedBy}
+            value={formData.ReportedByEmployee_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -299,7 +313,7 @@ const TestCase = () => {
           <input
             name="reportedBydate"
             type="date"
-            value={formData.reportedBydate}
+            value={formData.ReportedByDate}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           />
@@ -312,7 +326,7 @@ const TestCase = () => {
           </label>
           <select
             name="assignedTo"
-            value={formData.assignedTo}
+            value={formData.AssignedToEmployee_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -322,6 +336,7 @@ const TestCase = () => {
             ))}
           </select>
         </div>
+      
 
         {/* Status selection */}
         <div>
@@ -330,7 +345,7 @@ const TestCase = () => {
           </label>
           <select
             name="status"
-            value={formData.status}
+            value={formData.Status}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -350,7 +365,7 @@ const TestCase = () => {
           </label>
           <select
             name="priority"
-            value={formData.priority}
+            value={formData.Priority}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -370,7 +385,7 @@ const TestCase = () => {
           </label>
           <select
             name="resolution"
-            value={formData.resolution}
+            value={formData.Resolution}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -390,7 +405,7 @@ const TestCase = () => {
           </label>
           <select
             name="resolutionVersion"
-            value={formData.resolutionVersion}
+            value={formData.ResolutionVersion}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -410,7 +425,7 @@ const TestCase = () => {
           </label>
           <select
             name="resolvedBy"
-            value={formData.resolvedBy}
+            value={formData.ResolvedByEmployee_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -429,7 +444,7 @@ const TestCase = () => {
           <input
             name="resolvedBydate"
             type="date"
-            value={formData.resolvedBydate}
+            value={formData.ResolvedByDate}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           />
@@ -442,7 +457,7 @@ const TestCase = () => {
           </label>
           <select
             name="testedBy"
-            value={formData.testedBy}
+            value={formData.TestedByEmployee_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -452,6 +467,18 @@ const TestCase = () => {
             ))}
           </select>
         </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Date:
+          </label>
+          <input
+            name="testetedBydate"
+            type="date"
+            value={formData.TestedByDate}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -459,7 +486,7 @@ const TestCase = () => {
           </label>
           <textarea
             name="comments"
-            value={formData.comments}
+            value={formData.Comments}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           ></textarea>
@@ -473,7 +500,7 @@ const TestCase = () => {
           <input
             name="reproducible"
             type="checkbox"
-            checked={formData.reproducible}
+            checked={formData.Reproducible}
             onChange={handleChange}
             className="mt-1"
           />
@@ -487,7 +514,7 @@ const TestCase = () => {
           <input
             name="treatedAsDeferred"
             type="checkbox"
-            checked={formData.treatedAsDeferred}
+            checked={formData.TreatedAsDeferred}
             onChange={handleChange}
             className="mt-1"
           />
