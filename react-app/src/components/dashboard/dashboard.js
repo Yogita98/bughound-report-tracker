@@ -22,6 +22,13 @@ import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [testCases, setTestCases] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredTestCases, setFilteredTestCases] = useState([]);
+  const [dropdownOptions, setDropdownOptions] = useState([]); 
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const [displayedTestCases, setDisplayedTestCases] = useState([]);
+
   useEffect(() => {
     fetchBugReports();
   }, []); // The empty array ensures this effect runs only once after the initial render
@@ -36,7 +43,8 @@ const Dashboard = () => {
       console.log(data);
       setTestCases(
         data.map((report) => ({
-          id: report.ReportTypeID, // Assuming ReportTypeID can serve as a unique ID
+          id: report.id, // Assuming ReportTypeID can serve as a unique ID
+          reporttypeid: report.ReportTypeID,
           description: report.ProblemDescription,
           date: report.ReportedByDate, // Adjust according to your model if you have this field
           status: report.Status,
@@ -75,6 +83,79 @@ const Dashboard = () => {
     "Comments",
     "Action",
   ];
+
+  // Function to handle search
+  const handleSearch = (e) => {
+    const query = e.target.value.trim();
+    console.log("Search Query:", query);
+    setSearchQuery(query);
+    
+    // Filter test cases based on the search query
+    const filteredTestCases = testCases.filter((testCase) => {
+      return testCase.description.toLowerCase().includes(query.toLowerCase());
+    });
+    console.log("Filtered Test Cases:", filteredTestCases);
+    setFilteredTestCases(filteredTestCases);
+
+    // Update dropdown options based on the filtered test cases
+    setDropdownOptions(filteredTestCases.map((testCase) => testCase.description));
+    
+    // Ensure dropdown remains visible if there are matching options
+    setOpenDropdown(dropdownOptions.length > 0 && query.trim().length > 0);
+
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      // If Enter key is pressed, filter the test cases
+      handleSearchButtonClick();
+    }
+  }
+
+  const handleSelect = (option) => {
+    // Update search query with the selected option
+    setSearchQuery(option);
+    setSelectedOption(option);
+  
+    // Filter test cases based on the selected option
+    const filteredTestCases = testCases.filter((testCase) =>
+      testCase.description.includes(option)
+    );
+    setFilteredTestCases(filteredTestCases);
+
+    // Clear dropdown options after selection
+    setDropdownOptions([]);
+
+    // Set displayed test cases to the selected option
+    setDisplayedTestCases(filteredTestCases);
+
+    // Reset search query after selecting an option
+    setSearchQuery("");
+  };
+  
+  const handleSearchButtonClick = () => {
+    console.log("Search Button Clicked");
+    // Check if the search query is empty
+    
+    if (searchQuery.trim() === "" ) {
+      // Set displayed test cases to all bug reports
+    setDisplayedTestCases(testCases);
+    } else {
+      // If there is a search query, filter bug reports based on the current search query
+      const filteredTestCases = testCases.filter((testCase) =>
+        testCase.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredTestCases(filteredTestCases);
+
+      // Reset search query after performing search
+      setSearchQuery("");
+      // Close dropdown after selection
+      setOpenDropdown(false);
+
+      // Set displayed test cases to the filtered test cases
+      setDisplayedTestCases(filteredTestCases);
+  }
+  };
 
   //dynamic chip that renders color based on the status rendered
   const StatusChip = ({ status }) => {
@@ -130,9 +211,30 @@ const Dashboard = () => {
               className="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
               id="exampleSearch"
               placeholder="Search Test Case"
+              value={searchQuery}
+              onChange={handleSearch}
+              onKeyDown={handleKeyDown}
             />
+            {openDropdown && dropdownOptions.length > 0 && (
+              <div className="absolute z-10 inset-x-0 top-full bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto">
+                {dropdownOptions.map((option, index) => (
+                  <div
+                    key={index}
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSelect(option)}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="absolute inset-y-0 right-0 flex items-center pl-2">
-              <MagnifyingGlassIcon className="h-5 w-5" aria-hidden="true" />
+              <Button
+                variant="text"
+                className="p-0 z-10"
+               >
+                <MagnifyingGlassIcon className="h-5 w-5 cursor-pointer" aria-hidden="true" onClick={handleSearchButtonClick}/>
+              </Button>
             </div>
           </div>
         </div>
@@ -160,8 +262,74 @@ const Dashboard = () => {
               ))}
             </tr>
           </thead>
-          <tbody>
-            {testCases.map(
+           <tbody>
+            {displayedTestCases.length > 0 ? (
+    displayedTestCases.map(({ id, description, date, status, testedBy, comments }, index) => {
+      const isLast = index === displayedTestCases.length - 1;
+      const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+      return (
+        <tr key={id}>
+          <td className={classes}>
+            <div className="flex items-center gap-3">
+              <div className="flex flex-col">
+                <Typography variant="small" color="blue-gray" className="font-normal">
+                  {id}
+                </Typography>
+              </div>
+            </div>
+          </td>
+          <td className={classes}>
+            <div className="flex flex-col">
+              <Typography variant="small" color="blue-gray" className="font-normal opacity-50">
+                {description}
+              </Typography>
+            </div>
+          </td>
+          <td className={classes}>
+            <div className="flex flex-col">
+              <Typography variant="small" color="blue-gray" className="font-normal opacity-50">
+                {date}
+              </Typography>
+            </div>
+          </td>
+          <td className={classes}>
+            <div className="w-max">
+              <StatusChip status={status} />
+            </div>
+          </td>
+          <td className={classes}>
+            <div className="flex flex-col">
+              <Typography variant="small" color="blue-gray" className="font-normal opacity-50">
+                {testedBy}
+              </Typography>
+            </div>
+          </td>
+          <td className={classes}>
+            <div className="flex flex-col">
+              <Typography variant="small" color="blue-gray" className="font-normal opacity-50">
+                {comments}
+              </Typography>
+            </div>
+          </td>
+          <td className={classes}>
+            <Button variant="text" className="p-0" onClick={viewTestCase}>
+              <EyeIcon className="h-5 w-5" />
+            </Button>
+            <Button variant="text" className="p-0" onClick={handleEditTestCase}>
+              <PencilIcon className="h-5 w-5" />
+            </Button>
+            <Button variant="text" className="p-0" onClick={() => navigateToTestCase(id)}>
+              <ArrowDownTrayIcon className="h-5 w-5" />
+            </Button>
+            <Button variant="text" className="p-0" onClick={() => navigateToTestCase(id)}>
+              <TrashIcon className="h-5 w-5" />
+            </Button>
+          </td>
+        </tr>
+      );
+    })
+  ) : (
+            testCases.map(
               (
                 { id, description, date, status, testedBy, comments },
                 index
@@ -271,7 +439,7 @@ const Dashboard = () => {
                     </td>
                   </tr>
                 );
-              }
+              })
             )}
           </tbody>
         </table>

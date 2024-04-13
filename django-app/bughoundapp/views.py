@@ -114,3 +114,14 @@ class EmployeeNameListView(APIView):
         employees = Employee.objects.all()
         serializer = EmployeeNameSerializer(employees, many=True)
         return Response(serializer.data)
+
+
+class BugReportSearchAPIView(APIView):
+    def get(self, request):
+        description = request.query_params.get('description', '')
+        bug_reports = BugReport.objects.filter(ProblemDescription__icontains=description)
+        serializer = BugReportSerializer(bug_reports, many=True)
+        if bug_reports:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "No bug reports found for the given description"}, status=status.HTTP_404_NOT_FOUND)

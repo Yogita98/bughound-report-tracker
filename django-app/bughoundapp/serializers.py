@@ -35,7 +35,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 class BugReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = BugReport
-        fields = ('ReportTypeID', 'Severity', 'ProblemDescription', 'Status', 'Priority', 'Comments', 'ReportedByDate', 'TestedByEmployee')
+        fields = ('id','ReportTypeID', 'Severity', 'ProblemDescription', 'Status', 'Priority', 'Comments', 'ReportedByDate', 'TestedByEmployee')
 
 class AttachmentSerializer(serializers.ModelSerializer):
     bug_report_number = BugReportSerializer(read_only=True, source='BugReportNumber')

@@ -20,6 +20,8 @@ from bughoundapp.views import (BugReportDelete, BugReportListView,
 from django.contrib import admin
 from django.urls import path
 
+from bughoundapp.views import SubmitAPIView
+from bughoundapp.views import LoginAPIView, RegisterAPIView, BugReportListView, FormDataAPIView, BugReportDelete, BugReportSearchAPIView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('submit/', SubmitAPIView.as_view(), name='submit-api'),
@@ -29,5 +31,5 @@ urlpatterns = [
     path('api/form-data/', FormDataAPIView.as_view(), name='form-data'),
     path('bug-reports/<int:report_id>/', BugReportDelete.as_view(), name='bug-report-delete'),
     path('api/employees-names/', EmployeeNameListView.as_view(), name='employee-names'),
-
+    path('bug-reports/search/', BugReportSearchAPIView.as_view(), name='bug-report-search'),  # Add the search API URL pattern
 ]
