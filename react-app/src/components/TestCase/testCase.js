@@ -25,7 +25,7 @@ const TestCase = () => {
     }, []);
   const [formData, setFormData] = useState({
     id:generateBugId(),
-    Program_id: "",
+    Program: "",
     FunctionalArea_id:"",
     ReportTypeID: "",
     Severity: "",
@@ -112,11 +112,19 @@ const TestCase = () => {
   ];
   // Handle changes in form inputs
   const handleChange = (event) => {
+    console.log(event.target)
     const { name, value, type, checked, files } = event.target;
+    console.log(name+" "+value+" "+type+" "+files)
     if(type === "file"){
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: files[0]  // Assumes single file upload
+      }));
+    }
+    else if(name == "ReportTypeID"){
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: parseInt(value),
       }));
     }else{
       setFormData((prevFormData) => ({
@@ -129,7 +137,7 @@ const TestCase = () => {
   // Submit the form data
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    console.log(formData);
     try {
       const response = await fetch("http://localhost:8000/submit/", {
         method: "POST",
@@ -176,14 +184,14 @@ const TestCase = () => {
             Program:
           </label>
           <select
-            name="program"
-            value={formData.Program_id}
+            name="Program"
+            value={formData.Program}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select Program</option>
             {programOptions.map((programOptions) => (
-              <option key={programOptions.id} value={programOptions.name}>
+              <option key={programOptions.id} value={programOptions.id}>
                 {programOptions.name}
               </option>
             ))}
@@ -195,14 +203,14 @@ const TestCase = () => {
             Functional Area:
           </label>
           <select
-            name="functionalArea"
+            name="FunctionalArea_id"
             value={formData.FunctionalArea_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select Functional Area</option>
             {functionalAreaOptions.map((functionalAreaOptions) => (
-              <option key={functionalAreaOptions.id} value={functionalAreaOptions.name}>
+              <option key={functionalAreaOptions.id} value={functionalAreaOptions.id}>
                 {functionalAreaOptions.name}
               </option>
             ))}
@@ -215,14 +223,14 @@ const TestCase = () => {
             Report Type:
           </label>
           <select
-            name="reportType"
+            name="ReportTypeID"
             value={formData.ReportTypeID}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select Report Type</option>
-            {reportTypeOptions.map((reportTypeOptions) => (
-              <option key={reportTypeOptions.id} value={reportTypeOptions.name}>
+            {reportTypeOptions.map((reportTypeOptions, index) => (
+              <option key={index} value={reportTypeOptions.id}>
                 {reportTypeOptions.name}
               </option>
             ))}
@@ -235,7 +243,7 @@ const TestCase = () => {
             Severity:
           </label>
           <select
-            name="severity"
+            name="Severity"
             value={formData.Severity}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -255,7 +263,7 @@ const TestCase = () => {
             Problem Summary:
           </label>
           <textarea
-            name="problemSummary"
+            name="ProblemSummary"
             value={formData.ProblemSummary}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -267,7 +275,7 @@ const TestCase = () => {
             Problem Description and How to Reproduce it?
           </label>
           <textarea
-            name="problemDescription"
+            name="ProblemDescription"
             value={formData.ProblemDescription}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -280,7 +288,7 @@ const TestCase = () => {
             Suggested Fix:
           </label>
           <textarea
-            name="suggestedFix"
+            name="SuggestedFix"
             value={formData.SuggestedFix}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -293,14 +301,14 @@ const TestCase = () => {
             Reported By:
           </label>
           <select
-            name="reportedBy"
+            name="ReportedByEmployee_id"
             value={formData.ReportedByEmployee_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select Reported By</option>
             {employees.map((employee, index) => (
-                <option key={index} value={employee.Name}>{employee.Name}</option>
+                <option key={index} value={employee.id}>{employee.Name}</option>
             ))}
   
           </select>
@@ -311,7 +319,7 @@ const TestCase = () => {
             Date:
           </label>
           <input
-            name="reportedBydate"
+            name="ReportedByDate"
             type="date"
             value={formData.ReportedByDate}
             onChange={handleChange}
@@ -325,14 +333,14 @@ const TestCase = () => {
             Assigned To:
           </label>
           <select
-            name="assignedTo"
+            name="AssignedToEmployee_id"
             value={formData.AssignedToEmployee_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select Assigned To</option>
             {employees.map((employee, index) => (
-                <option key={index} value={employee.Name}>{employee.Name}</option>
+                <option key={index} value={employee.id}>{employee.Name}</option>
             ))}
           </select>
         </div>
@@ -344,7 +352,7 @@ const TestCase = () => {
             Status:
           </label>
           <select
-            name="status"
+            name="Status"
             value={formData.Status}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -364,7 +372,7 @@ const TestCase = () => {
             Priority:
           </label>
           <select
-            name="priority"
+            name="Priority"
             value={formData.Priority}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -384,7 +392,7 @@ const TestCase = () => {
             Resolution:
           </label>
           <select
-            name="resolution"
+            name="Resolution"
             value={formData.Resolution}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -404,7 +412,7 @@ const TestCase = () => {
             Resolution Version:
           </label>
           <select
-            name="resolutionVersion"
+            name="ResolutionVersion"
             value={formData.ResolutionVersion}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -424,14 +432,14 @@ const TestCase = () => {
             Resolved By:
           </label>
           <select
-            name="resolvedBy"
+            name="ResolvedByEmployee_id"
             value={formData.ResolvedByEmployee_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select Resolved By</option>
             {employees.map((employee, index) => (
-                <option key={index} value={employee.Name}>{employee.Name}</option>
+                <option key={index} value={employee.id}>{employee.Name}</option>
             ))}
           </select>
         </div>
@@ -442,7 +450,7 @@ const TestCase = () => {
             Date:
           </label>
           <input
-            name="resolvedBydate"
+            name="ResolvedByDate"
             type="date"
             value={formData.ResolvedByDate}
             onChange={handleChange}
@@ -456,14 +464,14 @@ const TestCase = () => {
             Tested By:
           </label>
           <select
-            name="testedBy"
+            name="TestedByEmployee_id"
             value={formData.TestedByEmployee_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select Tested By</option>
             {employees.map((employee, index) => (
-                <option key={index} value={employee.Name}>{employee.Name}</option>
+                <option key={index} value={employee.id}>{employee.Name}</option>
             ))}
           </select>
         </div>
@@ -472,7 +480,7 @@ const TestCase = () => {
             Date:
           </label>
           <input
-            name="testetedBydate"
+            name="TestedByDate"
             type="date"
             value={formData.TestedByDate}
             onChange={handleChange}
@@ -485,7 +493,7 @@ const TestCase = () => {
             Comments:
           </label>
           <textarea
-            name="comments"
+            name="Comments"
             value={formData.Comments}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -498,7 +506,7 @@ const TestCase = () => {
             Reproducible:
           </label>
           <input
-            name="reproducible"
+            name="Reproducible"
             type="checkbox"
             checked={formData.Reproducible}
             onChange={handleChange}
@@ -512,7 +520,7 @@ const TestCase = () => {
             Treated as Deferred:
           </label>
           <input
-            name="treatedAsDeferred"
+            name="TreatedAsDeferred"
             type="checkbox"
             checked={formData.TreatedAsDeferred}
             onChange={handleChange}

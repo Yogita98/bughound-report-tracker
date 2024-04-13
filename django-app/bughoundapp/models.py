@@ -32,7 +32,7 @@ class BugReport(models.Model):
     ProblemDescription = models.TextField()
     Reproducible = models.BooleanField()
     SuggestedFix = models.TextField()
-    ReportedByEmployee = models.ForeignKey(Employee, related_name='reported_bugs', on_delete=models.CASCADE)
+    ReportedByEmployee = models.ForeignKey(Employee, related_name='reported_bugs', on_delete=models.CASCADE, null=True)
     ReportedByDate = models.DateField()
     FunctionalArea = models.ForeignKey(FunctionalArea, on_delete=models.SET_NULL, null=True, blank=True)
     AssignedToEmployee = models.ForeignKey(Employee, related_name='assigned_bugs', on_delete=models.SET_NULL, null=True, blank=True)
@@ -47,7 +47,12 @@ class BugReport(models.Model):
     TestedByDate = models.DateField(null=True, blank=True)
     TreatedAsDeferred = models.BooleanField()
 
+# class Attachment(models.Model):
+#     BugReportNumber = models.ForeignKey(BugReport, on_delete=models.CASCADE)
+#     FileType = models.CharField(max_length=255)
+#     FilePath = models.TextField()
+
 class Attachment(models.Model):
     BugReportNumber = models.ForeignKey(BugReport, on_delete=models.CASCADE)
     FileType = models.CharField(max_length=255)
-    FilePath = models.TextField()
+    FilePath = models.FileField(upload_to='attachments/')

@@ -17,11 +17,23 @@ from rest_framework.views import APIView
 
 class SubmitAPIView(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = BugReportSerializer(data=request.data)
+        print(request.data)
+        serializer = BugReportSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            print("Serializer Errors:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class SubmitAPIView(APIView):
+#     def post(self, request, *args, **kwargs):
+#         print(request.data)
+#         serializer = BugReportSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginAPIView(APIView):
@@ -94,7 +106,7 @@ class FormDataAPIView(APIView):
             "resolutions": resolutions,
             # Add other data as needed
         }
-
+        print(aggregated_data)
         return Response(aggregated_data)
 
 class BugReportDelete(APIView):
@@ -113,6 +125,7 @@ class EmployeeNameListView(APIView):
     def get(self, request, *args, **kwargs):
         employees = Employee.objects.all()
         serializer = EmployeeNameSerializer(employees, many=True)
+        print(serializer.data)
         return Response(serializer.data)
 
 
