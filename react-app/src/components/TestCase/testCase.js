@@ -32,7 +32,7 @@ const TestCase = () => {
   }, []);
   const [formData, setFormData] = useState({
     id: generateBugId(),
-    Program_id: "",
+    Program: "",
     FunctionalArea_id: "",
     ReportTypeID: "",
     Severity: "",
@@ -189,8 +189,8 @@ const TestCase = () => {
             Program:
           </label>
           <select
-            name="Program_id"
-            value={formData.Program_id}
+            name="Program"
+            value={formData.Program}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
