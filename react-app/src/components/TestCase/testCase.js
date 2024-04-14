@@ -1,39 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 const TestCase = () => {
   // Initial state for the form data
   const navigate = useNavigate();
   const handleCancel = () => {
-    navigate('/dashboard');
+    navigate("/dashboard");
   };
   const generateBugId = () => {
-    const timestamp = Date.now();
-    const randomComponent = Math.floor(Math.random() * 1000); // Generate a random number between 0-999
-    return `${timestamp}${randomComponent}`;
+    const now = new Date();
+    const day = now.getDate(); // Day of the month (1-31)
+    const month = now.getMonth() + 1; // Month (1-12, +1 because getMonth() returns 0-11)
+    const dayStr = day.toString().padStart(2, "0");
+    const monthStr = month.toString().padStart(2, "0");
+    const randomPart = Math.floor(Math.random() * 1000)
+      .toString()
+      .padStart(3, "0");
+    return parseInt(`${monthStr}${dayStr}${randomPart}`);
   };
   //API - generate employees names in the dropdown
   const [employees, setEmployees] = useState([]);
-    useEffect(() => {
-        async function fetchEmployees() {
-            const response = await fetch('http://localhost:8000/api/employees-names/');
-            const data = await response.json();
-            setEmployees(data);
-        }
-        fetchEmployees();
-    }, []);
+  useEffect(() => {
+    async function fetchEmployees() {
+      const response = await fetch(
+        "http://localhost:8000/api/employees-names/"
+      );
+      const data = await response.json();
+      setEmployees(data);
+    }
+    fetchEmployees();
+  }, []);
   const [formData, setFormData] = useState({
-    id:generateBugId(),
-    Program: "",
-    FunctionalArea_id:"",
+    id: generateBugId(),
+    Program_id: "",
+    FunctionalArea_id: "",
     ReportTypeID: "",
     Severity: "",
     ProblemSummary: "",
-    ProblemDescription:"",
+    ProblemDescription: "",
     SuggestedFix: "",
     ReportedByEmployee_id: "",
-    ReportedByDate:"",
+    ReportedByDate: "",
     AssignedToEmployee_id: "",
     Comments: "",
     Status: "",
@@ -43,12 +50,11 @@ const TestCase = () => {
     ResolvedByEmployee_id: "",
     ResolvedByDate: "",
     TestedByEmployee_id: "",
-    TestedByDate:"",
+    TestedByDate: "",
     Reproducible: false,
     TreatedAsDeferred: false,
   });
 
-  
   const severityOptions = [
     { name: "Minor", id: "1" },
     { name: "Serious", id: "2" },
@@ -112,26 +118,25 @@ const TestCase = () => {
   ];
   // Handle changes in form inputs
   const handleChange = (event) => {
-    console.log(event.target)
+    console.log(event.target);
     const { name, value, type, checked, files } = event.target;
-    console.log(name+" "+value+" "+type+" "+files)
-    if(type === "file"){
+    console.log(name + " " + value + " " + type + " " + files);
+    if (type === "file") {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        [name]: files[0]  // Assumes single file upload
+        [name]: files[0], // Assumes single file upload
       }));
-    }
-    else if(name == "ReportTypeID"){
+    } else if (name == "ReportTypeID") {
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: parseInt(value),
       }));
-    }else{
+    } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
         [name]: type === "checkbox" ? checked : value,
       }));
-    }  
+    }
   };
 
   // Submit the form data
@@ -164,19 +169,19 @@ const TestCase = () => {
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-2xl font-bold mb-6">Create New Test Case</h2>
       <form className="space-y-4" onSubmit={handleSubmit}>
-      <div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Bug ID:
-        </label>
-        <input
-          type="text"
-          name="bugId"
-          value={formData.id}
-          readOnly 
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-        />
-      </div>
+        <div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Bug ID:
+            </label>
+            <input
+              type="text"
+              name="bugId"
+              value={formData.id}
+              readOnly
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+          </div>
         </div>
         {/* Program selection */}
         <div>
@@ -184,8 +189,8 @@ const TestCase = () => {
             Program:
           </label>
           <select
-            name="Program"
-            value={formData.Program}
+            name="Program_id"
+            value={formData.Program_id}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -210,7 +215,10 @@ const TestCase = () => {
           >
             <option value="">Select Functional Area</option>
             {functionalAreaOptions.map((functionalAreaOptions) => (
-              <option key={functionalAreaOptions.id} value={functionalAreaOptions.id}>
+              <option
+                key={functionalAreaOptions.id}
+                value={functionalAreaOptions.id}
+              >
                 {functionalAreaOptions.name}
               </option>
             ))}
@@ -308,9 +316,10 @@ const TestCase = () => {
           >
             <option value="">Select Reported By</option>
             {employees.map((employee, index) => (
-                <option key={index} value={employee.id}>{employee.Name}</option>
+              <option key={index} value={employee.id}>
+                {employee.Name}
+              </option>
             ))}
-  
           </select>
         </div>
         {/* Date input */}
@@ -340,11 +349,12 @@ const TestCase = () => {
           >
             <option value="">Select Assigned To</option>
             {employees.map((employee, index) => (
-                <option key={index} value={employee.id}>{employee.Name}</option>
+              <option key={index} value={employee.id}>
+                {employee.Name}
+              </option>
             ))}
           </select>
         </div>
-      
 
         {/* Status selection */}
         <div>
@@ -419,7 +429,10 @@ const TestCase = () => {
           >
             <option value="">Select Resolution Version</option>
             {resolutionVersionOptions.map((resolutionVersionOptions) => (
-              <option key={resolutionVersionOptions.id} value={resolutionVersionOptions.name}>
+              <option
+                key={resolutionVersionOptions.id}
+                value={resolutionVersionOptions.name}
+              >
                 {resolutionVersionOptions.name}
               </option>
             ))}
@@ -439,7 +452,9 @@ const TestCase = () => {
           >
             <option value="">Select Resolved By</option>
             {employees.map((employee, index) => (
-                <option key={index} value={employee.id}>{employee.Name}</option>
+              <option key={index} value={employee.id}>
+                {employee.Name}
+              </option>
             ))}
           </select>
         </div>
@@ -471,7 +486,9 @@ const TestCase = () => {
           >
             <option value="">Select Tested By</option>
             {employees.map((employee, index) => (
-                <option key={index} value={employee.id}>{employee.Name}</option>
+              <option key={index} value={employee.id}>
+                {employee.Name}
+              </option>
             ))}
           </select>
         </div>
@@ -528,7 +545,9 @@ const TestCase = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Attachment:</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Attachment:
+          </label>
           <input
             type="file"
             name="file"
