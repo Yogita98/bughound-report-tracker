@@ -110,6 +110,26 @@ const Dashboard = () => {
   const navigateToTestCase = (testCaseId) => {
     navigate(`/testCaseDetail/${testCaseId}`);
   };
+  //Delete Bug report particular to ID
+  const deleteTestCase = async(testCaseId) => {
+    try {
+      const response = await fetch(`http://localhost:8000/bug-reports/${testCaseId}/`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        alert('Test case deleted successfully!');
+        navigate('/dashboard'); //stay on the same dashboard
+        fetchBugReports();
+      } else {
+        const errorText = await response.text();
+        alert(`Failed to delete test case: ${errorText}`);
+      }
+    } catch (error) {
+      console.error('Error deleting test case:', error);
+      alert('Error deleting test case, please try again.');
+    }
+  };
 
   const tableHead = [
     "Test ID",
@@ -253,7 +273,7 @@ const Dashboard = () => {
                     <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
                       <ArrowDownTrayIcon className="h-5 w-5" />
                     </Button>
-                    <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
+                    <Button variant="text" className="p-0" onClick={() =>deleteTestCase(testCase.id)}>
                       <TrashIcon className="h-5 w-5" />
                     </Button>
                   </td>
@@ -281,7 +301,7 @@ const Dashboard = () => {
                       <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
                         <ArrowDownTrayIcon className="h-5 w-5" />
                       </Button>
-                      <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
+                      <Button variant="text" className="p-0" onClick={() =>deleteTestCase(testCase.id)}>
                         <TrashIcon className="h-5 w-5" />
                       </Button>
                     </td>

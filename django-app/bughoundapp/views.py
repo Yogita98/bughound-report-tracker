@@ -1,11 +1,12 @@
-from bughoundapp.models import (BugReport, Employee, EmployeeRole, Program, FunctionalArea)
+from bughoundapp.models import (BugReport, Employee, EmployeeRole,
+                                FunctionalArea, Program)
 from bughoundapp.serializers import \
     BugReportSerializer  # Import your serializer
 from bughoundapp.serializers import (EmployeeNameSerializer,
                                      EmployeeRegistrationSerializer,
                                      EmployeeRoleSerializer,
-                                     EmployeeSerializer, LoginSerializer,
-                                     FunctionalAreaSerializer,
+                                     EmployeeSerializer,
+                                     FunctionalAreaSerializer, LoginSerializer,
                                      ProgramSerializer)
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import render

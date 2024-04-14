@@ -50,6 +50,6 @@ class BugReport(models.Model):
 
 
 class Attachment(models.Model):
-    BugReportNumber = models.ForeignKey(BugReport, on_delete=models.CASCADE)
+    bugreport = models.ForeignKey(BugReport, on_delete=models.CASCADE)
     FileType = models.CharField(max_length=255)
     FilePath = models.FileField(upload_to='attachments/')

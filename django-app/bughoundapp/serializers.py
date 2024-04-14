@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import (Attachment, BugReport, Employee, EmployeeRole, Program, FunctionalArea)
+from .models import (Attachment, BugReport, Employee, EmployeeRole,
+                     FunctionalArea, Program)
 
 
 class EmployeeRoleSerializer(serializers.ModelSerializer):
@@ -51,7 +52,7 @@ class BugReportSerializer(serializers.ModelSerializer):
         ]
 
 class AttachmentSerializer(serializers.ModelSerializer):
-    bug_report_number = BugReportSerializer(read_only=True, source='BugReportNumber')
+    bug_report_number = BugReportSerializer(read_only=True, source='bugreport')
 
     class Meta:
         model = Attachment
