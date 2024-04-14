@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from .models import (Attachment, BugReport, Employee, EmployeeRole,
-                     FunctionalArea, Program)
+from .models import (Attachment, BugReport, Employee, EmployeeRole, Program, FunctionalArea)
 
 
 class EmployeeRoleSerializer(serializers.ModelSerializer):
@@ -33,6 +32,13 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class BugReportSerializer(serializers.ModelSerializer):
+    ReportedByEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
+    AssignedToEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), allow_null=True)
+    ResolvedByEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), allow_null=True)
+    TestedByEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), allow_null=True)
+    Program = serializers.PrimaryKeyRelatedField(queryset=Program.objects.all())
+    FunctionalArea = serializers.PrimaryKeyRelatedField(queryset=FunctionalArea.objects.all(), allow_null=True)
+
     class Meta:
         model = BugReport
         fields = [
@@ -40,8 +46,8 @@ class BugReportSerializer(serializers.ModelSerializer):
             'Reproducible', 'SuggestedFix', 'ReportedByDate', 'Comments',
             'Status', 'Priority', 'Resolution', 'ResolutionVersion',
             'ResolvedByDate', 'TestedByDate', 'TreatedAsDeferred',
-            'AssignedToEmployee', 'FunctionalArea', 'Program',
-            'ResolvedByEmployee', 'TestedByEmployee'
+            'AssignedToEmployee', 'Program', 'FunctionalArea',
+            'ResolvedByEmployee', 'TestedByEmployee', 'id', 'ReportedByEmployee'
         ]
 
 class AttachmentSerializer(serializers.ModelSerializer):

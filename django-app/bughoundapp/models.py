@@ -25,6 +25,7 @@ class Employee(models.Model):
         super(Employee, self).save(*args, **kwargs)
     
 class BugReport(models.Model):
+    id = models.IntegerField(primary_key=True)
     Program = models.ForeignKey(Program, on_delete=models.CASCADE)
     ReportTypeID = models.IntegerField()
     Severity = models.CharField(max_length=255)
@@ -47,10 +48,6 @@ class BugReport(models.Model):
     TestedByDate = models.DateField(null=True, blank=True)
     TreatedAsDeferred = models.BooleanField()
 
-# class Attachment(models.Model):
-#     BugReportNumber = models.ForeignKey(BugReport, on_delete=models.CASCADE)
-#     FileType = models.CharField(max_length=255)
-#     FilePath = models.TextField()
 
 class Attachment(models.Model):
     BugReportNumber = models.ForeignKey(BugReport, on_delete=models.CASCADE)

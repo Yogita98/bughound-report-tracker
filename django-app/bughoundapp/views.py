@@ -1,12 +1,11 @@
-from bughoundapp.models import (BugReport, Employee, EmployeeRole,
-                                FunctionalArea, Program)
+from bughoundapp.models import (BugReport, Employee, EmployeeRole, Program, FunctionalArea)
 from bughoundapp.serializers import \
     BugReportSerializer  # Import your serializer
 from bughoundapp.serializers import (EmployeeNameSerializer,
                                      EmployeeRegistrationSerializer,
                                      EmployeeRoleSerializer,
-                                     EmployeeSerializer,
-                                     FunctionalAreaSerializer, LoginSerializer,
+                                     EmployeeSerializer, LoginSerializer,
+                                     FunctionalAreaSerializer,
                                      ProgramSerializer)
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import render
@@ -26,14 +25,6 @@ class SubmitAPIView(APIView):
             print("Serializer Errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class SubmitAPIView(APIView):
-#     def post(self, request, *args, **kwargs):
-#         print(request.data)
-#         serializer = BugReportSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginAPIView(APIView):

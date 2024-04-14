@@ -13,10 +13,8 @@ const TestCase = () => {
     const month = now.getMonth() + 1; // Month (1-12, +1 because getMonth() returns 0-11)
     const dayStr = day.toString().padStart(2, "0");
     const monthStr = month.toString().padStart(2, "0");
-    const randomPart = Math.floor(Math.random() * 1000)
-      .toString()
-      .padStart(3, "0");
-    return parseInt(`${monthStr}${dayStr}${randomPart}`);
+    const randomPart = Math.floor(Math.random() * 1000).toString().padStart(3, "0");
+    return parseInt(monthStr+dayStr+randomPart);
   };
   //API - generate employees names in the dropdown
   const [employees, setEmployees] = useState([]);
@@ -47,7 +45,7 @@ const TestCase = () => {
     Priority: "",
     Resolution: "",
     ResolutionVersion: "",
-    ResolvedByEmployee_id: "",
+    ResolvedByEmployee: "",
     ResolvedByDate: "",
     TestedByEmployee_id: "",
     TestedByDate: "",
@@ -208,8 +206,8 @@ const TestCase = () => {
             Functional Area:
           </label>
           <select
-            name="FunctionalArea_id"
-            value={formData.FunctionalArea_id}
+            name="FunctionalArea"
+            value={formData.FunctionalArea}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -309,8 +307,8 @@ const TestCase = () => {
             Reported By:
           </label>
           <select
-            name="ReportedByEmployee_id"
-            value={formData.ReportedByEmployee_id}
+            name="ReportedByEmployee"
+            value={formData.ReportedByEmployee}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -342,8 +340,8 @@ const TestCase = () => {
             Assigned To:
           </label>
           <select
-            name="AssignedToEmployee_id"
-            value={formData.AssignedToEmployee_id}
+            name="AssignedToEmployee"
+            value={formData.AssignedToEmployee}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -445,8 +443,8 @@ const TestCase = () => {
             Resolved By:
           </label>
           <select
-            name="ResolvedByEmployee_id"
-            value={formData.ResolvedByEmployee_id}
+            name="ResolvedByEmployee"
+            value={formData.ResolvedByEmployee}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
@@ -479,8 +477,8 @@ const TestCase = () => {
             Tested By:
           </label>
           <select
-            name="TestedByEmployee_id"
-            value={formData.TestedByEmployee_id}
+            name="TestedByEmployee"
+            value={formData.TestedByEmployee}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >

@@ -1,32 +1,11 @@
 import React from 'react';
 
-const mockTestCase = {
-    id:"",
-    Program_id: "",
-    FunctionalArea_id:"",
-    ReportTypeID: "",
-    Severity: "",
-    ProblemSummary: "",
-    ProblemDescription:"",
-    SuggestedFix: "",
-    ReportedByEmployee_id: "",
-    ReportedByDate:"",
-    AssignedToEmployee_id: "",
-    Comments: "",
-    Status: "",
-    Priority: "",
-    Resolution: "",
-    ResolutionVersion: "",
-    ResolvedByEmployee_id: "",
-    ResolvedByDate: "",
-    TestedByEmployee_id: "",
-    TestedByDate:"",
-    Reproducible: false,
-    TreatedAsDeferred: false,
-    attachmentUrl:"",
-};
+import { useLocation } from 'react-router-dom';
+
 
 const ViewTestCase = ({ onClose, onEdit }) => {
+    const location = useLocation();
+    const testCaseDetails = location.state;
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
             <h2 className="text-2xl font-bold mb-6">View Test Case</h2>
@@ -34,97 +13,97 @@ const ViewTestCase = ({ onClose, onEdit }) => {
                 {/* Display fields as read-only or as text paragraphs */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Bug ID:</label>
-                    <input type="text" value={mockTestCase.id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Program:</label>
-                    <input type="text" value={mockTestCase.Program_id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.Program} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Functional Area:</label>
-                    <input type="text" value={mockTestCase.FunctionalArea_id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.FunctionalArea_id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Report Type:</label>
-                    <input type="text" value={mockTestCase.ReportTypeID} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.ReportTypeID} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Severity:</label>
-                    <input type="text" value={mockTestCase.Severity} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.Severity} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Problem Summary:</label>
-                    <input type="text" value={mockTestCase.ProblemSummary} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.ProblemSummary} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Problem Description:</label>
-                    <input type="text" value={mockTestCase.ProblemDescription} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.ProblemDescription} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Suggested Fix:</label>
-                    <input type="text" value={mockTestCase.SuggestedFix} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.SuggestedFix} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Reported By :</label>
-                    <input type="text" value={mockTestCase.ReportedByEmployee_id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.ReportedByEmployee_id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Date :</label>
-                    <input type="text" value={mockTestCase.ReportedByDate} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.ReportedByDate} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Assigned To :</label>
-                    <input type="text" value={mockTestCase.AssignedToEmployee_id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.AssignedToEmployee_id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Status :</label>
-                    <input type="text" value={mockTestCase.Status} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.Status} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Priority :</label>
-                    <input type="text" value={mockTestCase.Priority} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.Priority} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Resolution:</label>
-                    <input type="text" value={mockTestCase.Resolution} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.Resolution} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Resolution version :</label>
-                    <input type="text" value={mockTestCase.ResolutionVersion} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.ResolutionVersion} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Resolved By :</label>
-                    <input type="text" value={mockTestCase.ResolvedByEmployee_id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.ResolvedByEmployee_id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Date :</label>
-                    <input type="text" value={mockTestCase.ResolvedByDate} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.ResolvedByDate} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Tested By :</label>
-                    <input type="text" value={mockTestCase.TestedByEmployee_id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.TestedByEmployee_id} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Date :</label>
-                    <input type="text" value={mockTestCase.TestedByDate} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.TestedByDate} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Comments:</label>
-                    <input type="text" value={mockTestCase.Comments} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.Comments} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Reproducible:</label>
-                    <input type="text" value={mockTestCase.Reproducible ? "Yes" : "No"} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.Reproducible ? "Yes" : "No"} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Deferred:</label>
-                    <input type="text" value={mockTestCase.TreatedAsDeferred ? "Yes" : "No"} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
+                    <input type="text" value={testCaseDetails.TreatedAsDeferred ? "Yes" : "No"} readOnly className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Attachment:</label>
-                    {mockTestCase.attachmentUrl ? (
-                        <a href={mockTestCase.attachmentUrl} download className="text-blue-600 hover:text-blue-800 visited:text-purple-600">
+                    {testCaseDetails.attachmentUrl ? (
+                        <a href={testCaseDetails.attachmentUrl} download className="text-blue-600 hover:text-blue-800 visited:text-purple-600">
                             Download Attachment
                         </a>
                     ) : (

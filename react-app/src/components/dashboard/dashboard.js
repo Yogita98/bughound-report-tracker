@@ -16,7 +16,6 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import React, { useEffect, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
@@ -24,56 +23,94 @@ const Dashboard = () => {
   const [testCases, setTestCases] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredTestCases, setFilteredTestCases] = useState([]);
-  const [dropdownOptions, setDropdownOptions] = useState([]); 
+  const [dropdownOptions, setDropdownOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [displayedTestCases, setDisplayedTestCases] = useState([]);
 
   useEffect(() => {
     fetchBugReports();
-  }, []); // The empty array ensures this effect runs only once after the initial render
+  }, []);
 
   const fetchBugReports = async () => {
     try {
+      // Fetching bug reports
       const response = await fetch("http://localhost:8000/bug-reports/");
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("Network response was not ok for bug reports");
       }
       const data = await response.json();
-      console.log(data);
-      setTestCases(
-        data.map((report) => ({
-          id: report.id, // Assuming ReportTypeID can serve as a unique ID
-          reporttypeid: report.ReportTypeID,
-          description: report.ProblemDescription,
-          date: report.ReportedByDate, // Adjust according to your model if you have this field
-          status: report.Status,
-          testedBy: report.TestedByEmployee, // Adjust depending on how you've structured your data
-          comments: report.Comments,
-        }))
-      );
+  
+      // Fetching employee names
+      const employeeResponse = await fetch("http://localhost:8000/api/employees-names/");
+      if (!employeeResponse.ok) {
+        throw new Error("Network response was not ok for employee names");
+      }
+      const employees = await employeeResponse.json();
+      console.log(employees);
+  
+      // Convert employee array to an ID-to-name map
+      const employeeMap = employees.reduce((acc, employee) => {
+        acc[employee.id] = employee.Name; // Assuming the employee object has 'id' and 'name' properties
+        return acc;
+      }, {});
+  
+      // Replace employee IDs in the bug reports with names using the map
+      const testCases = data.map(report => ({
+        id: report.id,
+        ReportTypeID: report.ReportTypeID,
+        description: report.ProblemDescription,
+        date: report.ReportedByDate,
+        status: report.Status,
+        testedBy: employeeMap[report.TestedByEmployee] || 'Unknown',
+        comments: report.Comments,
+        Status: report.Status,
+        TestedByEmployee_id: employeeMap[report.TestedByEmployee] || 'Unknown', // Use 'Unknown' if no matching employee found
+        Comments: report.Comments,
+        ProblemSummary: report.ProblemSummary,
+        ProblemDescription: report.ProblemDescription,
+        Reproducible: report.Reproducible,
+        SuggestedFix: report.SuggestedFix,
+        ReportedByDate: report.ReportedByDate,
+        Priority: report.Priority,
+        Resolution: report.Resolution,
+        ResolutionVersion: report.ResolutionVersion,
+        ResolvedByDate: report.ResolvedByDate,
+        TestedByDate: report.TestedByDate,
+        AssignedToEmployee_id: employeeMap[report.AssignedToEmployee] || 'Unknown',
+        Program: report.Program,
+        FunctionalArea_id: report.FunctionalArea,
+        ReportedByEmployee_id: employeeMap[report.ReportedByEmployee] || 'Unknown',
+        Severity: report.Severity,
+        TreatedAsDeferred: report.TreatedAsDeferred
+      }));
+  
+      // Example: Setting the state or logging to console
+      console.log(testCases);
+      setTestCases(testCases);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
   };
+  
 
-  // Function to handle creating a new test case
   const handleCreateTestCase = () => {
     navigate("/createTestForm");
   };
-  // Navigate to Edit   test case - Temp (API for corresponding id)
+
   const handleEditTestCase = () => {
     navigate("/editTestForm");
   };
-  // Navigate to Test Case Details - Temp (API for corresponding id)
-  const viewTestCase = () => {
-    navigate("/viewTestForm");
+
+  const viewTestCase = (testCase) => {
+    console.log(testCase);
+    navigate(`/viewTestForm`, { state: { ...testCase } });
   };
 
-  // Navigate to Test Case Details - Temp (API for corresponding id)
   const navigateToTestCase = (testCaseId) => {
     navigate(`/testCaseDetail/${testCaseId}`);
   };
+
   const tableHead = [
     "Test ID",
     "Description",
@@ -84,121 +121,70 @@ const Dashboard = () => {
     "Action",
   ];
 
-  // Function to handle search
   const handleSearch = (e) => {
     const query = e.target.value.trim();
-    console.log("Search Query:", query);
     setSearchQuery(query);
-    
-    // Filter test cases based on the search query
-    const filteredTestCases = testCases.filter((testCase) => {
-      return testCase.description.toLowerCase().includes(query.toLowerCase());
-    });
-    console.log("Filtered Test Cases:", filteredTestCases);
-    setFilteredTestCases(filteredTestCases);
-
-    // Update dropdown options based on the filtered test cases
-    setDropdownOptions(filteredTestCases.map((testCase) => testCase.description));
-    
-    // Ensure dropdown remains visible if there are matching options
+    const filtered = testCases.filter((testCase) =>
+      testCase.description.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredTestCases(filtered);
+    setDropdownOptions(filtered.map((testCase) => testCase.description));
     setOpenDropdown(dropdownOptions.length > 0 && query.trim().length > 0);
-
   };
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-      // If Enter key is pressed, filter the test cases
       handleSearchButtonClick();
     }
-  }
+  };
 
   const handleSelect = (option) => {
-    // Update search query with the selected option
     setSearchQuery(option);
     setSelectedOption(option);
-  
-    // Filter test cases based on the selected option
-    const filteredTestCases = testCases.filter((testCase) =>
+    const filtered = testCases.filter((testCase) =>
       testCase.description.includes(option)
     );
-    setFilteredTestCases(filteredTestCases);
-
-    // Clear dropdown options after selection
+    setFilteredTestCases(filtered);
     setDropdownOptions([]);
-
-    // Set displayed test cases to the selected option
-    setDisplayedTestCases(filteredTestCases);
-
-    // Reset search query after selecting an option
+    setDisplayedTestCases(filtered);
     setSearchQuery("");
   };
-  
+
   const handleSearchButtonClick = () => {
-    console.log("Search Button Clicked");
-    // Check if the search query is empty
-    
-    if (searchQuery.trim() === "" ) {
-      // Set displayed test cases to all bug reports
-    setDisplayedTestCases(testCases);
+    if (searchQuery.trim() === "") {
+      setDisplayedTestCases(testCases);
     } else {
-      // If there is a search query, filter bug reports based on the current search query
-      const filteredTestCases = testCases.filter((testCase) =>
+      const filtered = testCases.filter((testCase) =>
         testCase.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
-      setFilteredTestCases(filteredTestCases);
-
-      // Reset search query after performing search
+      setFilteredTestCases(filtered);
       setSearchQuery("");
-      // Close dropdown after selection
       setOpenDropdown(false);
-
-      // Set displayed test cases to the filtered test cases
-      setDisplayedTestCases(filteredTestCases);
-  }
+      setDisplayedTestCases(filtered);
+    }
   };
 
-  //dynamic chip that renders color based on the status rendered
   const StatusChip = ({ status }) => {
-    // Determine the chip's style based on the status
     const statusStyles = {
       Passed: "bg-green-100 text-green-800",
       Failed: "bg-red-100 text-red-800",
       "In Progress": "bg-yellow-100 text-yellow-800",
     };
-
-    // Fallback style
     const defaultStyle = "bg-gray-100 text-gray-800";
-
-    // Get the specific style for the current status, or use the fallback
     const chipStyle = statusStyles[status] || defaultStyle;
-
-    return (
-      <span
-        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${chipStyle}`}
-      >
-        {status}
-      </span>
-    );
+    return <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${chipStyle}`}>{status}</span>;
   };
+
   return (
     <Card className="h-full w-full">
       <CardHeader className="flex flex-wrap justify-between items-center rounded-none">
         <div className="mb-8 flex items-center justify-between gap-8">
           <div>
-            <Typography variant="h5" color="blue-gray">
-              Test Cases Dashboard
-            </Typography>
-            <Typography color="gray" className="mt-1 font-normal">
-              Test Case reporting Dashboard
-            </Typography>
+            <Typography variant="h5" color="blue-gray">Test Cases Dashboard</Typography>
+            <Typography color="gray" className="mt-1 font-normal">Test Case reporting Dashboard</Typography>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:">
-            <Button
-              variant="outlined"
-              size="sm"
-              color="gray"
-              onClick={handleCreateTestCase}
-            >
+            <Button variant="outlined" size="sm" color="gray" onClick={handleCreateTestCase}>
               <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
               Add New Test Case
             </Button>
@@ -218,21 +204,14 @@ const Dashboard = () => {
             {openDropdown && dropdownOptions.length > 0 && (
               <div className="absolute z-10 inset-x-0 top-full bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto">
                 {dropdownOptions.map((option, index) => (
-                  <div
-                    key={index}
-                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSelect(option)}
-                  >
+                  <div key={index} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => handleSelect(option)}>
                     {option}
                   </div>
                 ))}
               </div>
             )}
             <div className="absolute inset-y-0 right-0 flex items-center pl-2">
-              <Button
-                variant="text"
-                className="p-0 z-10"
-               >
+              <Button variant="text" className="p-0 z-10">
                 <MagnifyingGlassIcon className="h-5 w-5 cursor-pointer" aria-hidden="true" onClick={handleSearchButtonClick}/>
               </Button>
             </div>
@@ -244,196 +223,65 @@ const Dashboard = () => {
           <thead>
             <tr>
               {tableHead.map((head, index) => (
-                <th
-                  key={head}
-                  className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50"
-                >
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
-                  >
-                    {head}{" "}
-                    {index !== tableHead.length - 1 && (
-                      <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
-                    )}
+                <th key={head} className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50">
+                  <Typography variant="small" color="blue-gray" className="flex items-center justify-between gap-2 font-normal leading-none opacity-70">
+                    {head} {index !== tableHead.length - 1 && <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />}
                   </Typography>
                 </th>
               ))}
             </tr>
           </thead>
-           <tbody>
-            {displayedTestCases.length > 0 ? (
-    displayedTestCases.map(({ id, description, date, status, testedBy, comments }, index) => {
-      const isLast = index === displayedTestCases.length - 1;
-      const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
-      return (
-        <tr key={id}>
-          <td className={classes}>
-            <div className="flex items-center gap-3">
-              <div className="flex flex-col">
-                <Typography variant="small" color="blue-gray" className="font-normal">
-                  {id}
-                </Typography>
-              </div>
-            </div>
-          </td>
-          <td className={classes}>
-            <div className="flex flex-col">
-              <Typography variant="small" color="blue-gray" className="font-normal opacity-50">
-                {description}
-              </Typography>
-            </div>
-          </td>
-          <td className={classes}>
-            <div className="flex flex-col">
-              <Typography variant="small" color="blue-gray" className="font-normal opacity-50">
-                {date}
-              </Typography>
-            </div>
-          </td>
-          <td className={classes}>
-            <div className="w-max">
-              <StatusChip status={status} />
-            </div>
-          </td>
-          <td className={classes}>
-            <div className="flex flex-col">
-              <Typography variant="small" color="blue-gray" className="font-normal opacity-50">
-                {testedBy}
-              </Typography>
-            </div>
-          </td>
-          <td className={classes}>
-            <div className="flex flex-col">
-              <Typography variant="small" color="blue-gray" className="font-normal opacity-50">
-                {comments}
-              </Typography>
-            </div>
-          </td>
-          <td className={classes}>
-            <Button variant="text" className="p-0" onClick={viewTestCase}>
-              <EyeIcon className="h-5 w-5" />
-            </Button>
-            <Button variant="text" className="p-0" onClick={handleEditTestCase}>
-              <PencilIcon className="h-5 w-5" />
-            </Button>
-            <Button variant="text" className="p-0" onClick={() => navigateToTestCase(id)}>
-              <ArrowDownTrayIcon className="h-5 w-5" />
-            </Button>
-            <Button variant="text" className="p-0" onClick={() => navigateToTestCase(id)}>
-              <TrashIcon className="h-5 w-5" />
-            </Button>
-          </td>
-        </tr>
-      );
-    })
-  ) : (
-            testCases.map(
-              (
-                { id, description, date, status, testedBy, comments },
-                index
-              ) => {
+          <tbody>
+            {displayedTestCases.length > 0 ? displayedTestCases.map((testCase, index) => {
+              const isLast = index === displayedTestCases.length - 1;
+              const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+              return (
+                <tr key={testCase.id}>
+                  <td className={classes}>{testCase.id}</td>
+                  <td className={classes}>{testCase.description}</td>
+                  <td className={classes}>{testCase.date}</td>
+                  <td className={classes}><StatusChip status={testCase.status} /></td>
+                  <td className={classes}>{testCase.testedBy}</td>
+                  <td className={classes}>{testCase.comments}</td>
+                  <td className={classes}>
+                    <Button variant="text" className="p-0" onClick={() => viewTestCase(testCase)}>
+                      <EyeIcon className="h-5 w-5" />
+                    </Button>
+                    <Button variant="text" className="p-0" onClick={handleEditTestCase}>
+                      <PencilIcon className="h-5 w-5" />
+                    </Button>
+                    <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
+                      <ArrowDownTrayIcon className="h-5 w-5" />
+                    </Button>
+                    <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
+                      <TrashIcon className="h-5 w-5" />
+                    </Button>
+                  </td>
+                </tr>
+              );
+            }) : (
+              testCases.map((testCase, index) => {
                 const isLast = index === testCases.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
+                const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
                 return (
-                  <tr key={id}>
+                  <tr key={testCase.id}>
+                    <td className={classes}>{testCase.id}</td>
+                    <td className={classes}>{testCase.description}</td>
+                    <td className={classes}>{testCase.date}</td>
+                    <td className={classes}><StatusChip status={testCase.status} /></td>
+                    <td className={classes}>{testCase.testedBy}</td>
+                    <td className={classes}>{testCase.comments}</td>
                     <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <div className="flex flex-col">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="font-normal"
-                          >
-                            {" "}
-                            {id}
-                          </Typography>
-                        </div>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex flex-col">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal opacity-50"
-                        >
-                          {" "}
-                          {description}
-                        </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex flex-col">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal opacity-50"
-                        >
-                          {" "}
-                          {date}
-                        </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="w-max">
-                        <StatusChip status={status} />
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex flex-col">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal opacity-50"
-                        >
-                          {" "}
-                          {testedBy}
-                        </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex flex-col">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal opacity-50"
-                        >
-                          {" "}
-                          {comments}
-                        </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <Button
-                        variant="text"
-                        className="p-0"
-                        onClick={viewTestCase}
-                      >
+                      <Button variant="text" className="p-0" onClick={() => viewTestCase(testCase)}>
                         <EyeIcon className="h-5 w-5" />
                       </Button>
-                      <Button
-                        variant="text"
-                        className="p-0"
-                        onClick={handleEditTestCase}
-                      >
+                      <Button variant="text" className="p-0" onClick={handleEditTestCase}>
                         <PencilIcon className="h-5 w-5" />
                       </Button>
-                      <Button
-                        variant="text"
-                        className="p-0"
-                        onClick={() => navigateToTestCase(testCases.id)}
-                      >
+                      <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
                         <ArrowDownTrayIcon className="h-5 w-5" />
                       </Button>
-                      <Button
-                        variant="text"
-                        className="p-0"
-                        onClick={() => navigateToTestCase(testCases.id)}
-                      >
+                      <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
                         <TrashIcon className="h-5 w-5" />
                       </Button>
                     </td>
