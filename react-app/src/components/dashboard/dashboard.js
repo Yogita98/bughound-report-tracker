@@ -76,6 +76,7 @@ const Dashboard = () => {
         Resolution: report.Resolution,
         ResolutionVersion: report.ResolutionVersion,
         ResolvedByDate: report.ResolvedByDate,
+        ResolvedByEmployee_id: report.ResolvedByEmployee_id,
         TestedByDate: report.TestedByDate,
         AssignedToEmployee_id: employeeMap[report.AssignedToEmployee] || 'Unknown',
         Program: report.Program,
@@ -98,8 +99,8 @@ const Dashboard = () => {
     navigate("/createTestForm");
   };
 
-  const handleEditTestCase = () => {
-    navigate("/editTestForm");
+  const handleEditTestCase = (testCase) => {
+    navigate("/editTestForm", { state: { ...testCase } });
   };
 
   const viewTestCase = (testCase) => {
@@ -267,7 +268,7 @@ const Dashboard = () => {
                     <Button variant="text" className="p-0" onClick={() => viewTestCase(testCase)}>
                       <EyeIcon className="h-5 w-5" />
                     </Button>
-                    <Button variant="text" className="p-0" onClick={handleEditTestCase}>
+                    <Button variant="text" className="p-0" onClick={() => handleEditTestCase(testCase)}>
                       <PencilIcon className="h-5 w-5" />
                     </Button>
                     <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
@@ -295,7 +296,7 @@ const Dashboard = () => {
                       <Button variant="text" className="p-0" onClick={() => viewTestCase(testCase)}>
                         <EyeIcon className="h-5 w-5" />
                       </Button>
-                      <Button variant="text" className="p-0" onClick={handleEditTestCase}>
+                      <Button variant="text" className="p-0" onClick={() => handleEditTestCase(testCase)}>
                         <PencilIcon className="h-5 w-5" />
                       </Button>
                       <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>

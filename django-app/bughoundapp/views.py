@@ -26,7 +26,26 @@ class SubmitAPIView(APIView):
             print("Serializer Errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class UpdateBugReportAPIView(APIView):
+    def get_object(self, pk):
+        try:
+            return BugReport.objects.get(pk=pk)
+        except BugReport.DoesNotExist:
+            return None
 
+    def put(self, request, pk, format=None):
+        bug_report = self.get_object(pk)
+        if not bug_report:
+            return Response({'error': 'Bug Report not found.'}, status=status.HTTP_404_NOT_FOUND)
+        print(bug_report)
+        print(request.data)
+        serializer = BugReportSerializer(bug_report, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            print("Serializer Errors:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginAPIView(APIView):
     def post(self, request, *args, **kwargs):

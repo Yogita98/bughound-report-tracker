@@ -1,36 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 const EditTestForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const testCaseDetails = location.state;
+  console.log(testCaseDetails);
 
   // Hardcoded test case details for demonstration
-  const [testCase, setTestCase] = useState({
-    id:"",
-    Program_id: "",
-    FunctionalArea_id:"",
-    ReportTypeID: "",
-    Severity: "",
-    ProblemSummary: "",
-    ProblemDescription:"",
-    SuggestedFix: "",
-    ReportedByEmployee_id: "",
-    ReportedByDate:"",
-    AssignedToEmployee_id: "",
-    Comments: "",
-    Status: "",
-    Priority: "",
-    Resolution: "",
-    ResolutionVersion: "",
-    ResolvedByEmployee_id: "",
-    ResolvedByDate: "",
-    TestedByEmployee_id: "",
-    TestedByDate:"",
-    Reproducible: false,
-    TreatedAsDeferred: false,
-    attachmentUrl:"",
-  });
+  const [testCase, setTestCase] = useState(testCaseDetails);
   const [employees, setEmployees] = useState([]);
     useEffect(() => {
         async function fetchEmployees() {
@@ -40,6 +20,7 @@ const EditTestForm = () => {
         }
         fetchEmployees();
     }, []);
+
     const reportTypeOptions = [
       { name: "Coding Error", id: "1" },
       { name: "Design Error", id: "2" },
@@ -107,22 +88,94 @@ const EditTestForm = () => {
   ];
 
   // Handle form changes
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setTestCase((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+  const handleChange = (event) => {
+    // console.log(event.target);
+    const { name, value, type, checked, files } = event.target;
+    console.log(name + " " + value + " " + type + " " + files);
+    if (type === "file") {
+      setTestCase((prevFormData) => ({
+        ...prevFormData,
+        [name]: files[0], // Assumes single file upload
+      }));
+    } else if (name == "ReportTypeID") {
+      setTestCase((prevFormData) => ({
+        ...prevFormData,
+        [name]: parseInt(value),
+      }));
+    } else {
+      setTestCase((prevFormData) => ({
+        ...prevFormData,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
+    console.log(testCase);
   };
 
   // Simulated submit handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Updated Test Case:", testCase);
-    alert("Test case updated successfully! (simulated)");
-    // Navigate back to the dashboard or relevant page
-    navigate(-1);
+    
+    const employeeMap = employees.reduce((acc, employee) => {
+      acc[employee.Name] = employee.id; // Assuming the employee object has 'id' and 'name' properties
+      return acc;
+    }, {});
+
+    function fetchEmployeeId(employee) {
+      if (!employee) return null
+      if(parseInt(employee) == employee)
+        return parseInt(employee)
+      else return parseInt(employeeMap[employee])
+    }
+
+    const modifiedTestCase = {
+      id: testCase.id,
+      ReportTypeID: testCase.ReportTypeID,
+      Status: testCase.Status,
+      TestedByEmployee: fetchEmployeeId(testCase.TestedByEmployee_id), // Use 'Unknown' if no matching employee found
+      Comments: testCase.Comments,
+      ProblemSummary: testCase.ProblemSummary,
+      ProblemDescription: testCase.ProblemDescription,
+      Reproducible: testCase.Reproducible,
+      SuggestedFix: testCase.SuggestedFix,
+      ReportedByDate: testCase.ReportedByDate,
+      Priority: testCase.Priority,
+      Resolution: testCase.Resolution,
+      ResolutionVersion: testCase.ResolutionVersion,
+      ResolvedByDate: testCase.ResolvedByDate,
+      ResolvedByEmployee: fetchEmployeeId(testCase.ResolvedByEmployee_id),
+      TestedByDate: testCase.TestedByDate,
+      AssignedToEmployee: fetchEmployeeId(testCase.AssignedToEmployee_id),
+      Program: testCase.Program,
+      FunctionalArea: testCase.FunctionalArea_id,
+      ReportedByEmployee: fetchEmployeeId(testCase.ReportedByEmployee_id),
+      Severity: testCase.Severity,
+      TreatedAsDeferred: testCase.TreatedAsDeferred
+    };
+    console.log(modifiedTestCase);
+    if (JSON.stringify(testCase) !== JSON.stringify(testCaseDetails)) {
+      console.log("Updated Test Case:", testCase);
+      const response = await fetch(`http://localhost:8000/bug-reports/update/${testCase.id}/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(modifiedTestCase)
+      });
+      if (response.ok) {
+        alert("Test case updated successfully!");
+        navigate(-1); // Navigate back or to another page
+      } else {
+        alert("Failed to update the test case.");
+      }
+      // alert("Test case updated successfully! (simulated)");
+    } else {
+      if (!window.confirm('No changes detected in the bug report. Do you still want to edit it?')) {
+        // Save it!
+        navigate(-1);
+      }
+    }
   };
+
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -139,11 +192,11 @@ const EditTestForm = () => {
           </label>
           <select
             name="Program_id"
-            value={testCase.Program_id}
+            value={testCase.Program}
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
-            <option value="">{testCase.Program_id}</option>
+            <option value="">{testCase.Program}</option>
             {programOptions.map(programOptions => (
               <option key={programOptions.id} value={programOptions.name}>{programOptions.name}</option>
             ))}
@@ -178,7 +231,7 @@ const EditTestForm = () => {
           >
             <option value="">{testCase.FunctionalArea_id}</option>
             {functionalAreaOptions.map(functionalAreaOptions => (
-              <option key={functionalAreaOptions.id} value={functionalAreaOptions.name}>{functionalAreaOptions.name}</option>
+              <option key={functionalAreaOptions.id} value={functionalAreaOptions.id}>{functionalAreaOptions.name}</option>
             ))}
           </select>
         </div>
@@ -241,7 +294,7 @@ const EditTestForm = () => {
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
-            <option value="">{testCase.ReportedByEmployee_id.name}</option>
+            <option value="">{testCase.ReportedByEmployee_id}</option>
             {employees.map((employee, index) => (
                 <option key={index} value={employee.id}>{employee.Name}</option>
             ))}
@@ -269,7 +322,7 @@ const EditTestForm = () => {
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
-            <option value="">{testCase.AssignedToEmployee_id.name}</option>
+            <option value="">{testCase.AssignedToEmployee_id}</option>
             {employees.map((employee, index) => (
                 <option key={index} value={employee.id}>{employee.Name}</option>
             ))}
@@ -355,7 +408,7 @@ const EditTestForm = () => {
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
-            <option value="">{testCase.ResolvedByEmployee_id.name}</option>
+            <option value="">{testCase.ResolvedByEmployee_id}</option>
             {employees.map((employee, index) => (
                 <option key={index} value={employee.id}>{employee.Name}</option>
             ))}
@@ -383,7 +436,7 @@ const EditTestForm = () => {
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
-            <option value="">{testCase.TestedByEmployee_id.name}</option>
+            <option value="">{testCase.TestedByEmployee_id}</option>
             {employees.map((employee, index) => (
                 <option key={index} value={employee.id}>{employee.Name}</option>
             ))}
