@@ -33,24 +33,40 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class BugReportSerializer(serializers.ModelSerializer):
-    ReportedByEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all())
-    AssignedToEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), allow_null=True)
-    ResolvedByEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), allow_null=True)
-    TestedByEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), allow_null=True)
+    ReportedByEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), default=None)
+    AssignedToEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), allow_null=True, default=None, required=False)
+    ResolvedByEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), allow_null=True, default=None, required=False)
+    TestedByEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), allow_null=True, default=None, required=False)
     Program = serializers.PrimaryKeyRelatedField(queryset=Program.objects.all())
-    FunctionalArea = serializers.PrimaryKeyRelatedField(queryset=FunctionalArea.objects.all(), allow_null=True)
+    FunctionalArea = serializers.PrimaryKeyRelatedField(queryset=FunctionalArea.objects.all(), allow_null=True, default=None, required=False)
 
     Program_name = serializers.CharField(source='Program.ProgramName', read_only=True)
     class Meta:
         model = BugReport
         fields = [
-            'id','ReportTypeID', 'Severity', 'ProblemSummary', 'ProblemDescription',
-            'Reproducible', 'Program', 'SuggestedFix', 'ReportedByDate', 'Comments',
+            'id', 'ReportTypeID', 'Severity', 'ProblemSummary', 'ProblemDescription',
+            'Reproducible', 'SuggestedFix', 'ReportedByDate', 'Comments',
             'Status', 'Priority', 'Resolution', 'ResolutionVersion',
             'ResolvedByDate', 'TestedByDate', 'TreatedAsDeferred',
-            'AssignedToEmployee', 'FunctionalArea', 'Program_name',
+            'AssignedToEmployee', 'Program', 'FunctionalArea',
             'ResolvedByEmployee', 'TestedByEmployee', 'ReportedByEmployee'
         ]
+        extra_kwargs = {
+            'Comments': {'allow_blank': True, 'required': False},
+            'Status': {'default': 'Open'},
+            'Priority': {'default': 'Normal'},
+            'Resolution': {'allow_blank': True, 'required': False, 'default': 'Pending'},
+            'ResolutionVersion': {'allow_blank': True, 'required': False, 'default': 'v1'},
+            'ResolvedByDate': {'required': False},
+            'TestedByDate': {'required': False},
+            'TreatedAsDeferred': {'default': False},
+        }
+
+    def validate(self, data):
+        """
+        Add custom validation logic if necessary, for instance, check if employee ids exist.
+        """
+        return data
 
 class AttachmentSerializer(serializers.ModelSerializer):
     bugreport = BugReportSerializer(read_only=True, source='bugreport')
