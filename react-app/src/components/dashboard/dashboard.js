@@ -374,6 +374,33 @@ const Dashboard = () => {
                     <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
                       <ArrowDownTrayIcon className="h-5 w-5" />
                     </Button>
+                    {showOptions && (
+                            <div className="absolute right-0 z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                              <div
+                                className="py-1"
+                                role="menu"
+                                aria-orientation="vertical"
+                                aria-labelledby="options-menu"
+                              >
+                                <button
+                                  type="button"
+                                  className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
+                                  onClick={() => downloadPDF(testCase)}
+                                  role="menuitem"
+                                >
+                                  Download PDF
+                                </button>
+                                <button
+                                  type="button"
+                                  className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
+                                  onClick={() => downloadXML(testCase)}
+                                  role="menuitem"
+                                >
+                                  Download XML
+                                </button>
+                              </div>
+                            </div>
+                          )}
                     <Button variant="text" className="p-0" onClick={() =>deleteTestCase(testCase.id)}>
                       <TrashIcon className="h-5 w-5" />
                     </Button>
