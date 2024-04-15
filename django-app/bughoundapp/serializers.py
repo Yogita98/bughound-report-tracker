@@ -40,19 +40,20 @@ class BugReportSerializer(serializers.ModelSerializer):
     Program = serializers.PrimaryKeyRelatedField(queryset=Program.objects.all())
     FunctionalArea = serializers.PrimaryKeyRelatedField(queryset=FunctionalArea.objects.all(), allow_null=True)
 
+    Program_name = serializers.CharField(source='Program.ProgramName', read_only=True)
     class Meta:
         model = BugReport
         fields = [
-            'ReportTypeID', 'Severity', 'ProblemSummary', 'ProblemDescription',
-            'Reproducible', 'SuggestedFix', 'ReportedByDate', 'Comments',
+            'id','ReportTypeID', 'Severity', 'ProblemSummary', 'ProblemDescription',
+            'Reproducible', 'Program', 'SuggestedFix', 'ReportedByDate', 'Comments',
             'Status', 'Priority', 'Resolution', 'ResolutionVersion',
             'ResolvedByDate', 'TestedByDate', 'TreatedAsDeferred',
-            'AssignedToEmployee', 'Program', 'FunctionalArea',
-            'ResolvedByEmployee', 'TestedByEmployee', 'id', 'ReportedByEmployee'
+            'AssignedToEmployee', 'FunctionalArea', 'Program_name',
+            'ResolvedByEmployee', 'TestedByEmployee', 'ReportedByEmployee'
         ]
 
 class AttachmentSerializer(serializers.ModelSerializer):
-    bug_report_number = BugReportSerializer(read_only=True, source='bugreport')
+    bugreport = BugReportSerializer(read_only=True, source='bugreport')
 
     class Meta:
         model = Attachment

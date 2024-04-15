@@ -17,10 +17,20 @@ from rest_framework.views import APIView
 
 class SubmitAPIView(APIView):
     def post(self, request, *args, **kwargs):
+        print("hello world")
         print(request.data)
         serializer = BugReportSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
+            # Process attachments
+            attachments = request.FILES.getlist('attachments')
+            for attachment in attachments:
+                # Save attachment information to your Attachment model
+                Attachment.objects.create(
+                    filetype=attachment.content_type,
+                    filepath=attachment.name,  # You may need to adjust this depending on your file storage settings
+                    bugreportid=serializer.instance.id
+                )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             print("Serializer Errors:", serializer.errors)
@@ -74,7 +84,7 @@ class RegisterAPIView(APIView):
 
 
 class BugReportListView(generics.ListAPIView):
-    queryset = BugReport.objects.all()
+    queryset = BugReport.objects.select_related('Program').all()  # Ensure to select the related program
     serializer_class = BugReportSerializer
 
 

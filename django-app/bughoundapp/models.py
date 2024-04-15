@@ -50,6 +50,11 @@ class BugReport(models.Model):
 
 
 class Attachment(models.Model):
+    FILE_TYPE_CHOICES = [
+        ('pdf', 'PDF'),
+        ('img', 'Image'),
+        # Add more file types if needed
+    ]
     bugreport = models.ForeignKey(BugReport, on_delete=models.CASCADE)
-    FileType = models.CharField(max_length=255)
-    FilePath = models.FileField(upload_to='attachments/')
+    FileType = models.CharField(max_length=255, choices=FILE_TYPE_CHOICES)
+    FilePath = models.FileField(upload_to='media/')

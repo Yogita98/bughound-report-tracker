@@ -83,7 +83,8 @@ const Dashboard = () => {
         FunctionalArea_id: report.FunctionalArea,
         ReportedByEmployee_id: employeeMap[report.ReportedByEmployee] || 'Unknown',
         Severity: report.Severity,
-        TreatedAsDeferred: report.TreatedAsDeferred
+        TreatedAsDeferred: report.TreatedAsDeferred,
+        Programname: report.Program_name
       }));
   
       // Example: Setting the state or logging to console
@@ -141,6 +142,19 @@ const Dashboard = () => {
     "Comments",
     "Action",
   ];
+
+  // Function to group test cases by program
+  const groupTestCasesByProgram = (testCases) => {
+    const groupedTestCases = {};
+    testCases.forEach((testCase) => {
+      const Program = testCase.Program;
+      if (!groupedTestCases[Program]) {
+        groupedTestCases[Program] = [];
+      }
+      groupedTestCases[Program].push(testCase);
+    });
+    return groupedTestCases;
+  };
 
   const handleSearch = (e) => {
     const query = e.target.value.trim();
@@ -253,7 +267,13 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {displayedTestCases.length > 0 ? displayedTestCases.map((testCase, index) => {
+            {displayedTestCases.length > 0 ? 
+              ( Object.entries(groupTestCasesByProgram(displayedTestCases)).map(([Program, cases]) => (
+                <React.Fragment key={Program}>
+                <tr>
+                  <td colSpan="7" className="font-semibold">{"Program: " + cases[0].Programname}</td>
+                </tr>
+                  {cases.map((testCase, index) => {
               const isLast = index === displayedTestCases.length - 1;
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
               return (
@@ -280,8 +300,15 @@ const Dashboard = () => {
                   </td>
                 </tr>
               );
-            }) : (
-              testCases.map((testCase, index) => {
+            })}
+            </React.Fragment>
+            ))
+          ) : (  Object.entries(groupTestCasesByProgram(testCases)).map(([Program, cases]) => (
+              <React.Fragment key={Program}>
+              <tr>
+                <td colSpan="7" className="font-semibold">{"Program: " + cases[0].Programname}</td>
+              </tr>
+                {cases.map((testCase, index) => {
                 const isLast = index === testCases.length - 1;
                 const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
                 return (
@@ -309,7 +336,11 @@ const Dashboard = () => {
                   </tr>
                 );
               })
-            )}
+            }
+            </React.Fragment>
+            ))
+          )
+            }
           </tbody>
         </table>
       </CardBody>

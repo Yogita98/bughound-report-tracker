@@ -238,7 +238,7 @@ CREATE TABLE `bughoundapp_bugreport` (
   `AssignedToEmployee_id` bigint DEFAULT NULL,
   `FunctionalArea_id` bigint DEFAULT NULL,
   `Program_id` bigint NOT NULL,
-  `ReportedByEmployee_id` bigint DEFAULT NULL,
+  `ReportedByEmployee_id` bigint NOT NULL,
   `ResolvedByEmployee_id` bigint DEFAULT NULL,
   `TestedByEmployee_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
