@@ -29,28 +29,7 @@ const TestCase = () => {
     fetchEmployees();
   }, []);
   const [formData, setFormData] = useState({
-    id: generateBugId(),
-    Program: "",
-    FunctionalArea_id: "",
-    ReportTypeID: "",
-    Severity: "",
-    ProblemSummary: "",
-    ProblemDescription: "",
-    SuggestedFix: "",
-    ReportedByEmployee_id: "",
-    ReportedByDate: "",
-    AssignedToEmployee_id: "",
-    Comments: "",
-    Status: "",
-    Priority: "",
-    Resolution: "",
-    ResolutionVersion: "",
-    ResolvedByEmployee: "",
-    ResolvedByDate: "",
-    TestedByEmployee_id: "",
-    TestedByDate: "",
-    Reproducible: false,
-    TreatedAsDeferred: false,
+     id: generateBugId(),
   });
 
   const severityOptions = [
@@ -141,21 +120,30 @@ const TestCase = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log(formData);
+    const filteredData = Object.entries(formData).reduce((acc, [key, value]) => {
+      if (value != null && value !== "") {
+          acc[key] = value;
+      }
+      return acc;
+    }, {});
+    console.log(filteredData);
     try {
       const response = await fetch("http://localhost:8000/submit/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(filteredData),
       });
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Submission successful", data);
+        alert("Submission successful");
+        navigate("/dashboard");
         // Optional: Reset form or redirect the user
       } else {
         console.error("Submission failed");
+        alert("Unable to submit the report!")
         // Handle response errors here
       }
     } catch (error) {
