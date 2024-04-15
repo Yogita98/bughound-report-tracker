@@ -15,9 +15,9 @@ import {
   Input,
   Typography,
 } from "@material-tailwind/react";
+import { jsPDF } from "jspdf";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 const Dashboard = () => {
   const navigate = useNavigate();
   const [testCases, setTestCases] = useState([]);
@@ -27,6 +27,7 @@ const Dashboard = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [displayedTestCases, setDisplayedTestCases] = useState([]);
+  const [showOptions, setShowOptions] = useState(false);
 
   useEffect(() => {
     fetchBugReports();
@@ -132,6 +133,85 @@ const Dashboard = () => {
       alert('Error deleting test case, please try again.');
     }
   };
+    //Download the test case
+    const downloadPDF = (testCaseDetails) => {
+      const doc = new jsPDF();
+      doc.setFontSize(12);
+      doc.text("Test Case Details", 20, 10);
+      const fields = [
+        ["Bug ID", testCaseDetails.id],
+        ["Program", testCaseDetails.Program],
+        ["Functional Area", testCaseDetails.FunctionalArea_id],
+        ["Report Type", testCaseDetails.ReportTypeID],
+        ["Severity", testCaseDetails.Severity],
+        ["Problem Summary", testCaseDetails.ProblemSummary],
+        ["Problem Description", testCaseDetails.ProblemDescription],
+        ["Suggested Fix", testCaseDetails.SuggestedFix],
+        ["Reported By", testCaseDetails.ReportedByEmployee_id],
+        ["Reported Date", testCaseDetails.ReportedByDate],
+        ["Assigned To", testCaseDetails.AssignedToEmployee_id],
+        ["Status", testCaseDetails.Status],
+        ["Priority", testCaseDetails.Priority],
+        ["Resolution", testCaseDetails.Resolution],
+        ["Resolution Version", testCaseDetails.ResolutionVersion],
+        ["Resolved By", testCaseDetails.ResolvedByEmployee_id],
+        ["Resolved Date", testCaseDetails.ResolvedByDate],
+        ["Tested By", testCaseDetails.TestedByEmployee_id],
+        ["Tested Date", testCaseDetails.TestedByDate],
+        ["Comments", testCaseDetails.Comments],
+        ["Reproducible", testCaseDetails.Reproducible ? "Yes" : "No"],
+        ["Deferred", testCaseDetails.TreatedAsDeferred ? "Yes" : "No"],
+      ];
+      fields.forEach((field, index) => {
+        const y = 20 + 10 * index;
+        doc.text(`${field[0]}: ${field[1]}`, 20, y);
+      });
+      doc.save("test_case_details.pdf");
+    };
+    //XML format download
+    const downloadXML = (testCaseDetails) => {
+      const xmlContent = `
+          <?xml version="1.0" encoding="UTF-8"?>
+        <TestCase>
+          <BugID>${testCaseDetails.id}</BugID>
+          <Program>${testCaseDetails.Program}</Program>
+          <FunctionalArea>${testCaseDetails.FunctionalArea_id}</FunctionalArea>
+          <ReportType>${testCaseDetails.ReportTypeID}</ReportType>
+          <Severity>${testCaseDetails.Severity}</Severity>
+          <ProblemSummary>${testCaseDetails.ProblemSummary}</ProblemSummary>
+         <ProblemDescription>${
+           testCaseDetails.ProblemDescription
+         }</ProblemDescription>
+         <SuggestedFix>${testCaseDetails.SuggestedFix}</SuggestedFix>
+          <ReportedBy>${testCaseDetails.ReportedByEmployee_id}</ReportedBy>
+          <ReportedDate>${testCaseDetails.ReportedByDate}</ReportedDate>
+         <AssignedTo>${testCaseDetails.AssignedToEmployee_id}</AssignedTo>
+         <Status>${testCaseDetails.Status}</Status>
+         <Priority>${testCaseDetails.Priority}</Priority>
+         <Resolution>${testCaseDetails.Resolution}</Resolution>
+          <ResolutionVersion>${
+            testCaseDetails.ResolutionVersion
+          }</ResolutionVersion>
+          <ResolvedBy>${testCaseDetails.ResolvedByEmployee_id}</ResolvedBy>
+          <ResolvedDate>${testCaseDetails.ResolvedByDate}</ResolvedDate>
+          <TestedBy>${testCaseDetails.TestedByEmployee_id}</TestedBy>
+         <TestedDate>${testCaseDetails.TestedByDate}</TestedDate>
+          <Comments>${testCaseDetails.Comments}</Comments>
+          <Reproducible>${
+           testCaseDetails.Reproducible ? "Yes" : "No"
+         }</Reproducible>
+         <Deferred>${testCaseDetails.TreatedAsDeferred ? "Yes" : "No"}</Deferred>
+        </TestCase>
+    `;
+  
+      const blob = new Blob([xmlContent], { type: "application/xml" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = 'test_case_details.xml';
+      link.click();
+      URL.revokeObjectURL(url);
+    };
 
   const tableHead = [
     "Test ID",
@@ -329,6 +409,33 @@ const Dashboard = () => {
                       <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
                         <ArrowDownTrayIcon className="h-5 w-5" />
                       </Button>
+                      {showOptions && (
+                            <div className="absolute right-0 z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                              <div
+                                className="py-1"
+                                role="menu"
+                                aria-orientation="vertical"
+                                aria-labelledby="options-menu"
+                              >
+                                <button
+                                  type="button"
+                                  className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
+                                  onClick={() => downloadPDF(testCase)}
+                                  role="menuitem"
+                                >
+                                  Download PDF
+                                </button>
+                                <button
+                                  type="button"
+                                  className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
+                                  onClick={() => downloadXML(testCase)}
+                                  role="menuitem"
+                                >
+                                  Download XML
+                                </button>
+                              </div>
+                            </div>
+                          )}
                       <Button variant="text" className="p-0" onClick={() =>deleteTestCase(testCase.id)}>
                         <TrashIcon className="h-5 w-5" />
                       </Button>
