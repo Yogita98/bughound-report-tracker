@@ -30,8 +30,8 @@ const Dashboard = () => {
   const [openFeedbackDropdown, setOpenFeedbackDropdown] = useState(false)
   const [displayedTestCases, setDisplayedTestCases] = useState([]);
   const [showOptions, setShowOptions] = useState(false);
-  const [selectedColumn, setSelectedColumn] = useState("Program");
-  const [selectedKey, setSelectedKey] = useState("Program");
+  const [selectedColumn, setSelectedColumn] = useState("Choose Search Filter");
+  const [selectedKey, setSelectedKey] = useState([])
 
   useEffect(() => {
     fetchBugReports();
@@ -234,12 +234,13 @@ const Dashboard = () => {
     const query = e.target.value.trim();
     setSearchQuery(query);
     const filtered = testCases.filter((testCase) =>
-      testCase[selectedKey].toLowerCase().includes(query.toLowerCase())
+      String(testCase[selectedKey]).toLowerCase().includes(query.toLowerCase())
     );
     setFilteredTestCases(filtered);
-    // Set dropdown options based on selected column
-    setDropdownOptions(filtered.map((testCase) => testCase[selectedKey]));
-    setOpenSearchDropdown(dropdownOptions.length > 0 && query.trim().length > 0);
+    // Extract unique values from filtered test cases for dropdown options
+    const uniqueOptions = Array.from(new Set(filtered.map((testCase) => testCase[selectedKey])));
+    setDropdownOptions(uniqueOptions);
+    setOpenSearchDropdown(uniqueOptions.length > 0 && query.trim().length > 0);
   };
 
   const handleKeyDown = (event) => {
@@ -253,20 +254,25 @@ const Dashboard = () => {
     setSearchQuery(option);
     setSelectedOption(option);
     const filtered = testCases.filter((testCase) =>
-      testCase.description.includes(option)
+      String(testCase[selectedKey]).toLowerCase().includes(String(option).toLowerCase())
     );
     setFilteredTestCases(filtered);
-    setDropdownOptions([]);
     setDisplayedTestCases(filtered);
     setSearchQuery("");
+    setDropdownOptions([]);
   };
 
   const handleSearchButtonClick = () => {
     if (searchQuery.trim() === "") {
+      setSelectedColumn("Choose Search Filter");
+      setSelectedKey(""); // Reset selectedKey
+      setDropdownOptions([]) // Revert back to default column
       setDisplayedTestCases(testCases);
+    } else if (selectedColumn === "Choose Search Filter") {
+      alert("Please choose a filter first.");
     } else {
       const filtered = testCases.filter((testCase) =>
-        testCase[selectedKey].toLowerCase().includes(searchQuery.toLowerCase())
+        String(testCase[selectedKey]).toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredTestCases(filtered);
       setSearchQuery("");
@@ -283,7 +289,11 @@ const Dashboard = () => {
     setOpenFeedbackDropdown(false); // Close the feedback dropdown
     // Additional logic specific to feedback button
     // Set dropdown options based on selected column
-    setDropdownOptions(testCases.map((testCase) => testCase[selectedKey]));
+    const uniqueOptions = testCases.map((testCase) => testCase[columnKeyMap[option]]);
+    setDropdownOptions(uniqueOptions);
+    // Clear search query and dropdown options
+    setSearchQuery("");
+    setOpenSearchDropdown(false);
   };
 
   // Define the mapping between column names and keys
@@ -330,8 +340,8 @@ const Dashboard = () => {
         {/* Feedback button and dropdown */}
         <div className="relative mb-3 md:w-96 flex items-centre">
           <div className="mr-2">
-            <Button className="px-3 py-1 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
-                    style={{ minWidth: "140px" }} // Set a fixed width here
+            <Button className="px-3 py-2 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
+                    style={{ minWidth: "177px" }} // Set a fixed width here
                     onClick={() => {
                       setOpenFeedbackDropdown(!openFeedbackDropdown);
                       setSearchQuery(""); // Clear search query when opening the dropdown
@@ -341,8 +351,8 @@ const Dashboard = () => {
             </Button>
             {openFeedbackDropdown && (
               <div 
-                className="absolute z-10 top-full left-0 bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto" 
-                style={{ minWidth: "100px" }} // Set a fixed width here
+                className="absolute z-10 top-full left-0 bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto w-120px" 
+                style={{ minWidth: "177px" }} // Set a fixed width here
                 onClick={() => setOpenFeedbackDropdown(false)}
               >
                 {tableHead.map((option, index) => (

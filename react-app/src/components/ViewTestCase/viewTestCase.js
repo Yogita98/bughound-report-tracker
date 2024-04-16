@@ -1,9 +1,10 @@
 import React from 'react';
-
+import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 
 
 const ViewTestCase = ({ onClose, onEdit }) => {
+    const navigate = useNavigate();
     const location = useLocation();
     const testCaseDetails = location.state;
     return (
@@ -113,7 +114,12 @@ const ViewTestCase = ({ onClose, onEdit }) => {
 
                 <div className="flex gap-4">
                     <button type="button" onClick={onEdit} className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Edit</button>
-                    <button type="button" onClick={onClose} className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Close</button>
+                    <button 
+                        type="button" 
+                        onClick={() => navigate(-1)}
+                        className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Close
+                    </button>
                 </div>
             </form>
         </div>
