@@ -18,6 +18,7 @@ import {
 import { jsPDF } from "jspdf";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [testCases, setTestCases] = useState([]);
@@ -25,9 +26,12 @@ const Dashboard = () => {
   const [filteredTestCases, setFilteredTestCases] = useState([]);
   const [dropdownOptions, setDropdownOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [openDropdown, setOpenDropdown] = useState(false);
+  const [openSearchDropdown, setOpenSearchDropdown] = useState(false);
+  const [openFeedbackDropdown, setOpenFeedbackDropdown] = useState(false)
   const [displayedTestCases, setDisplayedTestCases] = useState([]);
   const [showOptions, setShowOptions] = useState(false);
+  const [selectedColumn, setSelectedColumn] = useState("Program");
+  const [selectedKey, setSelectedKey] = useState("Program")
 
   useEffect(() => {
     fetchBugReports();
@@ -74,18 +78,17 @@ const Dashboard = () => {
         SuggestedFix: report.SuggestedFix,
         ReportedByDate: report.ReportedByDate,
         Priority: report.Priority,
-        Resolution: report.Resolution,
+        Resolution: report.Resolution || 'Unknown',
         ResolutionVersion: report.ResolutionVersion,
         ResolvedByDate: report.ResolvedByDate,
-        ResolvedByEmployee_id: report.ResolvedByEmployee_id,
+        ResolvedByEmployee_id: employeeMap[report.ResolvedByEmployee] || 'Unknown',
         TestedByDate: report.TestedByDate,
         AssignedToEmployee_id: employeeMap[report.AssignedToEmployee] || 'Unknown',
         Program: report.Program,
-        FunctionalArea_id: report.FunctionalArea,
+        FunctionalArea_id: report.FunctionalArea || 'Unknown',
         ReportedByEmployee_id: employeeMap[report.ReportedByEmployee] || 'Unknown',
         Severity: report.Severity,
-        TreatedAsDeferred: report.TreatedAsDeferred,
-        Programname: report.Program_name
+        TreatedAsDeferred: report.TreatedAsDeferred
       }));
   
       // Example: Setting the state or logging to console
@@ -95,7 +98,6 @@ const Dashboard = () => {
       console.error("There was a problem with the fetch operation:", error);
     }
   };
-  
 
   const handleCreateTestCase = () => {
     navigate("/createTestForm");
@@ -133,94 +135,98 @@ const Dashboard = () => {
       alert('Error deleting test case, please try again.');
     }
   };
-    //Download the test case
-    const downloadPDF = (testCaseDetails) => {
-      const doc = new jsPDF();
-      doc.setFontSize(12);
-      doc.text("Test Case Details", 20, 10);
-      const fields = [
-        ["Bug ID", testCaseDetails.id],
-        ["Program", testCaseDetails.Program],
-        ["Functional Area", testCaseDetails.FunctionalArea_id],
-        ["Report Type", testCaseDetails.ReportTypeID],
-        ["Severity", testCaseDetails.Severity],
-        ["Problem Summary", testCaseDetails.ProblemSummary],
-        ["Problem Description", testCaseDetails.ProblemDescription],
-        ["Suggested Fix", testCaseDetails.SuggestedFix],
-        ["Reported By", testCaseDetails.ReportedByEmployee_id],
-        ["Reported Date", testCaseDetails.ReportedByDate],
-        ["Assigned To", testCaseDetails.AssignedToEmployee_id],
-        ["Status", testCaseDetails.Status],
-        ["Priority", testCaseDetails.Priority],
-        ["Resolution", testCaseDetails.Resolution],
-        ["Resolution Version", testCaseDetails.ResolutionVersion],
-        ["Resolved By", testCaseDetails.ResolvedByEmployee_id],
-        ["Resolved Date", testCaseDetails.ResolvedByDate],
-        ["Tested By", testCaseDetails.TestedByEmployee_id],
-        ["Tested Date", testCaseDetails.TestedByDate],
-        ["Comments", testCaseDetails.Comments],
-        ["Reproducible", testCaseDetails.Reproducible ? "Yes" : "No"],
-        ["Deferred", testCaseDetails.TreatedAsDeferred ? "Yes" : "No"],
-      ];
-      fields.forEach((field, index) => {
-        const y = 20 + 10 * index;
-        doc.text(`${field[0]}: ${field[1]}`, 20, y);
-      });
-      doc.save("test_case_details.pdf");
-    };
-    //XML format download
-    const downloadXML = (testCaseDetails) => {
-      const xmlContent = `
-          <?xml version="1.0" encoding="UTF-8"?>
-        <TestCase>
-          <BugID>${testCaseDetails.id}</BugID>
-          <Program>${testCaseDetails.Program}</Program>
-          <FunctionalArea>${testCaseDetails.FunctionalArea_id}</FunctionalArea>
-          <ReportType>${testCaseDetails.ReportTypeID}</ReportType>
-          <Severity>${testCaseDetails.Severity}</Severity>
-          <ProblemSummary>${testCaseDetails.ProblemSummary}</ProblemSummary>
-         <ProblemDescription>${
-           testCaseDetails.ProblemDescription
-         }</ProblemDescription>
-         <SuggestedFix>${testCaseDetails.SuggestedFix}</SuggestedFix>
-          <ReportedBy>${testCaseDetails.ReportedByEmployee_id}</ReportedBy>
-          <ReportedDate>${testCaseDetails.ReportedByDate}</ReportedDate>
-         <AssignedTo>${testCaseDetails.AssignedToEmployee_id}</AssignedTo>
-         <Status>${testCaseDetails.Status}</Status>
-         <Priority>${testCaseDetails.Priority}</Priority>
-         <Resolution>${testCaseDetails.Resolution}</Resolution>
-          <ResolutionVersion>${
-            testCaseDetails.ResolutionVersion
-          }</ResolutionVersion>
-          <ResolvedBy>${testCaseDetails.ResolvedByEmployee_id}</ResolvedBy>
-          <ResolvedDate>${testCaseDetails.ResolvedByDate}</ResolvedDate>
-          <TestedBy>${testCaseDetails.TestedByEmployee_id}</TestedBy>
-         <TestedDate>${testCaseDetails.TestedByDate}</TestedDate>
-          <Comments>${testCaseDetails.Comments}</Comments>
-          <Reproducible>${
-           testCaseDetails.Reproducible ? "Yes" : "No"
-         }</Reproducible>
-         <Deferred>${testCaseDetails.TreatedAsDeferred ? "Yes" : "No"}</Deferred>
-        </TestCase>
-    `;
-  
-      const blob = new Blob([xmlContent], { type: "application/xml" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = 'test_case_details.xml';
-      link.click();
-      URL.revokeObjectURL(url);
-    };
+  //Download the test case
+  const downloadPDF = (testCaseDetails) => {
+    const doc = new jsPDF();
+    doc.setFontSize(12);
+    doc.text("Test Case Details", 20, 10);
+    const fields = [
+      ["Bug ID", testCaseDetails.id],
+      ["Program", testCaseDetails.Program],
+      ["Functional Area", testCaseDetails.FunctionalArea_id],
+      ["Report Type", testCaseDetails.ReportTypeID],
+      ["Severity", testCaseDetails.Severity],
+      ["Problem Summary", testCaseDetails.ProblemSummary],
+      ["Problem Description", testCaseDetails.ProblemDescription],
+      ["Suggested Fix", testCaseDetails.SuggestedFix],
+      ["Reported By", testCaseDetails.ReportedByEmployee_id],
+      ["Reported Date", testCaseDetails.ReportedByDate],
+      ["Assigned To", testCaseDetails.AssignedToEmployee_id],
+      ["Status", testCaseDetails.Status],
+      ["Priority", testCaseDetails.Priority],
+      ["Resolution", testCaseDetails.Resolution],
+      ["Resolution Version", testCaseDetails.ResolutionVersion],
+      ["Resolved By", testCaseDetails.ResolvedByEmployee_id],
+      ["Resolved Date", testCaseDetails.ResolvedByDate],
+      ["Tested By", testCaseDetails.TestedByEmployee_id],
+      ["Tested Date", testCaseDetails.TestedByDate],
+      ["Comments", testCaseDetails.Comments],
+      ["Reproducible", testCaseDetails.Reproducible ? "Yes" : "No"],
+      ["Deferred", testCaseDetails.TreatedAsDeferred ? "Yes" : "No"],
+    ];
+    fields.forEach((field, index) => {
+      const y = 20 + 10 * index;
+      doc.text(`${field[0]}: ${field[1]}`, 20, y);
+    });
+    doc.save("test_case_details.pdf");
+  };
+  //XML format download
+  const downloadXML = (testCaseDetails) => {
+    const xmlContent = `
+        <?xml version="1.0" encoding="UTF-8"?>
+      <TestCase>
+        <BugID>${testCaseDetails.id}</BugID>
+        <Program>${testCaseDetails.Program}</Program>
+        <FunctionalArea>${testCaseDetails.FunctionalArea_id}</FunctionalArea>
+        <ReportType>${testCaseDetails.ReportTypeID}</ReportType>
+        <Severity>${testCaseDetails.Severity}</Severity>
+        <ProblemSummary>${testCaseDetails.ProblemSummary}</ProblemSummary>
+       <ProblemDescription>${
+         testCaseDetails.ProblemDescription
+       }</ProblemDescription>
+       <SuggestedFix>${testCaseDetails.SuggestedFix}</SuggestedFix>
+        <ReportedBy>${testCaseDetails.ReportedByEmployee_id}</ReportedBy>
+        <ReportedDate>${testCaseDetails.ReportedByDate}</ReportedDate>
+       <AssignedTo>${testCaseDetails.AssignedToEmployee_id}</AssignedTo>
+       <Status>${testCaseDetails.Status}</Status>
+       <Priority>${testCaseDetails.Priority}</Priority>
+       <Resolution>${testCaseDetails.Resolution}</Resolution>
+        <ResolutionVersion>${
+          testCaseDetails.ResolutionVersion
+        }</ResolutionVersion>
+        <ResolvedBy>${testCaseDetails.ResolvedByEmployee_id}</ResolvedBy>
+        <ResolvedDate>${testCaseDetails.ResolvedByDate}</ResolvedDate>
+        <TestedBy>${testCaseDetails.TestedByEmployee_id}</TestedBy>
+       <TestedDate>${testCaseDetails.TestedByDate}</TestedDate>
+        <Comments>${testCaseDetails.Comments}</Comments>
+        <Reproducible>${
+         testCaseDetails.Reproducible ? "Yes" : "No"
+       }</Reproducible>
+       <Deferred>${testCaseDetails.TreatedAsDeferred ? "Yes" : "No"}</Deferred>
+      </TestCase>
+  `;
+
+    const blob = new Blob([xmlContent], { type: "application/xml" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = 'test_case_details.xml';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   const tableHead = [
-    "Test ID",
-    "Description",
-    "Date Created",
+    "Program",
+    "Report Type",
+    "Severity",
+    "Functional Area",
+    "Assigned To",
     "Status",
-    "Tested By",
-    "Comments",
-    "Action",
+    "Priority",
+    "Resolution",
+    "Reported By",
+    "Report Date",
+    "Resolved By",
   ];
 
   // Function to group test cases by program
@@ -240,11 +246,12 @@ const Dashboard = () => {
     const query = e.target.value.trim();
     setSearchQuery(query);
     const filtered = testCases.filter((testCase) =>
-      testCase.description.toLowerCase().includes(query.toLowerCase())
+      testCase[selectedKey].toLowerCase().includes(query.toLowerCase())
     );
     setFilteredTestCases(filtered);
-    setDropdownOptions(filtered.map((testCase) => testCase.description));
-    setOpenDropdown(dropdownOptions.length > 0 && query.trim().length > 0);
+    // Set dropdown options based on selected column
+    setDropdownOptions(filtered.map((testCase) => testCase[selectedKey]));
+    setOpenSearchDropdown(dropdownOptions.length > 0 && query.trim().length > 0);
   };
 
   const handleKeyDown = (event) => {
@@ -253,7 +260,8 @@ const Dashboard = () => {
     }
   };
 
-  const handleSelect = (option) => {
+  // Search button handleSelect function
+  const handleSearchSelect = (option) => {
     setSearchQuery(option);
     setSelectedOption(option);
     const filtered = testCases.filter((testCase) =>
@@ -270,13 +278,39 @@ const Dashboard = () => {
       setDisplayedTestCases(testCases);
     } else {
       const filtered = testCases.filter((testCase) =>
-        testCase.description.toLowerCase().includes(searchQuery.toLowerCase())
+        testCase[selectedKey].toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredTestCases(filtered);
       setSearchQuery("");
-      setOpenDropdown(false);
+      setOpenSearchDropdown(false);
       setDisplayedTestCases(filtered);
     }
+  };
+
+  // Feedback button handleSelect function
+  const handleFeedbackSelect = (option) => {
+    setSelectedKey(columnKeyMap[option]);
+    // Handle selection for feedback button
+    setSelectedColumn(option);
+    setOpenFeedbackDropdown(false); // Close the feedback dropdown
+    // Additional logic specific to feedback button
+    // Set dropdown options based on selected column
+    setDropdownOptions(testCases.map((testCase) => testCase[selectedKey]));
+  };
+
+  // Define the mapping between column names and keys
+  const columnKeyMap = {
+    "Program":"Program",
+    "Report Type": "ReportTypeID",
+    "Severity": "Severity",
+    "Functional Area": "FunctionalArea_id",
+    "Assigned To": "AssignedToEmployee_id",
+    "Status": "Status",
+    "Priority": "Priority",
+    "Resolution": "Resolution",
+    "Reported By": "ReportedByEmployee_id",
+    "Report Date": "ReportedByDate",
+    "Resolved By": "ResolvedByEmployee_id",
   };
 
   const StatusChip = ({ status }) => {
@@ -305,7 +339,33 @@ const Dashboard = () => {
             </Button>
           </div>
         </div>
-        <div className="mb-3 md:w-96">
+        {/* Feedback button and dropdown */}
+        <div className="relative mb-3 md:w-96 flex items-centre">
+          <div className="mr-2">
+            <Button className="px-3 py-1 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
+                    style={{ minWidth: "140px" }} // Set a fixed width here
+                    onClick={() => {
+                      setOpenFeedbackDropdown(!openFeedbackDropdown);
+                      setSearchQuery(""); // Clear search query when opening the dropdown
+                    }}
+            >
+              {selectedColumn} {/* Display selected column */}
+            </Button>
+            {openFeedbackDropdown && (
+              <div 
+                className="absolute z-10 top-full left-0 bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto" 
+                style={{ minWidth: "100px" }} // Set a fixed width here
+                onClick={() => setOpenFeedbackDropdown(false)}
+              >
+                {tableHead.map((option, index) => (
+                  <div key={index} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => handleFeedbackSelect(option)}>
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        {/*  Search functionality starts */}
           <div className="relative mb-4 flex w-full flex-wrap items-stretch">
             <Input
               type="search"
@@ -316,10 +376,10 @@ const Dashboard = () => {
               onChange={handleSearch}
               onKeyDown={handleKeyDown}
             />
-            {openDropdown && dropdownOptions.length > 0 && (
+            {openSearchDropdown && dropdownOptions.length > 0 && (
               <div className="absolute z-10 inset-x-0 top-full bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto">
                 {dropdownOptions.map((option, index) => (
-                  <div key={index} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => handleSelect(option)}>
+                  <div key={index} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => handleSearchSelect(option)}>
                     {option}
                   </div>
                 ))}
@@ -332,9 +392,11 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+        {/*  Search functionality ends */}
       </CardHeader>
       <CardBody className="overflow-scroll px-0">
         <table className="mt-4 w-full min-w-max table-auto text-left">
+          {/* Top Row displaying columns */}
           <thead>
             <tr>
               {tableHead.map((head, index) => (
@@ -346,24 +408,25 @@ const Dashboard = () => {
               ))}
             </tr>
           </thead>
+          {/* Top Row displaying columns ends */}
           <tbody>
             {displayedTestCases.length > 0 ? 
-              ( Object.entries(groupTestCasesByProgram(displayedTestCases)).map(([Program, cases]) => (
-                <React.Fragment key={Program}>
-                <tr>
-                  <td colSpan="7" className="font-semibold">{"Program: " + cases[0].Programname}</td>
-                </tr>
-                  {cases.map((testCase, index) => {
+              ( displayedTestCases.map((testCase, index) => {
               const isLast = index === displayedTestCases.length - 1;
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
               return (
                 <tr key={testCase.id}>
-                  <td className={classes}>{testCase.id}</td>
-                  <td className={classes}>{testCase.description}</td>
-                  <td className={classes}>{testCase.date}</td>
+                  <td className={classes}>{testCase.Program}</td>
+                  <td className={classes}>{testCase.ReportTypeID}</td>
+                  <td className={classes}>{testCase.Severity}</td>
+                  <td className={classes}>{testCase.FunctionalArea_id}</td>
+                  <td className={classes}>{testCase.AssignedToEmployee_id}</td>
                   <td className={classes}><StatusChip status={testCase.status} /></td>
-                  <td className={classes}>{testCase.testedBy}</td>
-                  <td className={classes}>{testCase.comments}</td>
+                  <td className={classes}>{testCase.Priority}</td>
+                  <td className={classes}>{testCase.Resolution}</td>
+                  <td className={classes}>{testCase.ReportedByEmployee_id}</td>
+                  <td className={classes}>{testCase.ReportedByDate}</td>
+                  <td className={classes}>{testCase.ResolvedByEmployee_id}</td>
                   <td className={classes}>
                     <Button variant="text" className="p-0" onClick={() => viewTestCase(testCase)}>
                       <EyeIcon className="h-5 w-5" />
@@ -407,25 +470,23 @@ const Dashboard = () => {
                   </td>
                 </tr>
               );
-            })}
-            </React.Fragment>
-            ))
-          ) : (  Object.entries(groupTestCasesByProgram(testCases)).map(([Program, cases]) => (
-              <React.Fragment key={Program}>
-              <tr>
-                <td colSpan="7" className="font-semibold">{"Program: " + cases[0].Programname}</td>
-              </tr>
-                {cases.map((testCase, index) => {
+            })
+          ) : ( testCases.map((testCase, index) => {
                 const isLast = index === testCases.length - 1;
                 const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
                 return (
                   <tr key={testCase.id}>
-                    <td className={classes}>{testCase.id}</td>
-                    <td className={classes}>{testCase.description}</td>
-                    <td className={classes}>{testCase.date}</td>
+                    <td className={classes}>{testCase.Program}</td>
+                    <td className={classes}>{testCase.ReportTypeID}</td>
+                    <td className={classes}>{testCase.Severity}</td>
+                    <td className={classes}>{testCase.FunctionalArea_id}</td>
+                    <td className={classes}>{testCase.AssignedToEmployee_id}</td>
                     <td className={classes}><StatusChip status={testCase.status} /></td>
-                    <td className={classes}>{testCase.testedBy}</td>
-                    <td className={classes}>{testCase.comments}</td>
+                    <td className={classes}>{testCase.Priority}</td>
+                    <td className={classes}>{testCase.Resolution}</td>
+                    <td className={classes}>{testCase.ReportedByEmployee_id}</td>
+                    <td className={classes}>{testCase.ReportedByDate}</td>
+                    <td className={classes}>{testCase.ResolvedByEmployee_id}</td>
                     <td className={classes}>
                       <Button variant="text" className="p-0" onClick={() => viewTestCase(testCase)}>
                         <EyeIcon className="h-5 w-5" />
@@ -470,9 +531,6 @@ const Dashboard = () => {
                   </tr>
                 );
               })
-            }
-            </React.Fragment>
-            ))
           )
             }
           </tbody>
