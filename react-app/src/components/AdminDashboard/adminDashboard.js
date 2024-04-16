@@ -26,9 +26,12 @@ import { useNavigate } from "react-router-dom";
     const [filteredTestCases, setFilteredTestCases] = useState([]);
     const [dropdownOptions, setDropdownOptions] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
-    const [openDropdown, setOpenDropdown] = useState(false);
+    const [openSearchDropdown, setOpenSearchDropdown] = useState(false);
+    const [openFeedbackDropdown, setOpenFeedbackDropdown] = useState(false)
     const [displayedTestCases, setDisplayedTestCases] = useState([]);
     const [showOptions, setShowOptions] = useState(false);
+    const [selectedColumn, setSelectedColumn] = useState("Choose Search Filter");
+    const [selectedKey, setSelectedKey] = useState([])
   
     useEffect(() => {
       fetchBugReports();
@@ -58,6 +61,32 @@ import { useNavigate } from "react-router-dom";
           acc[employee.id] = employee.Name; // Assuming the employee object has 'id' and 'name' properties
           return acc;
         }, {});
+
+        // Fetching program names
+        const programResponse = await fetch("http://localhost:8000/api/program-names/");
+          if (!programResponse.ok) {
+            throw new Error("Network response was not ok for program names");
+        }
+        const programs = await programResponse.json();
+
+        // Convert programs array to an ID-to-name map
+        const programsMap = programs.reduce((acc, program) => {
+          acc[program.id] = program.ProgramName;
+          return acc;
+        }, {});
+
+        // Fetching functional area names
+        const functionalAreaResponse = await fetch("http://localhost:8000/api/functional-area-names/");
+          if (!functionalAreaResponse.ok) {
+          throw new Error("Network response was not ok for functional area names");
+        }
+        const functionalAreas = await functionalAreaResponse.json();
+
+        // Convert functional areas array to an ID-to-name map
+        const functionalAreasMap = functionalAreas.reduce((acc, functionalArea) => {
+          acc[functionalArea.id] = functionalArea.AreaName;
+          return acc;
+        }, {});
   
         // Replace employee IDs in the bug reports with names using the map
         const testCases = data.map((report) => ({
@@ -83,8 +112,8 @@ import { useNavigate } from "react-router-dom";
           TestedByDate: report.TestedByDate,
           AssignedToEmployee_id:
             employeeMap[report.AssignedToEmployee] || "Unknown",
-          Program: report.Program,
-          FunctionalArea_id: report.FunctionalArea,
+          Program: programsMap[report.Program] || 'Unknown',
+          FunctionalArea_id: functionalAreasMap[report.FunctionalArea] || 'Unknown',
           ReportedByEmployee_id:
             employeeMap[report.ReportedByEmployee] || "Unknown",
           Severity: report.Severity,
@@ -225,56 +254,98 @@ import { useNavigate } from "react-router-dom";
     };
   
     const tableHead = [
-      "Test ID",
-      "Description",
-      "Date Created",
+      "Program",
+      "Report Type",
+      "Severity",
+      "Functional Area",
+      "Assigned To",
       "Status",
-      "Tested By",
-      "Comments",
-      "Action",
+      "Priority",
+      "Resolution",
+      "Reported By",
+      "Report Date",
+      "Resolved By",
     ];
   
     const handleSearch = (e) => {
       const query = e.target.value.trim();
       setSearchQuery(query);
       const filtered = testCases.filter((testCase) =>
-        testCase.description.toLowerCase().includes(query.toLowerCase())
+        String(testCase[selectedKey]).toLowerCase().includes(query.toLowerCase())
       );
       setFilteredTestCases(filtered);
-      setDropdownOptions(filtered.map((testCase) => testCase.description));
-      setOpenDropdown(dropdownOptions.length > 0 && query.trim().length > 0);
+      // Extract unique values from filtered test cases for dropdown options
+      const uniqueOptions = Array.from(new Set(filtered.map((testCase) => testCase[selectedKey])));
+      setDropdownOptions(uniqueOptions);
+      setOpenSearchDropdown(uniqueOptions.length > 0 && query.trim().length > 0);
     };
   
     const handleKeyDown = (event) => {
-      if (event.key === "Enter") {
+      if (event.key === 'Enter') {
         handleSearchButtonClick();
       }
     };
   
-    const handleSelect = (option) => {
+    // Search button handleSelect function
+    const handleSearchSelect = (option) => {
       setSearchQuery(option);
       setSelectedOption(option);
       const filtered = testCases.filter((testCase) =>
-        testCase.description.includes(option)
+        String(testCase[selectedKey]).toLowerCase().includes(String(option).toLowerCase())
       );
       setFilteredTestCases(filtered);
-      setDropdownOptions([]);
       setDisplayedTestCases(filtered);
       setSearchQuery("");
+      setDropdownOptions([]);
     };
   
     const handleSearchButtonClick = () => {
       if (searchQuery.trim() === "") {
+        setSelectedColumn("Choose Search Filter");
+        setSelectedKey(""); // Reset selectedKey
+        setDropdownOptions([]) // Revert back to default column
         setDisplayedTestCases(testCases);
+      } else if (selectedColumn === "Choose Search Filter") {
+        alert("Please choose a filter first.");
       } else {
         const filtered = testCases.filter((testCase) =>
-          testCase.description.toLowerCase().includes(searchQuery.toLowerCase())
+          String(testCase[selectedKey]).toLowerCase().includes(searchQuery.toLowerCase())
         );
         setFilteredTestCases(filtered);
         setSearchQuery("");
-        setOpenDropdown(false);
+        setOpenSearchDropdown(false);
         setDisplayedTestCases(filtered);
       }
+    };
+
+    // Feedback button handleSelect function
+    const handleFeedbackSelect = (option) => {
+      setSelectedKey(columnKeyMap[option]);
+      // Handle selection for feedback button
+      setSelectedColumn(option);
+      setOpenFeedbackDropdown(false); // Close the feedback dropdown
+      // Additional logic specific to feedback button
+      // Set dropdown options based on selected column
+      const uniqueOptions = testCases.map((testCase) => testCase[columnKeyMap[option]]);
+      setDropdownOptions(uniqueOptions);
+      // Clear search query and dropdown options
+      setSearchQuery("");
+      setOpenSearchDropdown(false);
+    };
+
+    // Define the mapping between column names and keys
+    const columnKeyMap = {
+      "Program":"Program",
+      "Report Type": "ReportTypeID",
+      "Severity": "Severity",
+      "Functional Area": "FunctionalArea_id",
+      "Assigned To": "AssignedToEmployee_id",
+      "Status": "Status",
+      "Priority": "Priority",
+      "Resolution": "Resolution",
+      "Reported By": "ReportedByEmployee_id",
+      "Report Date": "ReportedByDate",
+      "Resolved By": "ResolvedByEmployee_id",
     };
   
     const StatusChip = ({ status }) => {
@@ -351,7 +422,32 @@ import { useNavigate } from "react-router-dom";
               </Button>
             </div>
           </div>
-          <div className="mb-3 md:w-96">
+          <div className="mb-3 md:w-96 flex items-centre">
+          <div className="mr-2">
+            <Button className="px-3 py-2 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
+                    style={{ minWidth: "177px" }} // Set a fixed width here
+                    onClick={() => {
+                      setOpenFeedbackDropdown(!openFeedbackDropdown);
+                      setSearchQuery(""); // Clear search query when opening the dropdown
+                    }}
+            >
+              {selectedColumn} {/* Display selected column */}
+            </Button>
+            {openFeedbackDropdown && (
+              <div 
+                className="absolute z-10 top-full left-0 bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto w-120px" 
+                style={{ minWidth: "177px" }} // Set a fixed width here
+                onClick={() => setOpenFeedbackDropdown(false)}
+              >
+                {tableHead.map((option, index) => (
+                  <div key={index} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => handleFeedbackSelect(option)}>
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
+            </div>
+            {/*  Search functionality starts */}
             <div className="relative mb-4 flex w-full flex-wrap items-stretch">
               <Input
                 type="search"
@@ -362,13 +458,13 @@ import { useNavigate } from "react-router-dom";
                 onChange={handleSearch}
                 onKeyDown={handleKeyDown}
               />
-              {openDropdown && dropdownOptions.length > 0 && (
+              {openSearchDropdown && dropdownOptions.length > 0 && (
                 <div className="absolute z-10 inset-x-0 top-full bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto">
                   {dropdownOptions.map((option, index) => (
                     <div
                       key={index}
                       className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleSelect(option)}
+                      onClick={() => handleSearchSelect(option)}
                     >
                       {option}
                     </div>
@@ -419,14 +515,19 @@ import { useNavigate } from "react-router-dom";
                       : "p-4 border-b border-blue-gray-50";
                     return (
                       <tr key={testCase.id}>
-                        <td className={classes}>{testCase.id}</td>
-                        <td className={classes}>{testCase.description}</td>
-                        <td className={classes}>{testCase.date}</td>
+                        <td className={classes}>{testCase.Program}</td>
+                        <td className={classes}>{testCase.ReportTypeID}</td>
+                        <td className={classes}>{testCase.Severity}</td>
+                        <td className={classes}>{testCase.FunctionalArea_id}</td>
+                        <td className={classes}>{testCase.AssignedToEmployee_id}</td>
                         <td className={classes}>
                           <StatusChip status={testCase.status} />
                         </td>
-                        <td className={classes}>{testCase.testedBy}</td>
-                        <td className={classes}>{testCase.comments}</td>
+                        <td className={classes}>{testCase.Priority}</td>
+                        <td className={classes}>{testCase.Resolution}</td>
+                        <td className={classes}>{testCase.ReportedByEmployee_id}</td>
+                        <td className={classes}>{testCase.ReportedByDate}</td>
+                        <td className={classes}>{testCase.ResolvedByEmployee_id}</td>
                         <td className={classes}>
                           <Button
                             variant="text"
@@ -467,14 +568,19 @@ import { useNavigate } from "react-router-dom";
                       : "p-4 border-b border-blue-gray-50";
                     return (
                       <tr key={testCase.id}>
-                        <td className={classes}>{testCase.id}</td>
-                        <td className={classes}>{testCase.description}</td>
-                        <td className={classes}>{testCase.date}</td>
+                        <td className={classes}>{testCase.Program}</td>
+                        <td className={classes}>{testCase.ReportTypeID}</td>
+                        <td className={classes}>{testCase.Severity}</td>
+                        <td className={classes}>{testCase.FunctionalArea_id}</td>
+                        <td className={classes}>{testCase.AssignedToEmployee_id}</td>
                         <td className={classes}>
                           <StatusChip status={testCase.status} />
                         </td>
-                        <td className={classes}>{testCase.testedBy}</td>
-                        <td className={classes}>{testCase.comments}</td>
+                        <td className={classes}>{testCase.Priority}</td>
+                        <td className={classes}>{testCase.Resolution}</td>
+                        <td className={classes}>{testCase.ReportedByEmployee_id}</td>
+                        <td className={classes}>{testCase.ReportedByDate}</td>
+                        <td className={classes}>{testCase.ResolvedByEmployee_id}</td>
                         <td className={classes}>
                           <Button
                             variant="text"
