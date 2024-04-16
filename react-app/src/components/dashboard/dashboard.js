@@ -31,12 +31,12 @@ const Dashboard = () => {
   const [displayedTestCases, setDisplayedTestCases] = useState([]);
   const [showOptions, setShowOptions] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("Program");
-  const [selectedKey, setSelectedKey] = useState("Program")
+  const [selectedKey, setSelectedKey] = useState("Program");
 
   useEffect(() => {
     fetchBugReports();
   }, []);
-
+ 
   const fetchBugReports = async () => {
     try {
       // Fetching bug reports
@@ -53,7 +53,8 @@ const Dashboard = () => {
       }
       const employees = await employeeResponse.json();
       console.log(employees);
-  
+     
+      
       // Convert employee array to an ID-to-name map
       const employeeMap = employees.reduce((acc, employee) => {
         acc[employee.id] = employee.Name; // Assuming the employee object has 'id' and 'name' properties
@@ -228,19 +229,6 @@ const Dashboard = () => {
     "Report Date",
     "Resolved By",
   ];
-
-  // Function to group test cases by program
-  const groupTestCasesByProgram = (testCases) => {
-    const groupedTestCases = {};
-    testCases.forEach((testCase) => {
-      const Program = testCase.Program;
-      if (!groupedTestCases[Program]) {
-        groupedTestCases[Program] = [];
-      }
-      groupedTestCases[Program].push(testCase);
-    });
-    return groupedTestCases;
-  };
 
   const handleSearch = (e) => {
     const query = e.target.value.trim();
@@ -434,7 +422,7 @@ const Dashboard = () => {
                     <Button variant="text" className="p-0" onClick={() => handleEditTestCase(testCase)}>
                       <PencilIcon className="h-5 w-5" />
                     </Button>
-                    <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
+                    <Button variant="text" className="p-0" onClick={() => setShowOptions(!showOptions)}>
                       <ArrowDownTrayIcon className="h-5 w-5" />
                     </Button>
                     {showOptions && (
@@ -494,7 +482,7 @@ const Dashboard = () => {
                       <Button variant="text" className="p-0" onClick={() => handleEditTestCase(testCase)}>
                         <PencilIcon className="h-5 w-5" />
                       </Button>
-                      <Button variant="text" className="p-0" onClick={() => navigateToTestCase(testCase.id)}>
+                      <Button variant="text" className="p-0" onClick={() => setShowOptions(!showOptions)}>
                         <ArrowDownTrayIcon className="h-5 w-5" />
                       </Button>
                       {showOptions && (
