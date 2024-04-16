@@ -14,14 +14,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from bughoundapp.views import (BugReportDelete, BugReportListView,
-                               EmployeeNameListView, FormDataAPIView,
-                               LoginAPIView, RegisterAPIView, SubmitAPIView)
+from bughoundapp.views import (AddFunctionalAreaAPIView, AddProgramAPIView,
+                               BugReportDelete, BugReportListView,
+                               BugReportSearchAPIView, EmployeeNameListView,
+                               FormDataAPIView, FunctionalAreaListAPIView,
+                               LoginAPIView, ProgramListView, RegisterAPIView,
+                               SubmitAPIView, UpdateBugReportAPIView)
 from django.contrib import admin
 from django.urls import path
 
-from bughoundapp.views import SubmitAPIView
-from bughoundapp.views import LoginAPIView, RegisterAPIView, BugReportListView, FormDataAPIView, BugReportDelete, BugReportSearchAPIView, UpdateBugReportAPIView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('submit/', SubmitAPIView.as_view(), name='submit-api'),
@@ -33,4 +34,8 @@ urlpatterns = [
     path('api/employees-names/', EmployeeNameListView.as_view(), name='employee-names'),
     path('bug-reports/search/', BugReportSearchAPIView.as_view(), name='bug-report-search'),  # Add the search API URL pattern
     path('bug-reports/update/<int:pk>/', UpdateBugReportAPIView.as_view(), name='update-bug-report'),
+    path('api/program-names/', ProgramListView.as_view(), name='program-names'),
+    path('api/add-program-names/', AddProgramAPIView.as_view(), name='add-program-names'),
+    path('api/functional-area-names/', FunctionalAreaListAPIView.as_view(), name = 'functional-area-names'),
+    path('api/add-functional-area-names/', AddFunctionalAreaAPIView.as_view(), name = 'add-functional-area-names'),
 ]

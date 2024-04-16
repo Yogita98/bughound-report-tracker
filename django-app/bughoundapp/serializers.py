@@ -14,12 +14,26 @@ class ProgramSerializer(serializers.ModelSerializer):
         model = Program
         fields = '__all__'
 
+class AddProgramSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Program
+        fields = ['ProgramName']
+    def validate_ProgramName(self, value):
+        if Program.objects.filter(ProgramName=value).exists():
+            raise serializers.ValidationError("Program name already exists.")
+        return value
+    
 class FunctionalAreaSerializer(serializers.ModelSerializer):
     program = ProgramSerializer(read_only=True, many=False)
     
     class Meta:
         model = FunctionalArea
         fields = '__all__'
+        
+class AddFunctionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FunctionalArea
+        fields = ['AreaName', 'Program']
 
 class LoginSerializer(serializers.Serializer):
     Username = serializers.CharField(max_length=255)
@@ -39,8 +53,6 @@ class BugReportSerializer(serializers.ModelSerializer):
     TestedByEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), allow_null=True, default=None, required=False)
     Program = serializers.PrimaryKeyRelatedField(queryset=Program.objects.all())
     FunctionalArea = serializers.PrimaryKeyRelatedField(queryset=FunctionalArea.objects.all(), allow_null=True, default=None, required=False)
-
-    Program_name = serializers.CharField(source='Program.ProgramName', read_only=True)
     class Meta:
         model = BugReport
         fields = [

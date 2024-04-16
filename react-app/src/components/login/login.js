@@ -33,13 +33,17 @@ const Login = () => {
                 },
                 body: JSON.stringify(loginData),
             });
-
+            const data = await response.json();
+            console.log('Response data: ', data);
             if (response.ok) {
                 // If login is successful, navigate to the dashboard page
-                navigate('/dashboard');
+                if (data.Role === 'Full Access') {
+                    navigate('/adminDashboard'); // Navigate to the Admin Dashboard if full access
+                } else {
+                    navigate('/dashboard'); // Navigate to the standard dashboard if limited access
+                }
             } else {
                 // If the API returns an error (e.g., wrong username/password), set an error message
-                const data = await response.json();
                 setError(data.error || 'Invalid username or password');
             }
         } catch (error) {

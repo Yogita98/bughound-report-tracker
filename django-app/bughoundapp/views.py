@@ -2,7 +2,9 @@ from bughoundapp.models import (BugReport, Employee, EmployeeRole,
                                 FunctionalArea, Program)
 from bughoundapp.serializers import \
     BugReportSerializer  # Import your serializer
-from bughoundapp.serializers import (EmployeeNameSerializer,
+from bughoundapp.serializers import (AddFunctionalSerializer,
+                                     AddProgramSerializer,
+                                     EmployeeNameSerializer,
                                      EmployeeRegistrationSerializer,
                                      EmployeeRoleSerializer,
                                      EmployeeSerializer,
@@ -63,8 +65,9 @@ class LoginAPIView(APIView):
             password = serializer.validated_data['Password']
             try:
                 employee = Employee.objects.get(Username=username)
+                role = employee.Role.Permissions
                 if check_password(password, employee.Password):
-                    return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+                    return Response({"message": "Login successful", "Role" : role}, status=status.HTTP_200_OK)
                 else:
                     return Response({"error": "Invalid username or password"}, status=status.HTTP_401_UNAUTHORIZED)
             except Employee.DoesNotExist:
@@ -130,3 +133,31 @@ class BugReportSearchAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({"error": "No bug reports found for the given description"}, status=status.HTTP_404_NOT_FOUND)
+class ProgramListView(APIView):
+    def get(self, request):
+        programs = Program.objects.all()
+        serializer = ProgramSerializer(programs, many=True)
+        print(serializer.data)
+        return Response(serializer.data)
+    
+class AddProgramAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = AddProgramSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Program added successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class FunctionalAreaListAPIView(APIView):
+    def get(self, request):
+        functionalArea = FunctionalArea.objects.all()
+        serializer = FunctionalAreaSerializer(functionalArea, many=True)
+        print(serializer.data)
+        return Response(serializer.data)
+class AddFunctionalAreaAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = AddFunctionalSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Functional area added successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
