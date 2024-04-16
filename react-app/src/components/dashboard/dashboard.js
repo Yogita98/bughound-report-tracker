@@ -60,6 +60,32 @@ const Dashboard = () => {
         acc[employee.id] = employee.Name; // Assuming the employee object has 'id' and 'name' properties
         return acc;
       }, {});
+
+      // Fetching program names
+    const programResponse = await fetch("http://localhost:8000/api/program-names/");
+    if (!programResponse.ok) {
+      throw new Error("Network response was not ok for program names");
+    }
+    const programs = await programResponse.json();
+
+    // Convert programs array to an ID-to-name map
+    const programsMap = programs.reduce((acc, program) => {
+      acc[program.id] = program.ProgramName;
+      return acc;
+    }, {});
+
+    // Fetching functional area names
+    const functionalAreaResponse = await fetch("http://localhost:8000/api/functional-area-names/");
+    if (!functionalAreaResponse.ok) {
+      throw new Error("Network response was not ok for functional area names");
+    }
+    const functionalAreas = await functionalAreaResponse.json();
+
+    // Convert functional areas array to an ID-to-name map
+    const functionalAreasMap = functionalAreas.reduce((acc, functionalArea) => {
+      acc[functionalArea.id] = functionalArea.AreaName;
+      return acc;
+    }, {});
   
       // Replace employee IDs in the bug reports with names using the map
       const testCases = data.map(report => ({
@@ -85,8 +111,8 @@ const Dashboard = () => {
         ResolvedByEmployee_id: employeeMap[report.ResolvedByEmployee] || 'Unknown',
         TestedByDate: report.TestedByDate,
         AssignedToEmployee_id: employeeMap[report.AssignedToEmployee] || 'Unknown',
-        Program: report.Program,
-        FunctionalArea_id: report.FunctionalArea || 'Unknown',
+        Program: programsMap[report.Program] || 'Unknown',
+        FunctionalArea_id: functionalAreasMap[report.FunctionalArea] || 'Unknown',
         ReportedByEmployee_id: employeeMap[report.ReportedByEmployee] || 'Unknown',
         Severity: report.Severity,
         TreatedAsDeferred: report.TreatedAsDeferred
