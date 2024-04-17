@@ -1,5 +1,5 @@
 from bughoundapp.models import (BugReport, Employee, EmployeeRole,
-                                FunctionalArea, Program)
+                                FunctionalArea, Program, ProgramFunctionalArea)
 from bughoundapp.serializers import \
     BugReportSerializer  # Import your serializer
 from bughoundapp.serializers import (AddFunctionalSerializer,
@@ -9,6 +9,7 @@ from bughoundapp.serializers import (AddFunctionalSerializer,
                                      EmployeeRoleSerializer,
                                      EmployeeSerializer,
                                      FunctionalAreaSerializer, LoginSerializer,
+                                     ProgramFunctionalAreaSerializer,
                                      ProgramSerializer)
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import render
@@ -16,6 +17,12 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+
+class ProgramFunctionalAreasList(APIView):
+    def get(self, request, program_id):
+        areas = ProgramFunctionalArea.objects.filter(Program=program_id)
+        serializer = ProgramFunctionalAreaSerializer(areas, many=True)
+        return Response(serializer.data)
 
 class SubmitAPIView(APIView):
     def post(self, request, *args, **kwargs):

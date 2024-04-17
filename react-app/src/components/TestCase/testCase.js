@@ -18,6 +18,17 @@ const TestCase = () => {
   };
   //API - generate employees names in the dropdown
   const [employees, setEmployees] = useState([]);
+  const [programs, setPrograms] = useState([]);
+  const [functionalAreas, setFunctionalAreas] = useState([]);
+  const[selectedProgramId, setSelectedProgramId] = useState('');
+  
+  useEffect(() => {
+    // Initially fetch all programs, assuming you have an endpoint for this
+    fetch('http://localhost:8000/api/program-names/')
+        .then(response => response.json())
+        .then(data => setPrograms(data));
+}, []);
+
   useEffect(() => {
     async function fetchEmployees() {
       const response = await fetch(
@@ -30,8 +41,36 @@ const TestCase = () => {
   }, []);
   const [formData, setFormData] = useState({
      id: generateBugId(),
+     Program: '',
   });
+  
+//Handle Program Change
+const handleProgramChange =async (event) => {
+  const programId = event.target.value;
+  console.log(programId);
+  setFormData(prevFormData => ({
+    ...prevFormData,
+    Program: programId,
+    FunctionalArea: '' // Reset functional area when program changes
+}));
 
+  // Fetch the functional areas for the selected program
+  if (programId) {
+    fetch(`http://localhost:8000/api/program-functional-area-names/${programId}/`)
+        .then(response => response.json())
+        .then(data => setFunctionalAreas(data))
+        .catch(error => console.error('Error fetching functional areas:', error));
+} else {
+    setFunctionalAreas([]);
+}
+};
+const handleFunctionalAreaChange = (event) => {
+  const functionalAreaId = event.target.value;
+  setFormData(prevFormData => ({
+      ...prevFormData,
+      FunctionalArea: functionalAreaId
+  }));
+};
   const severityOptions = [
     { name: "Minor", id: "1" },
     { name: "Serious", id: "2" },
@@ -93,6 +132,7 @@ const TestCase = () => {
     { name: "Program 4", id: "4" },
     { name: "Program 5", id: "5" },
   ];
+
   // Handle changes in form inputs
   const handleChange = (event) => {
     console.log(event.target);
@@ -177,13 +217,13 @@ const TestCase = () => {
           <select
             name="Program"
             value={formData.Program}
-            onChange={handleChange}
+            onChange={handleProgramChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select Program</option>
-            {programOptions.map((programOptions) => (
-              <option key={programOptions.id} value={programOptions.id}>
-                {programOptions.name}
+            {programs.map((program) => (
+              <option key={program.id} value={program.id}>
+                {program.ProgramName}
               </option>
             ))}
           </select>
@@ -196,16 +236,16 @@ const TestCase = () => {
           <select
             name="FunctionalArea"
             value={formData.FunctionalArea}
-            onChange={handleChange}
+            onChange={handleFunctionalAreaChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select Functional Area</option>
-            {functionalAreaOptions.map((functionalAreaOptions) => (
+            {functionalAreas.map(area => (
               <option
-                key={functionalAreaOptions.id}
-                value={functionalAreaOptions.id}
+                key={area.FunctionalArea}
+                value={area.FunctionalArea}
               >
-                {functionalAreaOptions.name}
+                {area.AreaName}
               </option>
             ))}
           </select>

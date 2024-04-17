@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.hashers import make_password
+from django.db import models
+
 
 class EmployeeRole(models.Model):
     RoleName = models.CharField(max_length=255, unique=False)
@@ -56,3 +57,13 @@ class Attachment(models.Model):
     bugreport = models.ForeignKey(BugReport, on_delete=models.CASCADE)
     FileType = models.CharField(max_length=255, choices=FILE_TYPE_CHOICES)
     FilePath = models.FileField(upload_to='media/')
+
+class ProgramFunctionalArea(models.Model):
+    Program =models.IntegerField(primary_key=True)
+    ProgramName = models.CharField(max_length=255)
+    FunctionalArea = models.IntegerField()
+    AreaName = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False 
+        db_table = 'ProgramsWithFunctionalAreas' 

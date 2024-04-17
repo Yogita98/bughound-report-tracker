@@ -1,8 +1,13 @@
 from rest_framework import serializers
 
 from .models import (Attachment, BugReport, Employee, EmployeeRole,
-                     FunctionalArea, Program)
+                     FunctionalArea, Program, ProgramFunctionalArea)
 
+
+class ProgramFunctionalAreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProgramFunctionalArea
+        fields = ['Program', 'ProgramName', 'FunctionalArea', 'AreaName']
 
 class EmployeeRoleSerializer(serializers.ModelSerializer):
     class Meta:
