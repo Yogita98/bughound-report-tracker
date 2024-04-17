@@ -225,7 +225,7 @@ import { useNavigate } from "react-router-dom";
   
     const viewTestCase = (testCase) => {
       console.log(testCase);
-      navigate(`/viewTestForm`, { state: { ...testCase } });
+      navigate(`/viewTestForm`, { state: { ...testCase, dashboardType: 'admin' } });
     };
   
    
