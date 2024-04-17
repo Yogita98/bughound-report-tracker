@@ -219,14 +219,14 @@ import { useNavigate } from "react-router-dom";
       const handleNewFunctionalArea = () => {
         navigate("/addNewFunctionalArea");
       };
-    const handleEditTestCase = () => {
-      navigate("/editTestForm");
-    };
-  
-    const viewTestCase = (testCase) => {
-      console.log(testCase);
-      navigate(`/viewTestForm`, { state: { ...testCase, dashboardType: 'admin' } });
-    };
+      const handleEditTestCase = (testCase) => {
+        navigate("/editTestForm", { state: { details:testCase, dashboardType: 'admin' } });
+      };
+    
+      const viewTestCase = (testCase) => {
+        console.log(testCase);
+        navigate(`/viewTestForm`, { state: { details:testCase, dashboardType: 'admin' } });
+      };
   
    
     //Delete Bug report particular to ID
@@ -539,7 +539,7 @@ import { useNavigate } from "react-router-dom";
                           <Button
                             variant="text"
                             className="p-0"
-                            onClick={handleEditTestCase}
+                            onClick={() => handleEditTestCase(testCase)}
                           >
                             <PencilIcon className="h-5 w-5" />
                           </Button>
@@ -592,7 +592,7 @@ import { useNavigate } from "react-router-dom";
                           <Button
                             variant="text"
                             className="p-0"
-                            onClick={handleEditTestCase}
+                            onClick={() => handleEditTestCase(testCase)}
                           >
                             <PencilIcon className="h-5 w-5" />
                           </Button>

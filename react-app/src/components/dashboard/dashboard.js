@@ -131,12 +131,12 @@ const Dashboard = () => {
   };
 
   const handleEditTestCase = (testCase) => {
-    navigate("/editTestForm", { state: { ...testCase, dashboardType: 'normal' } });
+    navigate("/editTestForm", { state: { details:testCase, dashboardType: 'normal' } });
   };
 
   const viewTestCase = (testCase) => {
     console.log(testCase);
-    navigate(`/viewTestForm`, { state: { ...testCase, dashboardType: 'normal' } });
+    navigate(`/viewTestForm`, { state: { details:testCase, dashboardType: 'normal' } });
   };
 
   const navigateToTestCase = (testCaseId) => {
