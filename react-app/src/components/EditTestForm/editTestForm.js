@@ -11,6 +11,10 @@ const EditTestForm = () => {
   // Hardcoded test case details for demonstration
   const [testCase, setTestCase] = useState(testCaseDetails);
   const [employees, setEmployees] = useState([]);
+  const [programs, setPrograms] = useState([]);
+  const [functionalAreas, setFunctionalAreas] = useState([]);
+  const[selectedProgramId, setSelectedProgramId] = useState('');
+  
     useEffect(() => {
         async function fetchEmployees() {
             const response = await fetch('http://localhost:8000/api/employees-names/');
@@ -19,7 +23,12 @@ const EditTestForm = () => {
         }
         fetchEmployees();
     }, []);
-
+    useEffect(() => {
+      // Initially fetch all programs, assuming you have an endpoint for this
+      fetch('http://localhost:8000/api/program-names/')
+          .then(response => response.json())
+          .then(data => setPrograms(data));
+  }, []);
     const reportTypeOptions = [
       { name: "Coding Error", id: "1" },
       { name: "Design Error", id: "2" },
@@ -109,7 +118,32 @@ const EditTestForm = () => {
     }
     console.log(testCase);
   };
-
+//Handle Program Change
+const handleProgramChange =async (event) => {
+  const programId = event.target.value;
+  console.log(programId);
+  setTestCase(prevTestCase => ({
+    ...prevTestCase,
+    Program: programId,
+    FunctionalArea: '' // Reset functional area when program changes
+}));
+// Fetch the functional areas for the selected program
+if (programId) {
+  fetch(`http://localhost:8000/api/program-functional-area-names/${programId}/`)
+      .then(response => response.json())
+      .then(data => setFunctionalAreas(data))
+      .catch(error => console.error('Error fetching functional areas:', error));
+} else {
+  setFunctionalAreas([]);
+}
+};
+const handleFunctionalAreaChange = (event) => {
+  const functionalAreaId = event.target.value;
+  setTestCase(prevTestCase => ({
+      ...prevTestCase,
+      FunctionalArea: functionalAreaId
+  }));
+};
   // Simulated submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -145,7 +179,7 @@ const EditTestForm = () => {
       TestedByDate: testCase.TestedByDate,
       AssignedToEmployee: fetchEmployeeId(testCase.AssignedToEmployee_id),
       Program: testCase.Program,
-      FunctionalArea: testCase.FunctionalArea_id,
+      FunctionalArea: testCase.FunctionalArea,
       ReportedByEmployee: fetchEmployeeId(testCase.ReportedByEmployee_id),
       Severity: testCase.Severity,
       TreatedAsDeferred: testCase.TreatedAsDeferred
@@ -196,14 +230,14 @@ const EditTestForm = () => {
             Program:
           </label>
           <select
-            name="Program_id"
+            name="Program"
             value={testCase.Program}
-            onChange={handleChange}
+            onChange={handleProgramChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">{testCase.Program}</option>
-            {programOptions.map(programOptions => (
-              <option key={programOptions.id} value={programOptions.name}>{programOptions.name}</option>
+            {programs.map(program => (
+              <option key={program.id} value={program.id}>{program.ProgramName}</option>
             ))}
           </select>
         </div>
@@ -229,14 +263,14 @@ const EditTestForm = () => {
             Functional Area:
           </label>
           <select
-            name="FunctionalArea_id"
-            value={testCase.FunctionalArea_id}
-            onChange={handleChange}
+            name="FunctionalArea"
+            value={testCase.FunctionalArea}
+            onChange={handleFunctionalAreaChange}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
-            <option value="">{testCase.FunctionalArea_id}</option>
-            {functionalAreaOptions.map(functionalAreaOptions => (
-              <option key={functionalAreaOptions.id} value={functionalAreaOptions.id}>{functionalAreaOptions.name}</option>
+            <option value="">{testCase.FunctionalArea}</option>
+            {functionalAreas.map(area => (
+              <option key={area.FunctionalArea} value={area.FunctionalArea}>{area.AreaName}</option>
             ))}
           </select>
         </div>
