@@ -176,6 +176,12 @@ const EditTestForm = () => {
     }
   };
 
+  const handleClose = () => {
+    console.log("Cancel button clicked!");
+    // Determine where to navigate based on the dashboard type from state
+      const destination = location.state.dashboardType === 'admin' ? '/adminDashboard' : '/dashboard';
+      navigate(destination);
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -501,7 +507,7 @@ const EditTestForm = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate(-1)}
+            onClick={handleClose}
             className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Cancel

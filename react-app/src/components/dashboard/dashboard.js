@@ -131,12 +131,12 @@ const Dashboard = () => {
   };
 
   const handleEditTestCase = (testCase) => {
-    navigate("/editTestForm", { state: { ...testCase } });
+    navigate("/editTestForm", { state: { ...testCase, dashboardType: 'normal' } });
   };
 
   const viewTestCase = (testCase) => {
     console.log(testCase);
-    navigate(`/viewTestForm`, { state: { ...testCase } });
+    navigate(`/viewTestForm`, { state: { ...testCase, dashboardType: 'normal' } });
   };
 
   const navigateToTestCase = (testCaseId) => {
@@ -363,8 +363,8 @@ const Dashboard = () => {
             </Button>
           </div>
         </div>
-        {/* Feedback button and dropdown */}
         <div className="relative mb-3 md:w-96 flex items-centre">
+          {/* Feedback button and dropdown */}
           <div className="mr-2">
             <Button className="px-3 py-2 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
                     style={{ minWidth: "177px" }} // Set a fixed width here
@@ -403,7 +403,10 @@ const Dashboard = () => {
             {openSearchDropdown && dropdownOptions.length > 0 && (
               <div className="absolute z-10 inset-x-0 top-full bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto">
                 {dropdownOptions.map((option, index) => (
-                  <div key={index} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => handleSearchSelect(option)}>
+                  <div 
+                    key={index} 
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-100" 
+                    onClick={() => handleSearchSelect(option)}>
                     {option}
                   </div>
                 ))}
@@ -411,7 +414,10 @@ const Dashboard = () => {
             )}
             <div className="absolute inset-y-0 right-0 flex items-center pl-2">
               <Button variant="text" className="p-0 z-10">
-                <MagnifyingGlassIcon className="h-5 w-5 cursor-pointer" aria-hidden="true" onClick={handleSearchButtonClick}/>
+                <MagnifyingGlassIcon 
+                  className="h-5 w-5 cursor-pointer" 
+                  aria-hidden="true" 
+                  onClick={handleSearchButtonClick}/>
               </Button>
             </div>
           </div>
@@ -424,9 +430,15 @@ const Dashboard = () => {
           <thead>
             <tr>
               {tableHead.map((head, index) => (
-                <th key={head} className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50">
-                  <Typography variant="small" color="blue-gray" className="flex items-center justify-between gap-2 font-normal leading-none opacity-70">
-                    {head} {index !== tableHead.length - 1 && <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />}
+                <th key={head} 
+                  className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50">
+                  <Typography   
+                    variant="small" 
+                    color="blue-gray" 
+                    className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
+                  >
+                    {head} 
+                    {index !== tableHead.length - 1 && <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />}
                   </Typography>
                 </th>
               ))}
