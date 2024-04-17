@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const EditTestForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const testCaseDetails = location.state;
+  const testCaseDetails = location.state.details;
   console.log(testCaseDetails);
 
   // Hardcoded test case details for demonstration

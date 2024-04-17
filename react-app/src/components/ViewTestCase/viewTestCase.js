@@ -1,18 +1,17 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 const ViewTestCase = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const testCaseDetails = location.state;
+    const testCaseDetails = location.state.details;
     const destination = location.state.dashboardType === 'admin' ? '/adminDashboard' : '/dashboard';
 
     // Function to handle the edit button click
     const handleEdit = () => {
         // Navigate to the edit test case page passing the test case details
-        navigate(`/editTestForm`, { state: { testCaseDetails, dashboardType: destination  }});
+        navigate(`/editTestForm`, { state: { details:testCaseDetails, dashboardType: destination  }});
     };
 
     const handleClose = () => {
