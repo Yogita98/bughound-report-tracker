@@ -18,13 +18,16 @@ from bughoundapp.views import (AddFunctionalAreaAPIView, AddProgramAPIView,
                                BugReportDelete, BugReportListView,
                                BugReportSearchAPIView, EmployeeNameListView,
                                FormDataAPIView, FunctionalAreaListAPIView,
-                               LoginAPIView, ProgramFunctionalAreasList,
-                               ProgramListView, RegisterAPIView, SubmitAPIView,
-                               UpdateBugReportAPIView)
+                               LoginAPIView, ProgramListView, RegisterAPIView,
+                               SubmitAPIView, UpdateBugReportAPIView, ExampleView)
 from django.contrib import admin
 from django.urls import path
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+
 
 urlpatterns = [
+    path('test/', ExampleView.as_view(), name='test-auth'),
     path("admin/", admin.site.urls),
     path('submit/', SubmitAPIView.as_view(), name='submit-api'),
     path('login/', LoginAPIView.as_view(), name='login'),
@@ -39,5 +42,6 @@ urlpatterns = [
     path('api/add-program-names/', AddProgramAPIView.as_view(), name='add-program-names'),
     path('api/functional-area-names/', FunctionalAreaListAPIView.as_view(), name = 'functional-area-names'),
     path('api/add-functional-area-names/', AddFunctionalAreaAPIView.as_view(), name = 'add-functional-area-names'),
-    path('api/program-functional-area-names/<int:program_id>/', ProgramFunctionalAreasList.as_view(), name = 'program-functional-area-names'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

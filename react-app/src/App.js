@@ -10,6 +10,7 @@ import TestCase from "./components/TestCase/testCase";
 import ViewTestCase from "./components/ViewTestCase/viewTestCase";
 import Dashboard from "./components/dashboard/dashboard";
 import Login from "./components/login/login";
+import TestLogin from "./login"
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/addNewEmployee" element={<NewEmployee />} />
             <Route path="/addNewFunctionalArea" element={<NewFunctionalArea />} />
             <Route path="/addNewProgram" element={<NewProgram />} />
+            <Route path="/test" element={<TestLogin />}/>
           </Routes>
         </Router>
       </div>

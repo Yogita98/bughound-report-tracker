@@ -39,8 +39,15 @@ const Dashboard = () => {
  
   const fetchBugReports = async () => {
     try {
+      const token = localStorage.getItem('access-token')
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
       // Fetching bug reports
-      const response = await fetch("http://localhost:8000/bug-reports/");
+      const response = await fetch("http://localhost:8000/bug-reports/", {
+        headers
+      });
       if (!response.ok) {
         throw new Error("Network response was not ok for bug reports");
       }
@@ -129,6 +136,12 @@ const Dashboard = () => {
   const handleCreateTestCase = () => {
     navigate("/createTestForm");
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('access-token');
+    localStorage.removeItem('refresh-token');
+    navigate('/')
+  }
 
   const handleEditTestCase = (testCase) => {
     navigate("/editTestForm", { state: { details:testCase, dashboardType: 'normal' } });
@@ -360,6 +373,12 @@ const Dashboard = () => {
             <Button variant="outlined" size="sm" color="gray" onClick={handleCreateTestCase}>
               <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
               Add New Test Case
+            </Button>
+          </div>
+          <div className="flex shrink-0 flex-col gap-2 sm:">
+            <Button variant="outlined" size="sm" color="gray" onClick={handleLogout}>
+              <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
+              logout
             </Button>
           </div>
         </div>

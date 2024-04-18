@@ -32,11 +32,12 @@ const Register = () => {
         const roleNumericValue = roleMappings[role] || null;
 
         const registrationData = {
-            Name: employeeName,
-            Username: username,
-            Password: password,
-            ContactInfo: email,
-            Role: roleNumericValue, // Make sure this matches what your backend expects
+            name: employeeName,
+            username: username,
+            password: password,
+            // contact_info: email,
+            email: email,
+            role: role, // Make sure this matches what your backend expects
         };
 
 
@@ -52,6 +53,17 @@ const Register = () => {
             });
 
             if (response.ok) {
+                const setToken = await fetch('http://localhost:8000/login/', { // Update the URL to your API endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(registrationData),
+            })
+                const tokenData = await setToken.json();
+                // console.log(response)
+                localStorage.setItem('access-token', tokenData.access)
+                localStorage.setItem('refresh-token', tokenData.refresh)
                 navigate('/dashboard'); // Navigate to dashboard or login page upon successful registration
             } else {
                 const errorData = await response.json();

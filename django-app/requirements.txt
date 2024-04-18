@@ -2,3 +2,5 @@ django
 django-cors-headers
 mysqlclient
 djangorestframework
+djangorestframework-simplejwt
+# rest_framework_simplejwt

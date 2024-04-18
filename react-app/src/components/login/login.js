@@ -20,8 +20,9 @@ const Login = () => {
         e.preventDefault();
         // Construct the login data
         const loginData = {
-            Username: username,
-            Password: password,
+            // email: email,
+            password: password,
+            username: username
         };
 
         // Send a POST request to the login API
@@ -36,6 +37,8 @@ const Login = () => {
             const data = await response.json();
             console.log('Response data: ', data);
             if (response.ok) {
+                localStorage.setItem('access-token', data.access)
+                localStorage.setItem('refresh-token', data.refresh)
                 // If login is successful, navigate to the dashboard page
                 if (data.Role === 'Full Access') {
                     navigate('/adminDashboard'); // Navigate to the Admin Dashboard if full access
@@ -43,7 +46,7 @@ const Login = () => {
                     navigate('/dashboard'); // Navigate to the standard dashboard if limited access
                 }
             } else {
-                // If the API returns an error (e.g., wrong username/password), set an error message
+                // If the API returns an error (e.g., wrong email/password), set an error message
                 setError(data.error || 'Invalid username or password');
             }
         } catch (error) {
@@ -64,7 +67,7 @@ const Login = () => {
             <h2 className="text-2xl font-semibold mb-6">Login</h2>
             <form onSubmit={handleSubmit} className="w-full max-w-xs">
                 <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
                         Username:
                     </label>
                     <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" value={username} onChange={handleUsernameChange} />

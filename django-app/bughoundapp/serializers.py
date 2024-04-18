@@ -1,18 +1,18 @@
 from rest_framework import serializers
 
-from .models import (Attachment, BugReport, Employee, EmployeeRole,
+from .models import (Attachment, BugReport, Employee,
                      FunctionalArea, Program, ProgramFunctionalArea)
 
 
-class ProgramFunctionalAreaSerializer(serializers.ModelSerializer):
+# class ProgramFunctionalAreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProgramFunctionalArea
         fields = ['Program', 'ProgramName', 'FunctionalArea', 'AreaName']
 
 class EmployeeRoleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EmployeeRole
-        fields = '__all__'
+#     class Meta:
+#         model = EmployeeRole
+#         fields = '__all__'
 
 class ProgramSerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,7 +45,7 @@ class LoginSerializer(serializers.Serializer):
     Password = serializers.CharField(max_length=255)
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    role = EmployeeRoleSerializer(read_only=True, many=False)
+    # role = EmployeeRoleSerializer(read_only=True, many=False)
     
     class Meta:
         model = Employee
@@ -95,22 +95,24 @@ class AttachmentSerializer(serializers.ModelSerializer):
 class EmployeeNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['Name', 'id']
+        fields = ['name', 'id']
 
 class EmployeeRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
-        fields = ['Name', 'Username', 'Password', 'ContactInfo', 'Role']
+        fields = '__all__'
+        # fields = ['Name', 'Username', 'Password', 'ContactInfo', 'Role']
         extra_kwargs = {
-            'Password': {'write_only': True}
+            'password': {'write_only': True}
         }
 
     def create(self, validated_data):
         employee = Employee.objects.create(
-            Name=validated_data['Name'],
-            Username=validated_data['Username'],
-            Password=validated_data['Password'],
-            ContactInfo=validated_data['ContactInfo'],
-            Role=validated_data['Role']
+            name=validated_data['name'],
+            username=validated_data['username'],
+            password=validated_data['password'],
+            email = validated_data['email'],
+            # ContactInfo=validated_data['ContactInfo'],
+            role=validated_data['role']
         )
         return employee
