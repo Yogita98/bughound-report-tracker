@@ -17,6 +17,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
@@ -51,6 +52,7 @@ class LoginAPIView(APIView):
 
 
 class ProgramFunctionalAreasList(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, program_id):
         areas = ProgramFunctionalArea.objects.filter(Program=program_id)
         serializer = ProgramFunctionalAreaSerializer(areas, many=True)
@@ -172,6 +174,7 @@ class BugReportDelete(APIView):
             return Response({'error': 'BugReport not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 class EmployeeNameListView(APIView):
+    # authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         print(request.data)

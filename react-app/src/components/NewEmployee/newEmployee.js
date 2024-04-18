@@ -44,11 +44,14 @@ const NewEmployee = () => {
         console.log(JSON.stringify(registrationData))
 
         try {
+            const token = localStorage.getItem('access-token')
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
             const response = await fetch('http://localhost:8000/register/', { // Adjust your API endpoint accordingly
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 body: JSON.stringify(registrationData),
             });
 

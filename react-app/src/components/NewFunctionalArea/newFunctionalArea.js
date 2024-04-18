@@ -11,14 +11,20 @@ const NewFunctionalArea = () => {
     fetchPrograms();
   }, []);
 
+  const token = localStorage.getItem('access-token')
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + token
+  }
+
   const fetchFunctionalAreaNames = async () => {
-    const response = await fetch('http://localhost:8000/api/functional-area-names/');
+    const response = await fetch('http://localhost:8000/api/functional-area-names/', {headers});
     const data = await response.json();
     setFunctionalAreas(data);
   };
 
   const fetchPrograms = async () => {
-    const response = await fetch('http://localhost:8000/api/program-names/');
+    const response = await fetch('http://localhost:8000/api/program-names/', {headers});
     const data = await response.json();
     setPrograms(data);
     if (data.length > 0) {
@@ -33,9 +39,7 @@ const NewFunctionalArea = () => {
     }
     const response = await fetch('http://localhost:8000/api/add-functional-area-names/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         AreaName: newFunctionalAreaName,
         Program: selectedProgramId, // Send the selected program ID

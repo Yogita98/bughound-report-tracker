@@ -56,6 +56,8 @@ from django.db import models
 
 class Program(models.Model):
     ProgramName = models.CharField(max_length=255, unique=True)
+    Resolution = models.CharField(max_length=100, default='1')
+    ResolutionVersion = models.CharField(max_length=100, default='1')
 
 class FunctionalArea(models.Model):
     AreaName = models.CharField(max_length=255)

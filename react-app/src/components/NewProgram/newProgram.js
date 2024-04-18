@@ -7,11 +7,15 @@ const NewProgram = () => {
   useEffect(() => {
     fetchPrograms();
   }, []);
-
+  const token = localStorage.getItem('access-token')
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + token
+  }
   const fetchPrograms = async () => {
     // Fetch the existing programs
     // Dummy API call simulation
-    const response = await fetch('http://localhost:8000/api/program-names/');
+    const response = await fetch('http://localhost:8000/api/program-names/', { headers });
     const data = await response.json();
     setPrograms(data);
   };
@@ -20,9 +24,7 @@ const NewProgram = () => {
     // Add new program
     const response = await fetch('http://localhost:8000/api/add-program-names/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({ ProgramName: newProgramName }),
     });
 

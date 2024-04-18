@@ -44,20 +44,21 @@ const Register = () => {
         console.log(JSON.stringify(registrationData))
 
         try {
+            const token = localStorage.getItem('access-token')
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
             const response = await fetch('http://localhost:8000/register/', { // Adjust your API endpoint accordingly
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 body: JSON.stringify(registrationData),
             });
 
             if (response.ok) {
                 const setToken = await fetch('http://localhost:8000/login/', { // Update the URL to your API endpoint
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 body: JSON.stringify(registrationData),
             })
                 const tokenData = await setToken.json();

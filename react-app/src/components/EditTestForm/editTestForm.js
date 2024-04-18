@@ -14,10 +14,15 @@ const EditTestForm = () => {
   const [programs, setPrograms] = useState([]);
   const [functionalAreas, setFunctionalAreas] = useState([]);
   const[selectedProgramId, setSelectedProgramId] = useState('');
+  const token = localStorage.getItem('access-token')
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + token
+  }
   
     useEffect(() => {
         async function fetchEmployees() {
-            const response = await fetch('http://localhost:8000/api/employees-names/');
+            const response = await fetch('http://localhost:8000/api/employees-names/', { headers });
             const data = await response.json();
             setEmployees(data);
         }
@@ -25,7 +30,7 @@ const EditTestForm = () => {
     }, []);
     useEffect(() => {
       // Initially fetch all programs, assuming you have an endpoint for this
-      fetch('http://localhost:8000/api/program-names/')
+      fetch('http://localhost:8000/api/program-names/', { headers })
           .then(response => response.json())
           .then(data => setPrograms(data));
   }, []);
@@ -129,7 +134,7 @@ const handleProgramChange =async (event) => {
 }));
 // Fetch the functional areas for the selected program
 if (programId) {
-  fetch(`http://localhost:8000/api/program-functional-area-names/${programId}/`)
+  fetch(`http://localhost:8000/api/program-functional-area-names/${programId}/`, {headers})
       .then(response => response.json())
       .then(data => setFunctionalAreas(data))
       .catch(error => console.error('Error fetching functional areas:', error));
@@ -189,9 +194,7 @@ const handleFunctionalAreaChange = (event) => {
       console.log("Updated Test Case:", testCase);
       const response = await fetch(`http://localhost:8000/bug-reports/update/${testCase.id}/`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(modifiedTestCase)
       });
       if (response.ok) {

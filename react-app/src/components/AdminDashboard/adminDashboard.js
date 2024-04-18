@@ -32,6 +32,11 @@ import { useNavigate } from "react-router-dom";
     const [showOptions, setShowOptions] = useState(false);
     const [selectedColumn, setSelectedColumn] = useState("Choose Search Filter");
     const [selectedKey, setSelectedKey] = useState([])
+    const token = localStorage.getItem('access-token')
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + token
+  }
   
     useEffect(() => {
       fetchBugReports();
@@ -40,7 +45,14 @@ import { useNavigate } from "react-router-dom";
     const fetchBugReports = async () => {
       try {
         // Fetching bug reports
-        const response = await fetch("http://localhost:8000/bug-reports/");
+        const token = localStorage.getItem('access-token')
+        const headers = {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        }
+        const response = await fetch("http://localhost:8000/bug-reports/", {
+          headers
+        });
         if (!response.ok) {
           throw new Error("Network response was not ok for bug reports");
         }
@@ -48,7 +60,7 @@ import { useNavigate } from "react-router-dom";
   
         // Fetching employee names
         const employeeResponse = await fetch(
-          "http://localhost:8000/api/employees-names/"
+          "http://localhost:8000/api/employees-names/", { headers }
         );
         if (!employeeResponse.ok) {
           throw new Error("Network response was not ok for employee names");
@@ -63,7 +75,7 @@ import { useNavigate } from "react-router-dom";
         }, {});
 
         // Fetching program names
-        const programResponse = await fetch("http://localhost:8000/api/program-names/");
+        const programResponse = await fetch("http://localhost:8000/api/program-names/", { headers });
           if (!programResponse.ok) {
             throw new Error("Network response was not ok for program names");
         }
@@ -76,7 +88,7 @@ import { useNavigate } from "react-router-dom";
         }, {});
 
         // Fetching functional area names
-        const functionalAreaResponse = await fetch("http://localhost:8000/api/functional-area-names/");
+        const functionalAreaResponse = await fetch("http://localhost:8000/api/functional-area-names/", { headers });
           if (!functionalAreaResponse.ok) {
           throw new Error("Network response was not ok for functional area names");
         }
@@ -236,6 +248,7 @@ import { useNavigate } from "react-router-dom";
           `http://localhost:8000/bug-reports/${testCaseId}/`,
           {
             method: "DELETE",
+            headers
           }
         );
   

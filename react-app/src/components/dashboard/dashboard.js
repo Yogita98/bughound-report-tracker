@@ -32,6 +32,11 @@ const Dashboard = () => {
   const [showOptions, setShowOptions] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("Choose Search Filter");
   const [selectedKey, setSelectedKey] = useState([])
+  const token = localStorage.getItem('access-token')
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + token
+  }
 
   useEffect(() => {
     fetchBugReports();
@@ -39,11 +44,7 @@ const Dashboard = () => {
  
   const fetchBugReports = async () => {
     try {
-      const token = localStorage.getItem('access-token')
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      }
+      
       // Fetching bug reports
       const response = await fetch("http://localhost:8000/bug-reports/", {
         headers
@@ -54,7 +55,10 @@ const Dashboard = () => {
       const data = await response.json();
   
       // Fetching employee names
-      const employeeResponse = await fetch("http://localhost:8000/api/employees-names/");
+      console.log('Token being sent:', 'Bearer ' + token);
+      const employeeResponse = await fetch("http://localhost:8000/api/employees-names/", {
+        headers
+      });
       if (!employeeResponse.ok) {
         throw new Error("Network response was not ok for employee names");
       }
@@ -69,7 +73,7 @@ const Dashboard = () => {
       }, {});
 
       // Fetching program names
-    const programResponse = await fetch("http://localhost:8000/api/program-names/");
+    const programResponse = await fetch("http://localhost:8000/api/program-names/", { headers });
     if (!programResponse.ok) {
       throw new Error("Network response was not ok for program names");
     }
@@ -82,7 +86,7 @@ const Dashboard = () => {
     }, {});
 
     // Fetching functional area names
-    const functionalAreaResponse = await fetch("http://localhost:8000/api/functional-area-names/");
+    const functionalAreaResponse = await fetch("http://localhost:8000/api/functional-area-names/", { headers });
     if (!functionalAreaResponse.ok) {
       throw new Error("Network response was not ok for functional area names");
     }
@@ -160,6 +164,7 @@ const Dashboard = () => {
     try {
       const response = await fetch(`http://localhost:8000/bug-reports/${testCaseId}/`, {
         method: 'DELETE',
+        headers
       });
 
       if (response.ok) {
