@@ -4,12 +4,12 @@ from .models import (Attachment, BugReport, Employee,
                      FunctionalArea, Program, ProgramFunctionalArea)
 
 
-# class ProgramFunctionalAreaSerializer(serializers.ModelSerializer):
+class ProgramFunctionalAreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProgramFunctionalArea
         fields = ['Program', 'ProgramName', 'FunctionalArea', 'AreaName']
 
-class EmployeeRoleSerializer(serializers.ModelSerializer):
+#class EmployeeRoleSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = EmployeeRole
 #         fields = '__all__'

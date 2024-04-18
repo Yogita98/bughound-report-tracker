@@ -2,6 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils import timezone, dateformat
+from django.db import models
 
 # class MyUserManager(BaseUserManager):
 #     def create_user(self, email, password=None):
