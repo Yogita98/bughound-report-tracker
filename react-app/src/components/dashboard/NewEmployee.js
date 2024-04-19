@@ -1,3 +1,4 @@
+import { saveAs } from 'file-saver';
 import React, { useEffect, useState } from 'react';
 
 const NewEmployee = () => {
@@ -112,10 +113,24 @@ const NewEmployee = () => {
   const handleCancel = () => {
     setEditEmployeeId(null);
   };
+  const handleDownload = () => {
+    const timestamp = new Date().toISOString();
+    let fileContent = `Export Timestamp: ${timestamp}\n\n`;
+    fileContent += "ID, Name, Username, Email, Role\n";
+
+    employees.forEach(employee => {
+      fileContent += `${employee.id}, ${employee.name}, ${employee.username}, ${employee.email}, ${employee.role}\n`;
+    });
+
+    const blob = new Blob([fileContent], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, `Employees_${timestamp}.txt`);
+  };
+
 
   return (
     <div className="p-5 m-5 bg-white shadow-lg rounded-lg">
       <h1 className="text-2xl font-bold mb-4">Manage Employees</h1>
+     
       {showAddForm ? (
         <div className="mb-4">
           <input type="text" name="name" placeholder="Enter Name" value={newEmployee.name} onChange={(e) => setNewEmployee({...newEmployee, name: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
@@ -128,8 +143,14 @@ const NewEmployee = () => {
           <button onClick={() => setShowAddForm(false)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2">Cancel</button>
         </div>
       ) : (
+        <div class="flex space-x-3 ">
         <button onClick={() => setShowAddForm(true)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add New Employee</button>
+        <button onClick={handleDownload} className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        Export Employees
+      </button>
+      </div>
       )}
+    
       <div className="mt-4">
         <table className="min-w-full table-auto">
           <thead className="bg-gray-50">

@@ -110,6 +110,39 @@ const NewFunctionalArea = () => {
     setEditingId(null);
   };
 
+  const downloadAreaXML = (area) => {
+    // Get the current timestamp
+    const currentTime = new Date().toISOString();
+  
+    // Construct the XML content including the timestamp
+    const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+      <FunctionalArea>
+        <AreaID>${area.id}</AreaID>
+        <AreaName>${area.AreaName}</AreaName>
+        <Program>${area.ProgramName}</Program>
+        <Timestamp>${currentTime}</Timestamp>
+      </FunctionalArea>
+    `.trim(); // Trim any leading or trailing whitespace
+  
+    // Create a Blob with the XML content
+    const blob = new Blob([xmlContent], { type: "application/xml" });
+  
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(blob);
+  
+    // Create a link element and trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = 'functional_area_details.xml';
+    link.click();
+  
+    // Revoke the URL to release resources
+    URL.revokeObjectURL(url);
+  };
+  
+  
+    
+
   return (
     <div className="p-5 m-5 bg-white shadow-lg rounded-lg">
       <h1 className="text-2xl font-bold mb-4">Manage Functional Areas</h1>
@@ -209,14 +242,28 @@ const NewFunctionalArea = () => {
                       >
                         Cancel
                       </button>
+                      <button
+                        onClick={() => downloadAreaXML(area)}
+                        className="text-green-600 hover:text-green-900 px-4"
+                      >
+                        Download
+                      </button>
                     </>
                   ) : (
+                    <>
                     <button
                       onClick={() => startEdit(area)}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
                       Edit
                     </button>
+                    <button
+                      onClick={() => downloadAreaXML(area)}
+                      className="text-green-600 hover:text-green-900"
+                    >
+                      Download
+                    </button>
+                    </>
                   )}
                 </td>
               </tr>

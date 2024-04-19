@@ -1,8 +1,8 @@
+import { saveAs } from 'file-saver';
 import React, { useEffect, useState } from 'react';
 
 const EmployeeView = () => {
   const [employees, setEmployees] = useState([]);
-  
   const [editEmployeeId, setEditEmployeeId] = useState(null);
   const [editFormData, setEditFormData] = useState({
     name: '',
@@ -11,25 +11,22 @@ const EmployeeView = () => {
     role: ''
   });
 
-  const token = localStorage.getItem('access-token')
+  const token = localStorage.getItem('access-token');
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + token
-  }
+  };
 
   useEffect(() => {
     fetchEmployees();
   }, []);
 
   const fetchEmployees = async () => {
-    const response = await fetch('http://localhost:8000/api/employees-names/', {
-      headers
-    });
+    const response = await fetch('http://localhost:8000/api/employees-names/', { headers });
     const data = await response.json();
     setEmployees(data);
   };
 
-  
   const handleEditClick = (employee) => {
     setEditEmployeeId(employee.id);
     setEditFormData({
@@ -55,8 +52,8 @@ const EmployeeView = () => {
       body: JSON.stringify(editFormData)
     });
     if (response.ok) {
-      setEditEmployeeId(null); // Exit edit mode
-      fetchEmployees(); // Refresh the list
+      setEditEmployeeId(null);
+      fetchEmployees();
     } else {
       alert('Failed to save changes');
     }
@@ -66,9 +63,25 @@ const EmployeeView = () => {
     setEditEmployeeId(null);
   };
 
+  const handleDownload = () => {
+    const timestamp = new Date().toISOString();
+    let fileContent = `Export Timestamp: ${timestamp}\n\n`;
+    fileContent += "ID, Name, Username, Email, Role\n";
+
+    employees.forEach(employee => {
+      fileContent += `${employee.id}, ${employee.name}, ${employee.username}, ${employee.email}, ${employee.role}\n`;
+    });
+
+    const blob = new Blob([fileContent], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, `Employees_${timestamp}.txt`);
+  };
+
   return (
     <div className="p-5 m-5 bg-white shadow-lg rounded-lg">
       <h1 className="text-2xl font-bold mb-4">Manage Employees</h1>
+      <button onClick={handleDownload} className="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        Export Employees
+      </button>
       <div className="mt-4">
         <table className="min-w-full table-auto">
           <thead className="bg-gray-50">

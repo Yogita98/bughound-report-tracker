@@ -41,10 +41,9 @@ const Login = () => {
                 localStorage.setItem('refresh-token', data.refresh)
                 // If login is successful, navigate to the dashboard page
                 if(data.user.is_superuser){
-                    console.log("sdhjsv")
-                    navigate('/employee-dashboard')
+                    navigate('/employee-dashboard', { state: { user: data.user } })
                 } else 
-                    navigate('/dashboard')
+                    navigate('/dashboard', { state: { user: data.user } })
                 // if (data.Role === 'Full Access') {
                 //     navigate('/adminDashboard'); // Navigate to the Admin Dashboard if full access
                 // } else {

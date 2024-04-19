@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Dashboard from "./dashboard";
 import NewEmployee from "./NewEmployee";
 
 const EmployeeDashboard = () => {
-  const [isadmin, setIsAdmin] = useState(false)
+  const location = useLocation();
+  const [isadmin, setIsAdmin] = useState(location.state.user.is_superuser)
   const token = localStorage.getItem('access-token')
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + token
   }
+  
 
   const fetchEmployees = async () => {
     const employeeResponse = await fetch("http://localhost:8000/api/employees-names/", {
@@ -21,12 +24,6 @@ const EmployeeDashboard = () => {
       console.log(employees);
       const admin = employees.find(emp => emp.is_superuser === true);
 
-      if (admin) {
-          console.log(admin);
-          setIsAdmin(true)
-      } else {
-          console.log("No admin");
-      }
   }
 
   useEffect(() => {
@@ -37,7 +34,7 @@ const EmployeeDashboard = () => {
   return(
     <div>
       {isadmin && <NewEmployee />}
-      {!isadmin && <Dashboard />}
+      {/* {!isadmin && <Dashboard />} */}
     </div>
     
   )

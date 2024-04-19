@@ -17,8 +17,7 @@ import {
 } from "@material-tailwind/react";
 import { jsPDF } from "jspdf";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-// import EmployeeView from "./EmployeeView";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -38,28 +37,14 @@ const Dashboard = () => {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + token
   }
+  const location = useLocation();
+  const user = location.state.user
+  const isDeveloper = user.role == "Developer" ? true : false
+  console.log(isDeveloper)
+  // const [role, setRole] = useState(location.state.user.role)
 
-  // const fetchEmployees = async () => {
-  //   const employeeResponse = await fetch("http://localhost:8000/api/employees-names/", {
-  //       headers
-  //     });
-  //     if (!employeeResponse.ok) {
-  //       throw new Error("Network response was not ok for employee names");
-  //     }
-  //     const employees = await employeeResponse.json();
-  //     console.log(employees);
-  //     const admin = employees.find(emp => emp.is_superuser === true);
-
-  //     if (admin) {
-  //         console.log(admin);
-  //         setIsAdmin(true)
-  //     } else {
-  //         console.log("No admin");
-  //     }
-  // }
 
   useEffect(() => {
-    // fetchEmployees()
     fetchBugReports();
   }, []);
 
@@ -91,7 +76,7 @@ const Dashboard = () => {
       
       // Convert employee array to an ID-to-name map
       const employeeMap = employees.reduce((acc, employee) => {
-        acc[employee.id] = employee.Name; // Assuming the employee object has 'id' and 'name' properties
+        acc[employee.id] = employee.name; // Assuming the employee object has 'id' and 'name' properties
         return acc;
       }, {});
 
@@ -182,7 +167,9 @@ const Dashboard = () => {
   }
 
   const handleEditTestCase = (testCase) => {
-    navigate("/editTestForm", { state: { details:testCase, dashboardType: 'normal' } });
+    if(isDeveloper)
+      navigate("/editTestForm", { state: { details:testCase, dashboardType: 'normal' } });
+    else alert("You do not have permission to perform this operation")
   };
 
   const viewTestCase = (testCase) => {
@@ -195,6 +182,9 @@ const Dashboard = () => {
   };
   //Delete Bug report particular to ID
   const deleteTestCase = async(testCaseId) => {
+    if(!isDeveloper){
+      alert("You do not have permission to perform this operation")
+    } else {
     try {
       const response = await fetch(`http://localhost:8000/bug-reports/${testCaseId}/`, {
         method: 'DELETE',
@@ -213,6 +203,7 @@ const Dashboard = () => {
       console.error('Error deleting test case:', error);
       alert('Error deleting test case, please try again.');
     }
+  }
   };
   //Download the test case
   const downloadPDF = (testCaseDetails) => {
@@ -407,13 +398,15 @@ const Dashboard = () => {
             <div className="mb-8 flex items-center justify-between gap-8">
               <div>
                 <Typography variant="h5" color="blue-gray">
-                 Welcome "User-Name"
+                 Welcome {user.name}
                 </Typography>
                 <Typography color="gray" className="mt-1 font-normal">
                   Test Case reporting Dashboard
                 </Typography>
               </div>
-              <div className="flex shrink-0 flex-col gap-2 sm:">
+              {isDeveloper && <div>
+
+                <div className="flex shrink-0 flex-col gap-2 sm:">
                 <Button
                   variant="outlined"
                   size="sm"
@@ -421,7 +414,7 @@ const Dashboard = () => {
                   onClick={handleCreateTestCase}
                 >
                   <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
-                  View/Download Test Case
+                  Create Testcase
                 </Button>
               </div>
               <div className="flex shrink-0 flex-col gap-2 sm:">
@@ -432,7 +425,7 @@ const Dashboard = () => {
                   onClick={handleNewEmployee}
                 >
                   <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
-                  Add/Edit Employee details
+                  Employee details
                 </Button>
               </div>
               <div className="flex shrink-0 flex-col gap-2 sm:">
@@ -443,7 +436,7 @@ const Dashboard = () => {
                   onClick={handleNewProgram}
                 >
                   <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
-                  Add/Edit Program details
+                  Program details
                 </Button>
               </div>
               <div className="flex shrink-0 flex-col gap-2 sm:">
@@ -454,11 +447,13 @@ const Dashboard = () => {
                   onClick={handleNewFunctionalArea}
                 >
                   <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
-                  Add/Edit Functional Area details
+                  Functional Area details
                 </Button>
               </div>
+                
+                </div>}
             </div>
-            <div className="mb-3 md:w-96 flex items-centre">
+            <div className="mb-3 md:w-96  flex items-center">
             <div className="mr-2">
               <Button className="px-3 py-2 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
                       style={{ minWidth: "177px" }} // Set a fixed width here
@@ -483,6 +478,7 @@ const Dashboard = () => {
                 </div>
               )}
               </div>
+             
               {/*  Search functionality starts */}
               <div className="relative mb-4 flex w-full flex-wrap items-stretch">
                 <Input
@@ -516,6 +512,17 @@ const Dashboard = () => {
                     />
                   </Button>
                 </div>
+              </div>
+              <div className="shrink-0 flex-col gap-2 sm:">
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  color="gray"
+                  onClick={handleLogout}
+                >
+                  <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
+                  Logout
+                </Button>
               </div>
             </div>
           </CardHeader>
@@ -559,9 +566,9 @@ const Dashboard = () => {
                   <td className={classes}>{testCase.ReportedByDate}</td>
                   <td className={classes}>{testCase.ResolvedByEmployee_id}</td>
                   <td className={classes}>
-                    <Button variant="text" className="p-0" onClick={() => viewTestCase(testCase)}>
+                    <div><Button disabled={isDeveloper} variant="text" className="p-0" onClick={() => viewTestCase(testCase)}>
                       <EyeIcon className="h-5 w-5" />
-                    </Button>
+                    </Button></div>
                     <Button variant="text" className="p-0" onClick={() => handleEditTestCase(testCase)}>
                       <PencilIcon className="h-5 w-5" />
                     </Button>
