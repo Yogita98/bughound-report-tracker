@@ -164,6 +164,17 @@ const Dashboard = () => {
     navigate("/createTestForm");
   };
 
+  const handleNewEmployee = () => {
+    navigate("/edit-employees");
+  };
+  const handleNewProgram = () => {
+    navigate("/addNewProgram");
+  };
+  const handleNewFunctionalArea = () => {
+    navigate("/addNewFunctionalArea");
+  };
+  
+
   const handleLogout = () => {
     localStorage.removeItem('access-token');
     localStorage.removeItem('refresh-token');
@@ -393,85 +404,121 @@ const Dashboard = () => {
   return (
     <Card className="h-full w-full">
       <CardHeader className="flex flex-wrap justify-between items-center rounded-none">
-        <div className="mb-8 flex items-center justify-between gap-8">
-          <div>
-            <Typography variant="h5" color="blue-gray">Test Cases Dashboard</Typography>
-            <Typography color="gray" className="mt-1 font-normal">Test Case reporting Dashboard</Typography>
-          </div>
-          <div className="flex shrink-0 flex-col gap-2 sm:">
-            <Button variant="outlined" size="sm" color="gray" onClick={handleCreateTestCase}>
-              <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
-              Add New Test Case
-            </Button>
-          </div>
-          <div className="flex shrink-0 flex-col gap-2 sm:">
-            <Button variant="outlined" size="sm" color="gray" onClick={handleLogout}>
-              <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
-              logout
-            </Button>
-          </div>
-        </div>
-        <div className="relative mb-3 md:w-96 flex items-centre">
-          {/* Feedback button and dropdown */}
-          <div className="mr-2">
-            <Button className="px-3 py-2 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
-                    style={{ minWidth: "177px" }} // Set a fixed width here
-                    onClick={() => {
-                      setOpenFeedbackDropdown(!openFeedbackDropdown);
-                      setSearchQuery(""); // Clear search query when opening the dropdown
-                    }}
-            >
-              {selectedColumn} {/* Display selected column */}
-            </Button>
-            {openFeedbackDropdown && (
-              <div 
-                className="absolute z-10 top-full left-0 bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto w-120px" 
-                style={{ minWidth: "177px" }} // Set a fixed width here
-                onClick={() => setOpenFeedbackDropdown(false)}
-              >
-                {tableHead.map((option, index) => (
-                  <div key={index} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => handleFeedbackSelect(option)}>
-                    {option}
-                  </div>
-                ))}
+            <div className="mb-8 flex items-center justify-between gap-8">
+              <div>
+                <Typography variant="h5" color="blue-gray">
+                 Welcome "User-Name"
+                </Typography>
+                <Typography color="gray" className="mt-1 font-normal">
+                  Test Case reporting Dashboard
+                </Typography>
               </div>
-            )}
-          </div>
-        {/*  Search functionality starts */}
-          <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-            <Input
-              type="search"
-              className="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
-              id="exampleSearch"
-              placeholder="Search Test Case"
-              value={searchQuery}
-              onChange={handleSearch}
-              onKeyDown={handleKeyDown}
-            />
-            {openSearchDropdown && dropdownOptions.length > 0 && (
-              <div className="absolute z-10 inset-x-0 top-full bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto">
-                {dropdownOptions.map((option, index) => (
-                  <div 
-                    key={index} 
-                    className="px-4 py-2 cursor-pointer hover:bg-gray-100" 
-                    onClick={() => handleSearchSelect(option)}>
-                    {option}
-                  </div>
-                ))}
+              <div className="flex shrink-0 flex-col gap-2 sm:">
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  color="gray"
+                  onClick={handleCreateTestCase}
+                >
+                  <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
+                  View/Download Test Case
+                </Button>
               </div>
-            )}
-            <div className="absolute inset-y-0 right-0 flex items-center pl-2">
-              <Button variant="text" className="p-0 z-10">
-                <MagnifyingGlassIcon 
-                  className="h-5 w-5 cursor-pointer" 
-                  aria-hidden="true" 
-                  onClick={handleSearchButtonClick}/>
-              </Button>
+              <div className="flex shrink-0 flex-col gap-2 sm:">
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  color="gray"
+                  onClick={handleNewEmployee}
+                >
+                  <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
+                  Add/Edit Employee details
+                </Button>
+              </div>
+              <div className="flex shrink-0 flex-col gap-2 sm:">
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  color="gray"
+                  onClick={handleNewProgram}
+                >
+                  <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
+                  Add/Edit Program details
+                </Button>
+              </div>
+              <div className="flex shrink-0 flex-col gap-2 sm:">
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  color="gray"
+                  onClick={handleNewFunctionalArea}
+                >
+                  <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
+                  Add/Edit Functional Area details
+                </Button>
+              </div>
             </div>
-          </div>
-        </div>
-        {/*  Search functionality ends */}
-      </CardHeader>
+            <div className="mb-3 md:w-96 flex items-centre">
+            <div className="mr-2">
+              <Button className="px-3 py-2 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
+                      style={{ minWidth: "177px" }} // Set a fixed width here
+                      onClick={() => {
+                        setOpenFeedbackDropdown(!openFeedbackDropdown);
+                        setSearchQuery(""); // Clear search query when opening the dropdown
+                      }}
+              >
+                {selectedColumn} {/* Display selected column */}
+              </Button>
+              {openFeedbackDropdown && (
+                <div 
+                  className="absolute z-10 top-full left-0 bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto w-120px" 
+                  style={{ minWidth: "177px" }} // Set a fixed width here
+                  onClick={() => setOpenFeedbackDropdown(false)}
+                >
+                  {tableHead.map((option, index) => (
+                    <div key={index} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => handleFeedbackSelect(option)}>
+                      {option}
+                    </div>
+                  ))}
+                </div>
+              )}
+              </div>
+              {/*  Search functionality starts */}
+              <div className="relative mb-4 flex w-full flex-wrap items-stretch">
+                <Input
+                  type="search"
+                  className="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+                  id="exampleSearch"
+                  placeholder="Search Test Case"
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  onKeyDown={handleKeyDown}
+                />
+                {openSearchDropdown && dropdownOptions.length > 0 && (
+                  <div className="absolute z-10 inset-x-0 top-full bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto">
+                    {dropdownOptions.map((option, index) => (
+                      <div
+                        key={index}
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleSearchSelect(option)}
+                      >
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="absolute inset-y-0 right-0 flex items-center pl-2">
+                  <Button variant="text" className="p-0 z-10">
+                    <MagnifyingGlassIcon
+                      className="h-5 w-5 cursor-pointer"
+                      aria-hidden="true"
+                      onClick={handleSearchButtonClick}
+                    />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardHeader>
       <CardBody className="overflow-scroll px-0">
         <table className="mt-4 w-full min-w-max table-auto text-left">
           {/* Top Row displaying columns */}

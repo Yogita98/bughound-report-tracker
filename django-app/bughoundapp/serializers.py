@@ -22,11 +22,11 @@ class ProgramSerializer(serializers.ModelSerializer):
 class AddProgramSerializer(serializers.ModelSerializer):
     class Meta:
         model = Program
-        fields = ['ProgramName']
-    def validate_ProgramName(self, value):
-        if Program.objects.filter(ProgramName=value).exists():
-            raise serializers.ValidationError("Program name already exists.")
-        return value
+        fields = '__all__'
+    # def validate_ProgramName(self, value):
+    #     if Program.objects.filter(ProgramName=value).exists():
+    #         raise serializers.ValidationError("Program name already exists.")
+    #     return value
     
 class FunctionalAreaSerializer(serializers.ModelSerializer):
     program = ProgramSerializer(read_only=True, many=False)

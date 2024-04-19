@@ -11,6 +11,7 @@ import ViewTestCase from "./components/ViewTestCase/viewTestCase";
 import Dashboard from "./components/dashboard/dashboard";
 import EmployeeDashboard from "./components/dashboard/EmployeeDashboard";
 import Login from "./components/login/login";
+import EmployeeView from "./components/dashboard/EmployeeView";
 // import TestLogin from "./login"
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<EmployeeDashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/adminDashboard" element={<AdminDashboard />} />
             <Route path="/createTestForm" element={<TestCase />} />
             <Route path="/editTestForm" element={<EditTestForm />} />
@@ -29,6 +30,7 @@ function App() {
             <Route path="/addNewFunctionalArea" element={<NewFunctionalArea />} />
             <Route path="/addNewProgram" element={<NewProgram />} />
             <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+            <Route path="/edit-employees" element={<EmployeeView />} />
             {/* <Route path="/test" element={<TestLogin />}/> */}
           </Routes>
         </Router>

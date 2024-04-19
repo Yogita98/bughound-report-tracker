@@ -44,7 +44,7 @@ const Login = () => {
                     console.log("sdhjsv")
                     navigate('/employee-dashboard')
                 } else 
-                    navigate('')
+                    navigate('/dashboard')
                 // if (data.Role === 'Full Access') {
                 //     navigate('/adminDashboard'); // Navigate to the Admin Dashboard if full access
                 // } else {

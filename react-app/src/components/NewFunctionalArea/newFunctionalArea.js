@@ -5,30 +5,46 @@ const NewFunctionalArea = () => {
   const [programs, setPrograms] = useState([]);
   const [newFunctionalAreaName, setNewFunctionalAreaName] = useState('');
   const [selectedProgramId, setSelectedProgramId] = useState('');
-
-  useEffect(() => {
-    fetchFunctionalAreaNames();
-    fetchPrograms();
-  }, []);
-
+  const [editingId, setEditingId] = useState(null);
+  const [uniquePrograms, setUniquePrograms] = useState([]);
+  const [editFormData, setEditFormData] = useState({
+    AreaName: '',
+    ProgramId: '',
+  });
   const token = localStorage.getItem('access-token')
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + token
   }
 
+  useEffect(() => {
+    fetchFunctionalAreaNames();
+    fetchPrograms();
+  }, []);
+
   const fetchFunctionalAreaNames = async () => {
-    const response = await fetch('http://localhost:8000/api/functional-area-names/', {headers});
+    const response = await fetch('http://localhost:8000/api/functional-area-names/', { headers });
     const data = await response.json();
     setFunctionalAreas(data);
   };
 
   const fetchPrograms = async () => {
-    const response = await fetch('http://localhost:8000/api/program-names/', {headers});
+    const response = await fetch('http://localhost:8000/api/program-names/', { headers });
     const data = await response.json();
     setPrograms(data);
-    if (data.length > 0) {
-      setSelectedProgramId(data[0].id); // Default to the first program
+
+    // Create a Set to track unique programs
+    const programSet = new Set();
+    const uniquePrograms = data.filter(program => {
+      const isDuplicate = programSet.has(program.ProgramName);
+      programSet.add(program.ProgramName);
+      return !isDuplicate;
+    });
+
+    setUniquePrograms(uniquePrograms);
+
+    if (uniquePrograms.length > 0) {
+      setSelectedProgramId(uniquePrograms[0].id); // Default to the first unique program
     }
   };
 
@@ -54,6 +70,45 @@ const NewFunctionalArea = () => {
       alert('Failed to add functional area: ' + errorData.error);
     }
   };
+  
+
+  const startEdit = (area) => {
+    setEditingId(area.id);
+    setEditFormData({
+      AreaName: area.AreaName,
+      ProgramId: area.Program,
+    });
+  };
+
+  const handleEditFormChange = (event) => {
+    const { name, value } = event.target;
+    setEditFormData({
+      ...editFormData,
+      [name]: value,
+    });
+  };
+
+  const saveEdit = async (id) => {
+    const response = await fetch(`http://localhost:8000/api/update-functional-area-names/${id}/`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({
+        AreaName: editFormData.AreaName,
+        Program: editFormData.ProgramId,
+      }),
+    });
+
+    if (response.ok) {
+      setEditingId(null);
+      fetchFunctionalAreaNames();
+    } else {
+      alert('Failed to update functional area');
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+  };
 
   return (
     <div className="p-5 m-5 bg-white shadow-lg rounded-lg">
@@ -71,7 +126,7 @@ const NewFunctionalArea = () => {
           value={selectedProgramId}
           onChange={(e) => setSelectedProgramId(e.target.value)}
         >
-          {programs.map(program => (
+          {uniquePrograms.map(program => (
             <option key={program.id} value={program.id}>
               {program.ProgramName}
             </option>
@@ -97,19 +152,72 @@ const NewFunctionalArea = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Program Name
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white">
-            {functionalAreas.map(area => (
+            {functionalAreas.map((area) => (
               <tr key={area.id} className="border-b">
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {area.id}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {area.AreaName}
+                  {editingId === area.id ? (
+                    <input
+                      type="text"
+                      name="AreaName"
+                      value={editFormData.AreaName}
+                      onChange={handleEditFormChange}
+                      className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    />
+                  ) : (
+                    area.AreaName
+                  )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {programs.find(p => p.id === area.Program)?.ProgramName || 'N/A'}
+                  {editingId === area.id ? (
+                    <select
+                      name="ProgramId"
+                      value={editFormData.ProgramId}
+                      onChange={handleEditFormChange}
+                      className="shadow border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                      {programs.map(program => (
+                        <option key={program.id} value={program.id}>
+                          {program.ProgramName}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    programs.find(p => p.id === area.Program)?.ProgramName || 'N/A'
+                  )}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  {editingId === area.id ? (
+                    <>
+                      <button
+                        onClick={() => saveEdit(area.id)}
+                        className="text-indigo-600 hover:text-indigo-900 px-4"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={cancelEdit}
+                        className="text-red-600 hover:text-red-900 px-4"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => startEdit(area)}
+                      className="text-indigo-600 hover:text-indigo-900"
+                    >
+                      Edit
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
