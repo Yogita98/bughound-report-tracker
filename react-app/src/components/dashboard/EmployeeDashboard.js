@@ -18,6 +18,7 @@ const EmployeeDashboard = () => {
     if(!token){
       alert("User logged out!!")
       navigate('/')
+      return;
     }
     else {
     const employeeResponse = await fetch("http://localhost:8000/api/employees-names/", {

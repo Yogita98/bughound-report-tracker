@@ -1,8 +1,10 @@
 import {
   ArrowDownTrayIcon,
   ChevronUpDownIcon,
+  ClipboardDocumentIcon,
   EyeIcon,
   PencilIcon,
+  PencilSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon, UserPlusIcon } from "@heroicons/react/24/solid";
@@ -60,6 +62,7 @@ const Dashboard = () => {
       if(!token) {
         alert('User logged out!')
         navigate('/')
+        return;
       }
       
       // Fetching bug reports
@@ -435,170 +438,156 @@ const Dashboard = () => {
 
 
   return (
-    <div>
-      {token && (<div>
-      <Card className="h-full w-full">
+    <Card className="h-full w-full">
       <CardHeader className="flex flex-wrap justify-between items-center rounded-none">
-            <div className="mb-8 flex items-center justify-between gap-8">
-              <div>
-                <Typography variant="h5" color="blue-gray">
-                 Welcome {user?.name}
-                </Typography>
-                <Typography color="gray" className="mt-1 font-normal">
-                  Test Case reporting Dashboard
-                </Typography>
-              </div>
-              {isDeveloper && <div>
-
-                <div className="flex shrink-0 flex-col gap-2 sm:">
-                <Button
-                  variant="outlined"
-                  size="sm"
-                  color="gray"
-                  onClick={handleCreateTestCase}
-                >
-                  <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
-                  Create Testcase
-                </Button>
-              </div>
-              <div className="flex shrink-0 flex-col gap-2 sm:">
-                <Button
-                  variant="outlined"
-                  size="sm"
-                  color="gray"
-                  onClick={handleNewEmployee}
-                >
-                  <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
-                  Employee details
-                </Button>
-              </div>
-              <div className="flex shrink-0 flex-col gap-2 sm:">
-                <Button
-                  variant="outlined"
-                  size="sm"
-                  color="gray"
-                  onClick={handleNewProgram}
-                >
-                  <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
-                  Program details
-                </Button>
-              </div>
-              <div className="flex shrink-0 flex-col gap-2 sm:">
-                <Button
-                  variant="outlined"
-                  size="sm"
-                  color="gray"
-                  onClick={handleNewFunctionalArea}
-                >
-                  <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
-                  Functional Area details
-                </Button>
-              </div>
-                
-                </div>}
-            </div>
-            <div className="mb-3 md:w-96  flex items-center">
-            <div className="mr-2">
-              <Button className="px-3 py-2 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
-                      style={{ minWidth: "177px" }} // Set a fixed width here
-                      onClick={() => {
-                        setOpenFeedbackDropdown(!openFeedbackDropdown);
-                        setSearchQuery(""); // Clear search query when opening the dropdown
-                      }}
+        <div className="mb-8 flex items-center justify-between gap-8">
+          <div>
+            <Typography variant="h5" color="blue-gray">
+              Welcome {user?.name}
+            </Typography>
+          </div>
+          {isDeveloper && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outlined"
+                size="sm"
+                color="gray"
+                onClick={handleCreateTestCase}
               >
-                Choose Search Filter
+                <PencilSquareIcon strokeWidth={2} className="h-4 w-5" />
+                Create Test Case
               </Button>
-              {openFeedbackDropdown && (
-                <div 
-                  className="absolute z-10 top-full left-0 bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto w-120px" 
-                  style={{ minWidth: "177px" }} // Set a fixed width here
-                  onClick={() => setOpenFeedbackDropdown(false)}
-                >
-                  {feedbackTableHead.map((option, index) => (
-                    <div key={index} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => handleFeedbackSelect(option)}>
-                      {option}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {/* Display selected columns */}
-              <div className="flex items-center">
-                  {selectedColumns.map((column, index) => (
-                    <div key={index} className="flex items-center bg-gray-100 rounded-md px-2 py-1 mr-1">
-                      <span className="mr-1">{column}</span>
-                      <button
-                        className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                        onClick={() => handleRemoveSelectedColumn(column)}
-                      >
-                        &#10005;
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-             
-              {/*  Search functionality starts */}
-              <div className="relative mb-4 flex w-full flex-wrap items-stretch">
-                <Input
-                  type="search"
-                  className="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
-                  id="exampleSearch"
-                  placeholder="Search Test Case"
-                  value={searchQuery}
-                  onChange={handleSearch}
-                  onKeyDown={handleKeyDown}
-                />
-                {openSearchDropdown && dropdownOptions.length > 0 && (
-                  <div className="absolute z-10 inset-x-0 top-full bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto">
-                    {dropdownOptions.map((option, index) => (
-                      <div
-                        key={index}
-                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                        onClick={() => handleSearchSelect(option)}
-                      >
-                        {option}
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <div className="absolute inset-y-0 right-0 flex items-center pl-2">
-                  <Button variant="text" className="p-0 z-10">
-                    <MagnifyingGlassIcon
-                      className="h-5 w-5 cursor-pointer"
-                      aria-hidden="true"
-                      onClick={handleSearchButtonClick}
-                    />
-                  </Button>
-                </div>
-              </div>
-              <div className="shrink-0 flex-col gap-2 sm:">
-                <Button
-                  variant="outlined"
-                  size="sm"
-                  color="gray"
-                  onClick={handleLogout}
-                >
-                  <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
-                  Logout
-                </Button>
-              </div>
+              <Button
+                variant="outlined"
+                size="sm"
+                color="gray"
+                onClick={handleNewEmployee}
+              >
+                <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
+                Employee Details
+              </Button>
+              <Button
+                variant="outlined"
+                size="sm"
+                color="gray"
+                onClick={handleNewProgram}
+              >
+                <ClipboardDocumentIcon strokeWidth={2} className="h-4 w-5" />
+                Program Details
+              </Button>
+              <Button
+                variant="outlined"
+                size="sm"
+                color="gray"
+                onClick={() => navigate("/addNewFunctionalArea", { state: { user }})}
+              >
+                <ClipboardDocumentIcon strokeWidth={2} className="h-4 w-5" />
+                Functional Area Details
+              </Button>
             </div>
-          </CardHeader>
+          )}
+        </div>
+        <Button
+          variant="outlined"
+          size="sm"
+          color="gray"
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
+      </CardHeader>
+
       <CardBody className="overflow-scroll px-0">
+        {/*  Search functionality starts */}
+
+        <div className="flex justify-between items-center">
+        <Typography variant="h6" color="blue-gray" className="text-center flex-grow">
+             TestCase Dashboard
+            </Typography>
+         <div className="flex gap-2 items-center">
+
+            <Button
+              className="px-3 py-2 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
+              style={{ Width: "200px" }} // Set a fixed width here
+              onClick={() => {
+                setOpenFeedbackDropdown(!openFeedbackDropdown);
+                setSearchQuery(""); // Clear search query when opening the dropdown
+              }}
+            >
+              Choose Search Filter
+              {selectedColumns} {/* Display selected column */}
+            </Button>
+            {openFeedbackDropdown && (
+              <div
+                className="absolute z-10 top-full left-0 bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto"
+                style={{ minWidth: "177px" }} // Set a fixed width here
+                onClick={() => setOpenFeedbackDropdown(false)}
+              >
+                {tableHead.map((option, index) => (
+                  <div
+                    key={index}
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleFeedbackSelect(option)}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="relative flex-grow max-w-xl">
+            <Input
+              type="search"
+              className="relative flex-auto w-full rounded border border-solid border-neutral-300 bg-transparent px-3 py-1.5 text-base font-normal text-neutral-700 outline-none transition duration-200 ease-in-out focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none"
+              id="exampleSearch"
+              placeholder="Search Test Case"
+              value={searchQuery}
+              onChange={handleSearch}
+              onKeyDown={handleKeyDown}
+            />
+            {openSearchDropdown && dropdownOptions.length > 0 && (
+              <div className="absolute z-10 inset-x-0 top-full bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto">
+                {dropdownOptions.map((option, index) => (
+                  <div
+                    key={index}
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSearchSelect(option)}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+              <Button variant="text" className="p-0">
+                <MagnifyingGlassIcon
+                  className="h-5 w-5 cursor-pointer"
+                  aria-hidden="true"
+                  onClick={handleSearchButtonClick}
+                />
+              </Button>
+            </div>
+          </div>
+        </div>
+
         <table className="mt-4 w-full min-w-max table-auto text-left">
           {/* Top Row displaying columns */}
           <thead>
             <tr>
               {tableHead.map((head, index) => (
-                <th key={head} 
-                  className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50">
-                  <Typography   
-                    variant="small" 
-                    color="blue-gray" 
+                <th
+                  key={head}
+                  className="cursor-pointer border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50"
+                >
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
                     className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
                   >
-                    {head} 
-                    {index !== tableHead.length - 1 && <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />}
+                    {head}
+                    {index !== tableHead.length - 1 && (
+                      <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
+                    )}
                   </Typography>
                 </th>
               ))}
@@ -606,131 +595,182 @@ const Dashboard = () => {
           </thead>
           {/* Top Row displaying columns ends */}
           <tbody>
-            {displayedTestCases.length > 0 ? 
-              ( displayedTestCases.map((testCase, index) => {
-              const isLast = index === displayedTestCases.length - 1;
-              const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
-              return (
-                <tr key={testCase.id}>
-                  <td className={classes}>{testCase.id}</td>
-                  <td className={classes}>{testCase.Program}</td>
-                  <td className={classes}>{testCase.ReportTypeID}</td>
-                  <td className={classes}>{testCase.Severity}</td>
-                  <td className={classes}>{testCase.FunctionalArea_id}</td>
-                  <td className={classes}>{testCase.AssignedToEmployee_id}</td>
-                  <td className={classes}><StatusChip status={testCase.status} /></td>
-                  <td className={classes}>{testCase.Priority}</td>
-                  <td className={classes}>{testCase.Resolution}</td>
-                  <td className={classes}>{testCase.ReportedByEmployee_id}</td>
-                  <td className={classes}>{testCase.ReportedByDate}</td>
-                  <td className={classes}>{testCase.ResolvedByEmployee_id}</td>
-                  <td className={classes}>
-                    <div><Button disabled={isDeveloper} variant="text" className="p-0" onClick={() => viewTestCase(testCase)}>
-                      <EyeIcon className="h-5 w-5" />
-                    </Button></div>
-                    <Button variant="text" className="p-0" onClick={() => handleEditTestCase(testCase)}>
-                      <PencilIcon className="h-5 w-5" />
-                    </Button>
-                    <Button variant="text" className="p-0" onClick={() => setShowOptions(!showOptions)}>
-                      <ArrowDownTrayIcon className="h-5 w-5" />
-                    </Button>
-                    {showOptions && (
-                            <div className="absolute right-0 z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                              <div
-                                className="py-1"
-                                role="menu"
-                                aria-orientation="vertical"
-                                aria-labelledby="options-menu"
+            {displayedTestCases.length > 0
+              ? displayedTestCases.map((testCase, index) => {
+                  const isLast = index === displayedTestCases.length - 1;
+                  const classes = isLast
+                    ? "p-4"
+                    : "p-4 border-b border-blue-gray-50";
+                  return (
+                    <tr key={testCase.id}>
+                      <td className={classes}>{testCase.Program}</td>
+                      <td className={classes}>{testCase.ReportTypeID}</td>
+                      <td className={classes}>{testCase.Severity}</td>
+                      <td className={classes}>{testCase.FunctionalArea_id}</td>
+                      <td className={classes}>
+                        {testCase.AssignedToEmployee_id}
+                      </td>
+                      <td className={classes}>
+                        <StatusChip status={testCase.status} />
+                      </td>
+                      <td className={classes}>{testCase.Priority}</td>
+                      <td className={classes}>{testCase.Resolution}</td>
+                      <td className={classes}>
+                        {testCase.ReportedByEmployee_id}
+                      </td>
+                      <td className={classes}>{testCase.ReportedByDate}</td>
+                      <td className={classes}>
+                        {testCase.ResolvedByEmployee_id}
+                      </td>
+                      <td className={classes}>
+                        <div>
+                          <Button
+                            disabled={isDeveloper}
+                            variant="text"
+                            className="p-0"
+                            onClick={() => viewTestCase(testCase)}
+                          >
+                            <EyeIcon className="h-5 w-5" />
+                          </Button>
+                        </div>
+                        <Button
+                          variant="text"
+                          className="p-0"
+                          onClick={() => handleEditTestCase(testCase)}
+                        >
+                          <PencilIcon className="h-5 w-5" />
+                        </Button>
+                        <Button
+                          variant="text"
+                          className="p-0"
+                          onClick={() => setShowOptions(!showOptions)}
+                        >
+                          <ArrowDownTrayIcon className="h-5 w-5" />
+                        </Button>
+                        {showOptions && (
+                          <div className="absolute right-0 z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div
+                              className="py-1"
+                              role="menu"
+                              aria-orientation="vertical"
+                              aria-labelledby="options-menu"
+                            >
+                              <button
+                                type="button"
+                                className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
+                                onClick={() => downloadPDF(testCase)}
+                                role="menuitem"
                               >
-                                <button
-                                  type="button"
-                                  className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
-                                  onClick={() => downloadPDF(testCase)}
-                                  role="menuitem"
-                                >
-                                  Download PDF
-                                </button>
-                                <button
-                                  type="button"
-                                  className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
-                                  onClick={() => downloadXML(testCase)}
-                                  role="menuitem"
-                                >
-                                  Download XML
-                                </button>
-                              </div>
-                            </div>
-                          )}
-                    <Button variant="text" className="p-0" onClick={() =>deleteTestCase(testCase.id)}>
-                      <TrashIcon className="h-5 w-5" />
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })
-          ) : ( testCases.map((testCase, index) => {
-                const isLast = index === testCases.length - 1;
-                const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
-                return (
-                  <tr key={testCase.id}>
-                    <td className={classes}>{testCase.id}</td>
-                    <td className={classes}>{testCase.Program}</td>
-                    <td className={classes}>{testCase.ReportTypeID}</td>
-                    <td className={classes}>{testCase.Severity}</td>
-                    <td className={classes}>{testCase.FunctionalArea_id}</td>
-                    <td className={classes}>{testCase.AssignedToEmployee_id}</td>
-                    <td className={classes}><StatusChip status={testCase.status} /></td>
-                    <td className={classes}>{testCase.Priority}</td>
-                    <td className={classes}>{testCase.Resolution}</td>
-                    <td className={classes}>{testCase.ReportedByEmployee_id}</td>
-                    <td className={classes}>{testCase.ReportedByDate}</td>
-                    <td className={classes}>{testCase.ResolvedByEmployee_id}</td>
-                    <td className={classes}>
-                      <Button variant="text" className="p-0" onClick={() => viewTestCase(testCase)}>
-                        <EyeIcon className="h-5 w-5" />
-                      </Button>
-                      <Button variant="text" className="p-0" onClick={() => handleEditTestCase(testCase)}>
-                        <PencilIcon className="h-5 w-5" />
-                      </Button>
-                      <Button variant="text" className="p-0" onClick={() => setShowOptions(!showOptions)}>
-                        <ArrowDownTrayIcon className="h-5 w-5" />
-                      </Button>
-                      {showOptions && (
-                            <div className="absolute right-0 z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                              <div
-                                className="py-1"
-                                role="menu"
-                                aria-orientation="vertical"
-                                aria-labelledby="options-menu"
+                                Download PDF
+                              </button>
+                              <button
+                                type="button"
+                                className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
+                                onClick={() => downloadXML(testCase)}
+                                role="menuitem"
                               >
-                                <button
-                                  type="button"
-                                  className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
-                                  onClick={() => downloadPDF(testCase)}
-                                  role="menuitem"
-                                >
-                                  Download PDF
-                                </button>
-                                <button
-                                  type="button"
-                                  className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
-                                  onClick={() => downloadXML(testCase)}
-                                  role="menuitem"
-                                >
-                                  Download XML
-                                </button>
-                              </div>
+                                Download XML
+                              </button>
                             </div>
-                          )}
-                      <Button variant="text" className="p-0" onClick={() =>deleteTestCase(testCase.id)}>
-                        <TrashIcon className="h-5 w-5" />
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })
-          )
-            }
+                          </div>
+                        )}
+                        <Button
+                          variant="text"
+                          className="p-0"
+                          onClick={() => deleteTestCase(testCase.id)}
+                        >
+                          <TrashIcon className="h-5 w-5" />
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })
+              : testCases.map((testCase, index) => {
+                  const isLast = index === testCases.length - 1;
+                  const classes = isLast
+                    ? "p-4"
+                    : "p-4 border-b border-blue-gray-50";
+                  return (
+                    <tr key={testCase.id}>
+                      <td className={classes}>{testCase.Program}</td>
+                      <td className={classes}>{testCase.ReportTypeID}</td>
+                      <td className={classes}>{testCase.Severity}</td>
+                      <td className={classes}>{testCase.FunctionalArea_id}</td>
+                      <td className={classes}>
+                        {testCase.AssignedToEmployee_id}
+                      </td>
+                      <td className={classes}>
+                        <StatusChip status={testCase.status} />
+                      </td>
+                      <td className={classes}>{testCase.Priority}</td>
+                      <td className={classes}>{testCase.Resolution}</td>
+                      <td className={classes}>
+                        {testCase.ReportedByEmployee_id}
+                      </td>
+                      <td className={classes}>{testCase.ReportedByDate}</td>
+                      <td className={classes}>
+                        {testCase.ResolvedByEmployee_id}
+                      </td>
+                      <td className={classes}>
+                        <Button
+                          variant="text"
+                          className="p-0"
+                          onClick={() => viewTestCase(testCase)}
+                        >
+                          <EyeIcon className="h-5 w-5" />
+                        </Button>
+                        <Button
+                          variant="text"
+                          className="p-0"
+                          onClick={() => handleEditTestCase(testCase)}
+                        >
+                          <PencilIcon className="h-5 w-5" />
+                        </Button>
+                        <Button
+                          variant="text"
+                          className="p-0"
+                          onClick={() => setShowOptions(!showOptions)}
+                        >
+                          <ArrowDownTrayIcon className="h-5 w-5" />
+                        </Button>
+                        {showOptions && (
+                          <div className="absolute right-0 z-10 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div
+                              className="py-1"
+                              role="menu"
+                              aria-orientation="vertical"
+                              aria-labelledby="options-menu"
+                            >
+                              <button
+                                type="button"
+                                className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
+                                onClick={() => downloadPDF(testCase)}
+                                role="menuitem"
+                              >
+                                Download PDF
+                              </button>
+                              <button
+                                type="button"
+                                className="text-gray-700 block w-full px-4 py-2 text-sm text-left"
+                                onClick={() => downloadXML(testCase)}
+                                role="menuitem"
+                              >
+                                Download XML
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                        <Button
+                          variant="text"
+                          className="p-0"
+                          onClick={() => deleteTestCase(testCase.id)}
+                        >
+                          <TrashIcon className="h-5 w-5" />
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
           </tbody>
         </table>
       </CardBody>
@@ -748,8 +788,6 @@ const Dashboard = () => {
         </div>
       </CardFooter>
     </Card>
-    </div>)}
-    </div>
   );
 };
 

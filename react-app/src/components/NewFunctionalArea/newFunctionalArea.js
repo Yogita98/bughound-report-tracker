@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const NewFunctionalArea = () => {
   const [functionalAreas, setFunctionalAreas] = useState([]);
@@ -16,6 +17,9 @@ const NewFunctionalArea = () => {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + token
   }
+  const location = useLocation()
+  const user = location.state.user
+  console.log(user.is_superuser==1)
 
   useEffect(() => {
     fetchFunctionalAreaNames();
@@ -52,6 +56,10 @@ const NewFunctionalArea = () => {
     if (!selectedProgramId) {
       alert("Please select a program.");
       return;
+    }
+    if(user.is_superuser==1){
+      alert("You do not have permission to perform this operation!!")
+      return
     }
     const response = await fetch('http://localhost:8000/api/add-functional-area-names/', {
       method: 'POST',
