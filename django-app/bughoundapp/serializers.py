@@ -45,11 +45,17 @@ class LoginSerializer(serializers.Serializer):
     Password = serializers.CharField(max_length=255)
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    # username = serializers.CharField(source='user.username', read_only=True)  # Access the User model's username
+
     # role = EmployeeRoleSerializer(read_only=True, many=False)
     
     class Meta:
         model = Employee
         fields = '__all__'
+        # fields = ''
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
 
 class BugReportSerializer(serializers.ModelSerializer):
     ReportedByEmployee = serializers.PrimaryKeyRelatedField(queryset=Employee.objects.all(), default=None)

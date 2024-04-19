@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
-const NewEmployee = () => {
+const AddEmployee = ({ handleClosePopup }) => {
     const [employeeName, setEmployeeName] = useState('');
     const [employeeId, setEmployeeId] = useState(''); // This is not used in the POST. Ensure your backend doesn't require it or remove it.
     const [email, setEmail] = useState('');
@@ -26,7 +25,7 @@ const NewEmployee = () => {
             "Developer": 2,
             "Tester": 1,
             "Engineering Manager": 3,
-            "Test Lead":4,
+            "Test Lead": 4,
         };
     
         // Map the role name to its numeric value
@@ -40,23 +39,19 @@ const NewEmployee = () => {
             Role: roleNumericValue, // Make sure this matches what your backend expects
         };
 
-
-        console.log(JSON.stringify(registrationData))
+        console.log(JSON.stringify(registrationData));
 
         try {
-            const token = localStorage.getItem('access-token')
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            }
             const response = await fetch('http://localhost:8000/register/', { // Adjust your API endpoint accordingly
                 method: 'POST',
-                headers,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify(registrationData),
             });
 
             if (response.ok) {
-                navigate('/admindashboard'); // Navigate to dashboard or login page upon successful registration
+                navigate('/newEmployee'); // Navigate to Employee page upon successful registration
             } else {
                 const errorData = await response.json();
                 setError(errorData.message || 'Registration failed, please try again.');
@@ -128,4 +123,4 @@ const NewEmployee = () => {
     );
 };
 
-export default NewEmployee;
+export default AddEmployee;

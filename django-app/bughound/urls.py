@@ -19,7 +19,8 @@ from bughoundapp.views import (AddFunctionalAreaAPIView, AddProgramAPIView,
                                BugReportSearchAPIView, EmployeeNameListView,
                                FormDataAPIView, FunctionalAreaListAPIView,
                                LoginAPIView, ProgramListView, RegisterAPIView,
-                               SubmitAPIView, UpdateBugReportAPIView, ExampleView, ProgramFunctionalAreasList)
+                               SubmitAPIView, UpdateBugReportAPIView, ExampleView, 
+                               ProgramFunctionalAreasList, EditEmployeeAPIView)
 from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -45,4 +46,5 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/program-functional-area-names/<int:program_id>/', ProgramFunctionalAreasList.as_view(), name = 'program-functional-area-names'),
+    path('api/employees/<int:pk>/', EditEmployeeAPIView.as_view())
 ]

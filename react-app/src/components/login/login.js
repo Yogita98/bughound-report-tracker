@@ -40,11 +40,16 @@ const Login = () => {
                 localStorage.setItem('access-token', data.access)
                 localStorage.setItem('refresh-token', data.refresh)
                 // If login is successful, navigate to the dashboard page
-                if (data.Role === 'Full Access') {
-                    navigate('/adminDashboard'); // Navigate to the Admin Dashboard if full access
-                } else {
-                    navigate('/dashboard'); // Navigate to the standard dashboard if limited access
-                }
+                if(data.user.is_superuser){
+                    console.log("sdhjsv")
+                    navigate('/employee-dashboard')
+                } else 
+                    navigate('')
+                // if (data.Role === 'Full Access') {
+                //     navigate('/adminDashboard'); // Navigate to the Admin Dashboard if full access
+                // } else {
+                //     navigate('/dashboard'); // Navigate to the standard dashboard if limited access
+                // }
             } else {
                 // If the API returns an error (e.g., wrong email/password), set an error message
                 setError(data.error || 'Invalid username or password');

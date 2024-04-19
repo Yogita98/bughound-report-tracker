@@ -38,17 +38,29 @@ class LoginAPIView(APIView):
         password = request.data.get('password')
         print(username)
         print(password)
+
+        # Authenticate the user
         user = authenticate(request, username=username, password=password)
         print(user)
         if user is not None:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            })
+            # Get the employee record for the authenticated user
+            try:
+                employee = Employee.objects.get(username=username)
+                serializer = EmployeeSerializer(employee)
+                # res = {"employees": EmployeeSerializer(Employee.objects.all(), many=True).data}
+
+                # Generate JWT tokens
+                refresh = RefreshToken.for_user(user)
+
+                return Response({
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                    'user': serializer.data
+                })
+            except Employee.DoesNotExist:
+                return Response({'error': 'Employee not found'}, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response({'error': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
 
 
 class ProgramFunctionalAreasList(APIView):
@@ -179,7 +191,7 @@ class EmployeeNameListView(APIView):
     def get(self, request, *args, **kwargs):
         print(request.data)
         employees = Employee.objects.all()
-        serializer = EmployeeNameSerializer(employees, many=True)
+        serializer = EmployeeRegistrationSerializer(employees, many=True)
         # print(serializer.data)
         return Response(serializer.data)
 
@@ -228,3 +240,29 @@ class AddFunctionalAreaAPIView(APIView):
             serializer.save()
             return Response({"message": "Functional area added successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class EditEmployeeAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        try:
+            return Employee.objects.get(pk=pk)
+        except Employee.DoesNotExist:
+            return Response({'error': 'Employee not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, pk, format=None):
+        employee = self.get_object(pk)
+        if not isinstance(employee, Response):
+            serializer = EmployeeSerializer(employee)
+            return Response(serializer.data)
+        return employee
+
+    def put(self, request, pk, format=None):
+        employee = self.get_object(pk)
+        if not isinstance(employee, Response):
+            serializer = EmployeeSerializer(employee, data=request.data, partial=True)  # Allow partial updates
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return employee
