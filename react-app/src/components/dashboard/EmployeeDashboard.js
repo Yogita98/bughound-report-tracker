@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import Dashboard from "./dashboard";
 import NewEmployee from "./NewEmployee";
 
@@ -11,9 +11,15 @@ const EmployeeDashboard = () => {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + token
   }
+  const navigate = useNavigate()
   
 
   const fetchEmployees = async () => {
+    if(!token){
+      alert("User logged out!!")
+      navigate('/')
+    }
+    else {
     const employeeResponse = await fetch("http://localhost:8000/api/employees-names/", {
         headers
       });
@@ -23,7 +29,7 @@ const EmployeeDashboard = () => {
       const employees = await employeeResponse.json();
       console.log(employees);
       const admin = employees.find(emp => emp.is_superuser === true);
-
+    }
   }
 
   useEffect(() => {
@@ -33,7 +39,7 @@ const EmployeeDashboard = () => {
 
   return(
     <div>
-      {isadmin && <NewEmployee />}
+      {token && <NewEmployee isadmin = {isadmin} />}
       {/* {!isadmin && <Dashboard />} */}
     </div>
     

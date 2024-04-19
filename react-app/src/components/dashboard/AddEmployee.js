@@ -1,126 +1,183 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 
-const AddEmployee = ({ handleClosePopup }) => {
-    const [employeeName, setEmployeeName] = useState('');
-    const [employeeId, setEmployeeId] = useState(''); // This is not used in the POST. Ensure your backend doesn't require it or remove it.
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
-    const [role, setRole] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+const NewEmployee = () => {
+  const [employees, setEmployees] = useState([]);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newEmployee, setNewEmployee] = useState({
+    Name: '',
+    Username: '',
+    Password: '',
+    ConfirmPassword: '',
+    ContactInfo: '',
+    Role: ''
+  });
+  const [editEmployeeId, setEditEmployeeId] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    Name: '',
+    Username: '',
+    ContactInfo: '',
+    Role: ''
+  });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // Add validation for password and confirmPassword here
-        if (password !== confirmPassword) {
-            setError("Passwords don't match");
-            return;
-        }
-        setError(''); // Clear previous errors
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
 
-        const roleMappings = {
-            "Developer": 2,
-            "Tester": 1,
-            "Engineering Manager": 3,
-            "Test Lead": 4,
-        };
+  const fetchEmployees = async () => {
+    const response = await fetch('http://localhost:8000/api/employees/');
+    const data = await response.json();
+    setEmployees(data);
+  };
+
+  const handleAddEmployee = async () => {
+    if (!newEmployee.Name || !newEmployee.Username || !newEmployee.Password || !newEmployee.ConfirmPassword || !newEmployee.ContactInfo || !newEmployee.Role) {
+        alert('All fields are required');
+        return;
+    }
+    if (newEmployee.Password !== newEmployee.ConfirmPassword) {
+        alert('Passwords do not match');
+        return;
+    }
     
-        // Map the role name to its numeric value
-        const roleNumericValue = roleMappings[role] || null;
-
-        const registrationData = {
-            Name: employeeName,
-            Username: username,
-            Password: password,
-            ContactInfo: email,
-            Role: roleNumericValue, // Make sure this matches what your backend expects
-        };
-
-        console.log(JSON.stringify(registrationData));
-
-        try {
-            const response = await fetch('http://localhost:8000/register/', { // Adjust your API endpoint accordingly
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(registrationData),
-            });
-
-            if (response.ok) {
-                navigate('/newEmployee'); // Navigate to Employee page upon successful registration
-            } else {
-                const errorData = await response.json();
-                setError(errorData.message || 'Registration failed, please try again.');
-            }
-        } catch (error) {
-            console.error('Registration error:', error);
-            setError('Registration failed, please try again.');
-        }
+    // Constructing the registration data
+    const registrationData = {
+        name: newEmployee.Name,
+        username: newEmployee.Username,
+        password: newEmployee.Password,
+        confirmPassword: newEmployee.ConfirmPassword,
+        contactInfo: newEmployee.ContactInfo,
+        role: newEmployee.Role
     };
 
-    return (
-        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-            <h2 className="text-2xl font-semibold mb-6">Register</h2>
-            <form onSubmit={handleSubmit} className="w-full max-w-lg space-y-5">
-                <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="employeeName">
-                        Name of the Employee:
-                    </label>
-                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="employeeName" type="text" value={employeeName} onChange={(e) => setEmployeeName(e.target.value)} />
-                </div>
-                <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="employeeId">
-                        Employee ID:
-                    </label>
-                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="employeeId" type="text" value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} />
-                </div>
-                <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                        Contact Info (Email ID):
-                    </label>
-                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
-                <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-                        Username:
-                    </label>
-                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-                </div>
-                <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
-                        Employee Role:
-                    </label>
-                    <select className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="role" value={role} onChange={(e) => setRole(e.target.value)}>
-                        <option value="">Select a Role</option>
-                        <option value="Developer">Developer</option>
-                        <option value="Tester">Tester</option>
-                        <option value="Project Manager">Project Manager</option>
-                        {/* Add more roles as needed */}
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                        Password:
-                    </label>
-                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">
-                        Confirm Password:
-                    </label>
-                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-                </div>
-                {error && <div className="text-red-500 text-xs italic">{error}</div>}
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-                    Register
-                </button>
-            </form>
+    try {
+        const response = await fetch('http://localhost:8000/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(registrationData),
+        });
+
+        if (response.ok) {
+            setNewEmployee({ Name: '', Username: '', Password: '', ConfirmPassword: '', ContactInfo: '', Role: '' }); // Reset the form
+            setShowAddForm(false); // Hide the form
+            fetchEmployees(); // Refresh the list
+        } else {
+            const errorData = await response.json();
+            alert(errorData.message || 'Failed to add the employee');
+        }
+    } catch (error) {
+        console.error('Add employee error:', error);
+        alert('Failed to add the employee');
+    }
+};
+
+  const handleEditClick = (employee) => {
+    setEditEmployeeId(employee.id);
+    setEditFormData({
+      Name: employee.Name,
+      Username: employee.Username,
+      ContactInfo: employee.ContactInfo,
+      Role: employee.Role
+    });
+  };
+
+  const handleEditFormChange = (event) => {
+    const { name, value } = event.target;
+    setEditFormData({
+      ...editFormData,
+      [name]: value
+    });
+  };
+
+  const handleSave = async () => {
+    const response = await fetch(`http://localhost:8000/api/employees/${editEmployeeId}/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(editFormData)
+    });
+    if (response.ok) {
+      setEditEmployeeId(null); // Exit edit mode
+      fetchEmployees(); // Refresh the list
+    } else {
+      alert('Failed to save changes');
+    }
+  };
+
+  const handleCancel = () => {
+    setEditEmployeeId(null);
+  };
+
+  return (
+    <div className="p-5 m-5 bg-white shadow-lg rounded-lg">
+      <h1 className="text-2xl font-bold mb-4">Manage Employees</h1>
+      {showAddForm ? (
+        <div className="mb-4">
+          <input type="text" name="Name" placeholder="Enter Name" value={newEmployee.Name} onChange={(e) => setNewEmployee({...newEmployee, Name: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
+          <input type="text" name="Username" placeholder="Enter Username" value={newEmployee.Username} onChange={(e) => setNewEmployee({...newEmployee, Username: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
+          <input type="password" name="Password" placeholder="Enter Password" value={newEmployee.Password} onChange={(e) => setNewEmployee({...newEmployee, Password: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
+          <input type="password" name="ConfirmPassword" placeholder="Confirm Password" value={newEmployee.ConfirmPassword} onChange={(e) => setNewEmployee({...newEmployee, ConfirmPassword: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
+          <input type="text" name="ContactInfo" placeholder="Enter Contact Info" value={newEmployee.ContactInfo} onChange={(e) => setNewEmployee({...newEmployee, ContactInfo: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
+          <input type="text" name="Role" placeholder="Enter Role" value={newEmployee.Role} onChange={(e) => setNewEmployee({...newEmployee, Role: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
+          <button onClick={handleAddEmployee} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+          <button onClick={() => setShowAddForm(false)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2">Cancel</button>
         </div>
-    );
+      ) : (
+        <button onClick={() => setShowAddForm(true)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add New Employee</button>
+      )}
+      <div className="mt-4">
+        <table className="min-w-full table-auto">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Info</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white">
+            {employees.map((employee) =>
+              editEmployeeId === employee.id ? (
+                <tr key={employee.id} className="border-b">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{employee.id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <input type="text" name="Name" value={editFormData.Name} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <input type="text" name="Username" value={editFormData.Username} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <input type="text" name="ContactInfo" value={editFormData.ContactInfo} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <input type="text" name="Role" value={editFormData.Role} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button onClick={handleSave} className="text-green-600 hover:text-green-900">Save</button>
+                    <button onClick={handleCancel} className="text-red-600 hover:text-red-900 ml-4">Cancel</button>
+                  </td>
+                </tr>
+              ) : (
+                <tr key={employee.id} className="border-b">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{employee.id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.Name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.Username}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.ContactInfo}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.Role}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button onClick={() => handleEditClick(employee)} className="text-indigo-600 hover:text-indigo-900">Edit</button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 export default AddEmployee;

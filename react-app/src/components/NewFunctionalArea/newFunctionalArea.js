@@ -253,7 +253,7 @@ const NewFunctionalArea = () => {
                     <>
                     <button
                       onClick={() => startEdit(area)}
-                      className="text-indigo-600 hover:text-indigo-900"
+                      className="text-indigo-600 hover:text-indigo-900 px-4"
                     >
                       Edit
                     </button>

@@ -22,15 +22,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
 
-class ExampleView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        content = {'message': 'Hello, World!'}
-        return Response(content)
-
-
-
 class LoginAPIView(APIView):
     def post(self, request, *args, **kwargs):
         print(request.data)
@@ -234,11 +225,38 @@ class FunctionalAreaListAPIView(APIView):
 
 class AddFunctionalAreaAPIView(APIView):
     permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
         serializer = AddFunctionalSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({"message": "Functional area added successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateProgramAPIView(APIView):
+    def put(self, request, program_id, *args, **kwargs):
+        program = Program.objects.filter(id=program_id).first()
+        if not program:
+            return Response({"error": "Program not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AddProgramSerializer(program, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Program updated successfully"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UpdateFunctionalAreaAPIView(APIView):
+    def put(self, request, area_id, *args, **kwargs):
+        functionalArea = FunctionalArea.objects.filter(id=area_id).first()
+        if not functionalArea:
+            return Response({"error": "Functional Area not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Pass the instance to the serializer along with the data
+        serializer = AddFunctionalSerializer(functionalArea, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Functional Area updated successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EditEmployeeAPIView(APIView):

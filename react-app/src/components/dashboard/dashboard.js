@@ -30,16 +30,21 @@ const Dashboard = () => {
   const [openFeedbackDropdown, setOpenFeedbackDropdown] = useState(false)
   const [displayedTestCases, setDisplayedTestCases] = useState([]);
   const [showOptions, setShowOptions] = useState(false);
-  const [selectedColumn, setSelectedColumn] = useState("Choose Search Filter");
+  const [selectedColumns, setSelectedColumns] = useState([]);
   const [selectedKey, setSelectedKey] = useState([])
   const token = localStorage.getItem('access-token')
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + token
   }
+  const refToken = localStorage.getItem('refresh-token')
+  // if(!token) {
+  //   alert('User logged out!')
+  //   navigate('/')
+  // }
   const location = useLocation();
-  const user = location.state.user
-  const isDeveloper = user.role == "Developer" ? true : false
+  const user = location?.state?.user
+  const isDeveloper = user?.role == "Developer" ? true : false
   console.log(isDeveloper)
   // const [role, setRole] = useState(location.state.user.role)
 
@@ -52,6 +57,10 @@ const Dashboard = () => {
  
   const fetchBugReports = async () => {
     try {
+      if(!token) {
+        alert('User logged out!')
+        navigate('/')
+      }
       
       // Fetching bug reports
       const response = await fetch("http://localhost:8000/bug-reports/", {
@@ -150,7 +159,7 @@ const Dashboard = () => {
   };
 
   const handleNewEmployee = () => {
-    navigate("/edit-employees");
+    navigate("/employee-dashboard", { state: { user: user } });
   };
   const handleNewProgram = () => {
     navigate("/addNewProgram");
@@ -174,6 +183,7 @@ const Dashboard = () => {
 
   const viewTestCase = (testCase) => {
     console.log(testCase);
+    navigate(`/viewTestForm`, { state: { details:testCase, dashboardType: 'normal' } });
     navigate(`/viewTestForm`, { state: { details:testCase, dashboardType: 'normal' } });
   };
 
@@ -286,6 +296,7 @@ const Dashboard = () => {
   };
 
   const tableHead = [
+    "Bug ID",
     "Program",
     "Report Type",
     "Severity",
@@ -298,6 +309,21 @@ const Dashboard = () => {
     "Report Date",
     "Resolved By",
   ];
+
+  const feedbackTableHead = [
+    "Program",
+    "Report Type",
+    "Severity",
+    "Functional Area",
+    "Assigned To",
+    "Status",
+    "Priority",
+    "Resolution",
+    "Reported By",
+    "Report Date",
+    "Resolved By",
+  ];
+
 
   const handleSearch = (e) => {
     const query = e.target.value.trim();
@@ -333,11 +359,11 @@ const Dashboard = () => {
 
   const handleSearchButtonClick = () => {
     if (searchQuery.trim() === "") {
-      setSelectedColumn("Choose Search Filter");
+      setSelectedColumns("Choose Search Filter");
       setSelectedKey(""); // Reset selectedKey
       setDropdownOptions([]) // Revert back to default column
       setDisplayedTestCases(testCases);
-    } else if (selectedColumn === "Choose Search Filter") {
+    } else if (selectedColumns === "Choose Search Filter") {
       alert("Please choose a filter first.");
     } else {
       const filtered = testCases.filter((testCase) =>
@@ -350,20 +376,36 @@ const Dashboard = () => {
     }
   };
 
-  // Feedback button handleSelect function
-  const handleFeedbackSelect = (option) => {
-    setSelectedKey(columnKeyMap[option]);
-    // Handle selection for feedback button
-    setSelectedColumn(option);
-    setOpenFeedbackDropdown(false); // Close the feedback dropdown
-    // Additional logic specific to feedback button
-    // Set dropdown options based on selected column
-    const uniqueOptions = testCases.map((testCase) => testCase[columnKeyMap[option]]);
-    setDropdownOptions(uniqueOptions);
-    // Clear search query and dropdown options
-    setSearchQuery("");
-    setOpenSearchDropdown(false);
-  };
+    // Feedback button handleSelect function
+    const handleFeedbackSelect = (option) => {
+      setSelectedKey(columnKeyMap[option]);
+
+      const updatedColumns = Array.isArray(selectedColumns) ? [...selectedColumns] : []; // Copy the current selected columns array or initialize it as empty
+      const columnIndex = updatedColumns.indexOf(option); // Check if the option is already selected
+  
+      if (columnIndex === -1) {
+      // If not already selected, add it to the array
+      updatedColumns.push(option);
+      } else {
+      // If already selected, remove it from the array
+      updatedColumns.splice(columnIndex, 1);
+      }
+
+      setSelectedColumns(updatedColumns);
+      setOpenFeedbackDropdown(false); // Close the feedback dropdown
+      // Additional logic specific to feedback button
+      // Set dropdown options based on selected column
+      const uniqueOptions = testCases.map((testCase) => testCase[columnKeyMap[option]]);
+      setDropdownOptions(uniqueOptions);
+      // Clear search query and dropdown options
+      setSearchQuery("");
+      setOpenSearchDropdown(false);
+    };
+
+    const handleRemoveSelectedColumn = (columnToRemove) => {
+      const updatedColumns = selectedColumns.filter(column => column !== columnToRemove);
+      setSelectedColumns(updatedColumns);
+    };    
 
   // Define the mapping between column names and keys
   const columnKeyMap = {
@@ -393,12 +435,14 @@ const Dashboard = () => {
 
 
   return (
-    <Card className="h-full w-full">
+    <div>
+      {token && (<div>
+      <Card className="h-full w-full">
       <CardHeader className="flex flex-wrap justify-between items-center rounded-none">
             <div className="mb-8 flex items-center justify-between gap-8">
               <div>
                 <Typography variant="h5" color="blue-gray">
-                 Welcome {user.name}
+                 Welcome {user?.name}
                 </Typography>
                 <Typography color="gray" className="mt-1 font-normal">
                   Test Case reporting Dashboard
@@ -462,7 +506,7 @@ const Dashboard = () => {
                         setSearchQuery(""); // Clear search query when opening the dropdown
                       }}
               >
-                {selectedColumn} {/* Display selected column */}
+                Choose Search Filter
               </Button>
               {openFeedbackDropdown && (
                 <div 
@@ -470,13 +514,27 @@ const Dashboard = () => {
                   style={{ minWidth: "177px" }} // Set a fixed width here
                   onClick={() => setOpenFeedbackDropdown(false)}
                 >
-                  {tableHead.map((option, index) => (
+                  {feedbackTableHead.map((option, index) => (
                     <div key={index} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => handleFeedbackSelect(option)}>
                       {option}
                     </div>
                   ))}
                 </div>
               )}
+              {/* Display selected columns */}
+              <div className="flex items-center">
+                  {selectedColumns.map((column, index) => (
+                    <div key={index} className="flex items-center bg-gray-100 rounded-md px-2 py-1 mr-1">
+                      <span className="mr-1">{column}</span>
+                      <button
+                        className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                        onClick={() => handleRemoveSelectedColumn(column)}
+                      >
+                        &#10005;
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
              
               {/*  Search functionality starts */}
@@ -554,6 +612,7 @@ const Dashboard = () => {
               const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
               return (
                 <tr key={testCase.id}>
+                  <td className={classes}>{testCase.id}</td>
                   <td className={classes}>{testCase.Program}</td>
                   <td className={classes}>{testCase.ReportTypeID}</td>
                   <td className={classes}>{testCase.Severity}</td>
@@ -614,6 +673,7 @@ const Dashboard = () => {
                 const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
                 return (
                   <tr key={testCase.id}>
+                    <td className={classes}>{testCase.id}</td>
                     <td className={classes}>{testCase.Program}</td>
                     <td className={classes}>{testCase.ReportTypeID}</td>
                     <td className={classes}>{testCase.Severity}</td>
@@ -688,6 +748,8 @@ const Dashboard = () => {
         </div>
       </CardFooter>
     </Card>
+    </div>)}
+    </div>
   );
 };
 

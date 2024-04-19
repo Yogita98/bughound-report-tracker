@@ -18,10 +18,12 @@ from bughoundapp.views import (AddFunctionalAreaAPIView, AddProgramAPIView,
                                BugReportDelete, BugReportListView,
                                BugReportSearchAPIView, EmployeeNameListView,
                                FormDataAPIView, FunctionalAreaListAPIView,
-                               LoginAPIView, ProgramListView, RegisterAPIView,
-                               SubmitAPIView, UpdateBugReportAPIView, ExampleView, 
-                               ProgramFunctionalAreasList, EditEmployeeAPIView,
-                               UpdateProgramAPIView, UpdateFunctionalAreaAPIView)
+                               EditEmployeeAPIView,
+                               LoginAPIView, ProgramFunctionalAreasList,
+                               ProgramListView, RegisterAPIView, SubmitAPIView,
+                               UpdateBugReportAPIView, UpdateProgramAPIView, 
+                               UpdateFunctionalAreaAPIView)
+
 from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -29,7 +31,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
 urlpatterns = [
-    path('test/', ExampleView.as_view(), name='test-auth'),
     path("admin/", admin.site.urls),
     path('submit/', SubmitAPIView.as_view(), name='submit-api'),
     path('login/', LoginAPIView.as_view(), name='login'),
@@ -47,6 +48,9 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/program-functional-area-names/<int:program_id>/', ProgramFunctionalAreasList.as_view(), name = 'program-functional-area-names'),
+
+    path('api/update-program-names/<int:program_id>/', UpdateProgramAPIView.as_view(), name='update-program-names'),
+    path('api/update-functional-area-names/<int:area_id>/', UpdateFunctionalAreaAPIView.as_view(), name='update-functional-area-names'),
     path('api/employees/<int:pk>/', EditEmployeeAPIView.as_view()),
     path('api/update-program-names/<int:program_id>/', UpdateProgramAPIView.as_view(), name='update-program-names'),
     path('api/update-functional-area-names/<int:area_id>/', UpdateFunctionalAreaAPIView.as_view(), name='update-functional-area-names'),

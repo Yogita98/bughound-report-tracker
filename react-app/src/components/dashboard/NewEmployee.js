@@ -1,7 +1,18 @@
 import { saveAs } from 'file-saver';
 import React, { useEffect, useState } from 'react';
+import { MagnifyingGlassIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import { useNavigate } from 'react-router-dom';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Input,
+  Typography,
+} from "@material-tailwind/react";
 
-const NewEmployee = () => {
+const NewEmployee = ({isadmin}) => {
   const [employees, setEmployees] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newEmployee, setNewEmployee] = useState({
@@ -19,7 +30,7 @@ const NewEmployee = () => {
     email: '',
     role: ''
   });
-
+  const navigate = useNavigate()
   const token = localStorage.getItem('access-token')
   const headers = {
     'Content-Type': 'application/json',
@@ -37,6 +48,12 @@ const NewEmployee = () => {
     const data = await response.json();
     setEmployees(data);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('access-token');
+    localStorage.removeItem('refresh-token');
+    navigate('/')
+  }
 
   const handleAddEmployee = async () => {
     if (!newEmployee.name || !newEmployee.username || !newEmployee.password || !newEmployee.confirmPassword || !newEmployee.email || !newEmployee.role) {
@@ -148,6 +165,17 @@ const NewEmployee = () => {
         <button onClick={handleDownload} className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
         Export Employees
       </button>
+      {/* <div className="shrink-0 flex-col gap-2 sm:">
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  color="gray"
+                  onClick={handleLogout}
+                >
+                  <UserPlusIcon strokeWidth={2} className="h-4 w-5" />
+                  Logout
+                </Button>
+              </div> */}
       </div>
       )}
     

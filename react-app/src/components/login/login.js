@@ -39,11 +39,12 @@ const Login = () => {
             if (response.ok) {
                 localStorage.setItem('access-token', data.access)
                 localStorage.setItem('refresh-token', data.refresh)
+                navigate('/dashboard', { state: { user: data.user } })
                 // If login is successful, navigate to the dashboard page
-                if(data.user.is_superuser){
-                    navigate('/employee-dashboard', { state: { user: data.user } })
-                } else 
-                    navigate('/dashboard', { state: { user: data.user } })
+                // if(data.user.is_superuser){
+                //     navigate('/employee-dashboard', { state: { user: data.user } })
+                // } else 
+                //     navigate('/dashboard', { state: { user: data.user } })
                 // if (data.Role === 'Full Access') {
                 //     navigate('/adminDashboard'); // Navigate to the Admin Dashboard if full access
                 // } else {
