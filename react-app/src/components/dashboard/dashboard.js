@@ -365,11 +365,11 @@ const Dashboard = () => {
 
   const handleSearchButtonClick = () => {
     if (searchQuery.trim() === "") {
-      setSelectedColumns("Choose Search Filter");
+      setSelectedColumns([]);
       setSelectedKey(""); // Reset selectedKey
       setDropdownOptions([]) // Revert back to default column
       setDisplayedTestCases(testCases);
-    } else if (selectedColumns === "Choose Search Filter") {
+    } else if (!Array.isArray(selectedColumns) || selectedColumns.length === 0) {
       alert("Please choose a filter first.");
     } else {
       const filtered = testCases.filter((testCase) =>
@@ -503,40 +503,51 @@ const Dashboard = () => {
       <CardBody className="overflow-scroll px-0">
         {/*  Search functionality starts */}
 
-        <div className="flex justify-between items-center">
-        <Typography variant="h6" color="blue-gray" className="text-center flex-grow">
+        <div className="flex justify-between items-center h-[64px]">
+          <Typography variant="h6" color="blue-gray" className="text-center flex-grow">
              TestCase Dashboard
-            </Typography>
-         <div className="flex gap-2 items-center">
-
-            <Button
-              className="px-3 py-2 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
-              style={{ Width: "200px" }} // Set a fixed width here
-              onClick={() => {
-                setOpenFeedbackDropdown(!openFeedbackDropdown);
-                setSearchQuery(""); // Clear search query when opening the dropdown
-              }}
-            >
-              Choose Search Filter
-              {selectedColumns} {/* Display selected column */}
-            </Button>
-            {openFeedbackDropdown && (
-              <div
-                className="absolute z-10 top-full left-0 bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto"
-                style={{ minWidth: "177px" }} // Set a fixed width here
-                onClick={() => setOpenFeedbackDropdown(false)}
+          </Typography>
+          <div className="flex flex-col items-start relative">
+            <div className="flex gap-2 items-centre">
+              <Button
+                className="px-3 py-1 border border-gray-400 rounded-md bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:border-blue-500"
+                style={{ width: "200px", paddingTop: "6px", paddingBottom: "6px", fontSize: "0.75rem" }} // Adjusted padding for reduced height
+                onClick={() => {
+                  setOpenFeedbackDropdown(!openFeedbackDropdown);
+                  setSearchQuery(""); // Clear search query when opening the dropdown
+                }}
               >
-                {tableHead.map((option, index) => (
-                  <div
-                    key={index}
-                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleFeedbackSelect(option)}
-                  >
-                    {option}
-                  </div>
-                ))}
-              </div>
-            )}
+                Choose Search Filter
+              </Button>
+              {openFeedbackDropdown && (
+                <div
+                  className="absolute z-10 top-full left-0 bg-white rounded-b border border-t-0 border-solid border-neutral-300 max-h-48 overflow-y-auto"
+                  style={{ minWidth: "177px" }} // Set a fixed width here
+                  onClick={() => setOpenFeedbackDropdown(false)}
+                >
+                  {feedbackTableHead.map((option, index) => (
+                    <div
+                      key={index}
+                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleFeedbackSelect(option)}
+                    >
+                      {option}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Selected Columns */}
+            <div className="flex flex-col gap-1 mt-2 max-h-10 overflow-y-auto">
+              {selectedColumns && selectedColumns.map((column, index) => (
+                <div key={index} className="selected-column bg-gray-100 border border-gray-300 rounded-md px-1 py-0.5 flex items-center text-xs">
+                  <span className="mr-1">{column}</span>
+                <button className="text-gray-500 hover:text-gray-700 text-xs" onClick={() => handleRemoveSelectedColumn(column)}>
+                  ×
+                </button>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="relative flex-grow max-w-xl">
             <Input
