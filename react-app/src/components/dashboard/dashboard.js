@@ -333,14 +333,31 @@ const Dashboard = () => {
 
 
   const handleSearch = (e) => {
-    const query = e.target.value.trim();
+    const query = e.target.value.toLowerCase();
     setSearchQuery(query);
-    const filtered = testCases.filter((testCase) =>
-      String(testCase[selectedKey]).toLowerCase().includes(query.toLowerCase())
-    );
+    // Split the input string by commas to get individual search terms
+    const searchTerms = query.split(",");
+
+    const filtered = testCases.filter((testCase) => {
+        // Check if any of the search terms match their corresponding selected column
+        for (let i = 0; i < searchTerms.length; i++) {
+            const term = searchTerms[i].trim(); // Trim whitespace from each search term
+            const column = selectedColumns[i]; // Get the corresponding selected column
+            const columnValue = String(testCase[columnKeyMap[column]]).trim().toLowerCase();
+            if (!columnValue.includes(term)) {
+                return false; // Exclude the test case if a match is not found
+            }
+        }
+        return true; // Include the test case if all search terms match their corresponding selected columns
+    });
     setFilteredTestCases(filtered);
     // Extract unique values from filtered test cases for dropdown options
-    const uniqueOptions = Array.from(new Set(filtered.map((testCase) => testCase[selectedKey])));
+    const options = [];
+    for (const testCase of filtered) {
+        const option = selectedColumns.map(column => testCase[columnKeyMap[column]]).join(", ");
+        options.push(option);
+    }
+    const uniqueOptions = Array.from(new Set(options));
     setDropdownOptions(uniqueOptions);
     setOpenSearchDropdown(uniqueOptions.length > 0 && query.trim().length > 0);
   };
@@ -353,16 +370,27 @@ const Dashboard = () => {
 
   // Search button handleSelect function
   const handleSearchSelect = (option) => {
-    setSearchQuery(option);
-    setSelectedOption(option);
-    const filtered = testCases.filter((testCase) =>
-      String(testCase[selectedKey]).toLowerCase().includes(String(option).toLowerCase())
-    );
+    // Split the selected option into individual values
+    const selectedOptionValues = option.split(", ");
+
+    // Filter the test cases based on the selected option values
+    const filtered = testCases.filter((testCase) => {
+        // Check if the values in the selected option match the corresponding values in the test case
+        return selectedColumns.every((column, index) => {
+            const columnValue = String(testCase[columnKeyMap[column]]).toLowerCase();
+            const optionValue = selectedOptionValues[index].toLowerCase();
+            return columnValue.includes(optionValue);
+        });
+    });
+
+    // Update the filtered and displayed test cases
     setFilteredTestCases(filtered);
     setDisplayedTestCases(filtered);
+
+    // Clear search query and dropdown options
     setSearchQuery("");
     setDropdownOptions([]);
-  };
+};
 
   const handleSearchButtonClick = () => {
     if (searchQuery.trim() === "") {
@@ -618,6 +646,7 @@ const Dashboard = () => {
                     : "p-4 border-b border-blue-gray-50";
                   return (
                     <tr key={testCase.id}>
+                      <td className={classes}>{testCase.id}</td>
                       <td className={classes}>{testCase.Program}</td>
                       <td className={classes}>{testCase.ReportTypeID}</td>
                       <td className={classes}>{testCase.Severity}</td>
@@ -707,6 +736,7 @@ const Dashboard = () => {
                     : "p-4 border-b border-blue-gray-50";
                   return (
                     <tr key={testCase.id}>
+                      <td className={classes}>{testCase.id}</td>
                       <td className={classes}>{testCase.Program}</td>
                       <td className={classes}>{testCase.ReportTypeID}</td>
                       <td className={classes}>{testCase.Severity}</td>
