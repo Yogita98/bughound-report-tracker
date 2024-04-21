@@ -65,9 +65,6 @@ const Login = () => {
         <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
             <Header
                 heading="Login to your account"
-                paragraph="New Employee? "
-                linkName="Register"
-                linkUrl="/register"
             />
             <h2 className="text-2xl font-semibold mb-6">Login</h2>
             <form onSubmit={handleSubmit} className="w-full max-w-xs">

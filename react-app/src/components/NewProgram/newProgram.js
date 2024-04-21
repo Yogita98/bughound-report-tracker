@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const NewProgram = () => {
   const [programs, setPrograms] = useState([]);
@@ -19,6 +20,10 @@ const NewProgram = () => {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + token
   }
+  const location = useLocation()
+
+  const user = location.state.user
+  console.log(user)
 
   useEffect(() => {
     fetchPrograms();
@@ -31,6 +36,7 @@ const NewProgram = () => {
   };
 
   const handleAddProgram = async () => {
+    
     if (!newProgram.ProgramName || !newProgram.Resolution || !newProgram.ResolutionVersion) {
       alert('All fields are required');
       return;
@@ -79,6 +85,15 @@ const NewProgram = () => {
       alert('Failed to save changes');
     }
   };
+  const handleShowAdd = () => {
+    console.log(user.role)
+    if(user.role == "Admin"){
+      console.log(user.role)
+      alert("Yo do not have permission to perform this operation")
+      return;
+    }
+    else setShowAddForm(true)
+  }
 
   const handleCancel = () => {
     setEditProgramId(null);
@@ -96,7 +111,7 @@ const NewProgram = () => {
           <button onClick={() => setShowAddForm(false)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2">Cancel</button>
         </div>
       ) : (
-        <button onClick={() => setShowAddForm(true)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add New Program</button>
+        <button onClick={handleShowAdd} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add New Program</button>
       )}
       <div className="mt-4">
         <table className="min-w-full table-auto">

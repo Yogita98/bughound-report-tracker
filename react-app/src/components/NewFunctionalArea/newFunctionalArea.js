@@ -53,6 +53,7 @@ const NewFunctionalArea = () => {
   };
 
   const handleAddFunctionalArea = async () => {
+
     if (!selectedProgramId) {
       alert("Please select a program.");
       return;
@@ -118,22 +119,59 @@ const NewFunctionalArea = () => {
     setEditingId(null);
   };
 
-  const downloadAreaXML = (area) => {
+  // const downloadAreaXML = (area) => {
+  //   // Get the current timestamp
+  //   const currentTime = new Date().toISOString();
+  
+  //   // Construct the XML content including the timestamp
+  //   const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+  //     <FunctionalArea>
+  //       <AreaID>${area.id}</AreaID>
+  //       <AreaName>${area.AreaName}</AreaName>
+  //       <Program>${area.ProgramName}</Program>
+  //       <Timestamp>${currentTime}</Timestamp>
+  //     </FunctionalArea>
+  //   `.trim(); // Trim any leading or trailing whitespace
+  
+  //   // Create a Blob with the XML content
+  //   const blob = new Blob([xmlContent], { type: "application/xml" });
+  
+  //   // Create a URL for the Blob
+  //   const url = URL.createObjectURL(blob);
+  
+  //   // Create a link element and trigger the download
+  //   const link = document.createElement("a");
+  //   link.href = url;
+  //   link.download = 'functional_area_details.xml';
+  //   link.click();
+  
+  //   // Revoke the URL to release resources
+  //   URL.revokeObjectURL(url);
+  // };
+
+  const downloadAllAreasXML = () => {
     // Get the current timestamp
-    const currentTime = new Date().toISOString();
+    const currentTime = new Date().toLocaleString('en-US', {
+      timeZone: 'America/Los_Angeles'
+    });
   
-    // Construct the XML content including the timestamp
-    const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
-      <FunctionalArea>
-        <AreaID>${area.id}</AreaID>
-        <AreaName>${area.AreaName}</AreaName>
-        <Program>${area.ProgramName}</Program>
-        <Timestamp>${currentTime}</Timestamp>
-      </FunctionalArea>
-    `.trim(); // Trim any leading or trailing whitespace
+    // Create an array to store XML content for each area
+    const xmlContents = functionalAreas.map(area => {
+      return `<?xml version="1.0" encoding="UTF-8"?>
+      <Timestamp>${currentTime}</Timestamp>
+        <FunctionalArea>
+          <AreaID>${area.id}</AreaID>
+          <AreaName>${area.AreaName}</AreaName>
+          <Program>${programs.find(p => p.id === area.Program)?.ProgramName || 'N/A'}</Program>
+        </FunctionalArea>
+      `.trim();
+    });
   
-    // Create a Blob with the XML content
-    const blob = new Blob([xmlContent], { type: "application/xml" });
+    // Combine XML contents into a single string
+    const combinedXmlContent = xmlContents.join('\n');
+  
+    // Create a Blob with the combined XML content
+    const blob = new Blob([combinedXmlContent], { type: "application/xml" });
   
     // Create a URL for the Blob
     const url = URL.createObjectURL(blob);
@@ -148,14 +186,23 @@ const NewFunctionalArea = () => {
     URL.revokeObjectURL(url);
   };
   
+  // Iterate over each row in the table and call downloadAllAreasXML function
+  const downloadAllAreas = () => {
+    functionalAreas.forEach(area => {
+      downloadAllAreasXML(area);
+    });
+  };
+  
+  
   
     
 
   return (
     <div className="p-5 m-5 bg-white shadow-lg rounded-lg">
       <h1 className="text-2xl font-bold mb-4">Manage Functional Areas</h1>
-      <div className="mb-4 flex flex-wrap items-center">
-        <input
+      <div className="mb-4 flex flex-wrap justify-between items-center">
+        <div>
+          <input
           type="text"
           className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
           placeholder="Enter Functional Area Name"
@@ -178,6 +225,13 @@ const NewFunctionalArea = () => {
           onClick={handleAddFunctionalArea}
         >
           Add
+        </button>
+        </div>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          onClick={downloadAllAreasXML}
+        >
+          Download
         </button>
       </div>
       <div className="mt-4">
@@ -250,12 +304,7 @@ const NewFunctionalArea = () => {
                       >
                         Cancel
                       </button>
-                      <button
-                        onClick={() => downloadAreaXML(area)}
-                        className="text-green-600 hover:text-green-900 px-4"
-                      >
-                        Download
-                      </button>
+                      
                     </>
                   ) : (
                     <>
@@ -265,12 +314,7 @@ const NewFunctionalArea = () => {
                     >
                       Edit
                     </button>
-                    <button
-                      onClick={() => downloadAreaXML(area)}
-                      className="text-green-600 hover:text-green-900"
-                    >
-                      Download
-                    </button>
+                    
                     </>
                   )}
                 </td>

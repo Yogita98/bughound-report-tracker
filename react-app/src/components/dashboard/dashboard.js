@@ -47,7 +47,10 @@ const Dashboard = () => {
   const location = useLocation();
   const user = location?.state?.user
   const isDeveloper = user?.role == "Developer" ? true : false
-  console.log(isDeveloper)
+  const isAdmin = user?.role == "Admin" ? true : false
+  console.log("admin"+isAdmin)
+  
+  console.log("dev:"+isDeveloper)
   // const [role, setRole] = useState(location.state.user.role)
 
 
@@ -165,7 +168,7 @@ const Dashboard = () => {
     navigate("/employee-dashboard", { state: { user: user } });
   };
   const handleNewProgram = () => {
-    navigate("/addNewProgram");
+    navigate("/addNewProgram", {state: {user: user}});
   };
   const handleNewFunctionalArea = () => {
     navigate("/addNewFunctionalArea");
@@ -179,7 +182,7 @@ const Dashboard = () => {
   }
 
   const handleEditTestCase = (testCase) => {
-    if(isDeveloper)
+    if(isDeveloper || isAdmin)
       navigate("/editTestForm", { state: { details:testCase, dashboardType: 'normal' } });
     else alert("You do not have permission to perform this operation")
   };
@@ -446,7 +449,7 @@ const Dashboard = () => {
               Welcome {user?.name}
             </Typography>
           </div>
-          {isDeveloper && (
+          {(isDeveloper || isAdmin) && (
             <div className="flex items-center gap-2">
               <Button
                 variant="outlined"

@@ -55,7 +55,7 @@ from django.db import models
 #     Permissions = models.CharField(max_length=255)
 
 class Program(models.Model):
-    ProgramName = models.CharField(max_length=255, unique=True)
+    ProgramName = models.CharField(max_length=255)
     Resolution = models.CharField(max_length=100, default='1')
     ResolutionVersion = models.CharField(max_length=100, default='1')
 
@@ -103,7 +103,6 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(max_length=255, unique=True, null=False)
     name = models.CharField(max_length=255)
-    # password = models.CharField(max_length=255)
     # contact_info = models.CharField(max_length=255)
     role = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
@@ -113,7 +112,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     objects = EmployeeManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'password']
+    REQUIRED_FIELDS = ['password']
 
     def __str__(self):
         # return self.normalize_email
@@ -121,7 +120,7 @@ class Employee(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def save(self, *args, **kwargs):
-        # Optionally handle password hashing here if not using set_password
+        #Optionally handle password hashing here if not using set_password
         self.password = make_password(self.password)
         super().save(*args, **kwargs)
 

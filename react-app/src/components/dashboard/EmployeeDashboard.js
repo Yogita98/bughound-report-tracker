@@ -5,7 +5,7 @@ import NewEmployee from "./NewEmployee";
 
 const EmployeeDashboard = () => {
   const location = useLocation();
-  const [isadmin, setIsAdmin] = useState(location.state.user.is_superuser)
+  const [user, setUser] = useState(location.state.user)
   const token = localStorage.getItem('access-token')
   const headers = {
     'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ const EmployeeDashboard = () => {
 
   return(
     <div>
-      {token && <NewEmployee isadmin = {isadmin} />}
+      {token && <NewEmployee user = {user} />}
       {/* {!isadmin && <Dashboard />} */}
     </div>
     

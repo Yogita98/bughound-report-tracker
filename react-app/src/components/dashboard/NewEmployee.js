@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 
-const NewEmployee = ({isadmin}) => {
+const NewEmployee = ({user}) => {
   const [employees, setEmployees] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newEmployee, setNewEmployee] = useState({
@@ -114,6 +114,8 @@ const NewEmployee = ({isadmin}) => {
   };
 
   const handleSave = async () => {
+    editFormData['password'] = 'abc'
+    console.log(editFormData)
     const response = await fetch(`http://localhost:8000/api/employees/${editEmployeeId}/`, {
       method: 'PUT',
       headers,
@@ -131,7 +133,9 @@ const NewEmployee = ({isadmin}) => {
     setEditEmployeeId(null);
   };
   const handleDownload = () => {
-    const timestamp = new Date().toISOString();
+    const timestamp = new Date().toLocaleString('en-US', {
+      timeZone: 'America/Los_Angeles'
+    });
     let fileContent = `Export Timestamp: ${timestamp}\n\n`;
     fileContent += "ID, Name, Username, Email, Role\n";
 
@@ -161,7 +165,7 @@ const NewEmployee = ({isadmin}) => {
         </div>
       ) : (
         <div class="flex space-x-3 ">
-        <button onClick={() => setShowAddForm(true)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add New Employee</button>
+        {user.role == "Admin" && <button onClick={() => setShowAddForm(true)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add New Employee</button>}
         <button onClick={handleDownload} className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
         Export Employees
       </button>
@@ -187,6 +191,7 @@ const NewEmployee = ({isadmin}) => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Info (Email)</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admin</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
@@ -205,6 +210,7 @@ const NewEmployee = ({isadmin}) => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <input type="text" name="email" value={editFormData.email} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{employee.is_superuser ? "Admin" : "Other Employee"}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <input type="text" name="role" value={editFormData.role} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                   </td>
@@ -219,6 +225,7 @@ const NewEmployee = ({isadmin}) => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.username}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.email}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{employee.is_superuser ? "Admin" : "Other Employee"}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{employee.role}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button onClick={() => handleEditClick(employee)} className="text-indigo-600 hover:text-indigo-900">Edit</button>
