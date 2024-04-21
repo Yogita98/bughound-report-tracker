@@ -52,6 +52,7 @@ const Dashboard = () => {
   
   console.log("dev:"+isDeveloper)
   // const [role, setRole] = useState(location.state.user.role)
+  console.log("user: ",user)
 
 
   useEffect(() => {
@@ -161,7 +162,7 @@ const Dashboard = () => {
   };
 
   const handleCreateTestCase = () => {
-    navigate("/createTestForm");
+    navigate("/createTestForm", { state: {user: user}});
   };
 
   const handleNewEmployee = () => {

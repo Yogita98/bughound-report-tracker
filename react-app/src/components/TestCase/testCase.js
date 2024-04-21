@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
 
 const TestCase = () => {
   // Initial state for the form data
   const navigate = useNavigate();
   const handleCancel = () => {
-    navigate("/dashboard");
+    navigate("/dashboard", { state: {user: user}});
   };
   const generateBugId = () => {
     const now = new Date();
@@ -26,6 +27,10 @@ const TestCase = () => {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ' + token
   }
+  const location = useLocation()
+  const user = location?.state?.user
+  console.log("usrr",user)
+
   
   useEffect(() => {
     // Initially fetch all programs, assuming you have an endpoint for this
@@ -182,7 +187,7 @@ const handleFunctionalAreaChange = (event) => {
       if (response.ok) {
         const data = await response.json();
         alert("Submission successful");
-        navigate("/dashboard");
+        navigate("/dashboard", { state: {user: user}});
         // Optional: Reset form or redirect the user
       } else {
         console.error("Submission failed");
