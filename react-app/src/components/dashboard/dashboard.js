@@ -48,18 +48,25 @@ const Dashboard = () => {
   const user = location?.state?.user
   const isDeveloper = user?.role == "Developer" ? true : false
   const isAdmin = user?.role == "Admin" ? true : false
-  console.log("admin"+isAdmin)
+  // console.log("admin"+isAdmin)
   
-  console.log("dev:"+isDeveloper)
+  // console.log("dev:"+isDeveloper)
   // const [role, setRole] = useState(location.state.user.role)
-  console.log("user: ",user)
+  // console.log("user: ",user)
 
 
   useEffect(() => {
     fetchBugReports();
   }, []);
 
-  
+  const reportTypeOptions = [
+    { name: "Coding Error", id: "1" },
+    { name: "Design Error", id: "2" },
+    { name: "Suggestions", id: "3" },
+    { name: "Documentation", id: "4" },
+    { name: "Hardware", id: "5" },
+    { name: "Query", id: "6" },
+  ];
  
   const fetchBugReports = async () => {
     try {
@@ -79,7 +86,7 @@ const Dashboard = () => {
       const data = await response.json();
   
       // Fetching employee names
-      console.log('Token being sent:', 'Bearer ' + token);
+      // console.log('Token being sent:', 'Bearer ' + token);
       const employeeResponse = await fetch("http://localhost:8000/api/employees-names/", {
         headers
       });
@@ -87,7 +94,7 @@ const Dashboard = () => {
         throw new Error("Network response was not ok for employee names");
       }
       const employees = await employeeResponse.json();
-      console.log(employees);
+      // console.log(employees);
      
       
       // Convert employee array to an ID-to-name map
@@ -121,11 +128,15 @@ const Dashboard = () => {
       acc[functionalArea.id] = functionalArea.AreaName;
       return acc;
     }, {});
+    const reportTypeMap = reportTypeOptions.reduce((acc, option) => {
+      acc[option.id] = option.name;
+      return acc;
+    }, {});
   
       // Replace employee IDs in the bug reports with names using the map
       const testCases = data.map(report => ({
         id: report.id,
-        ReportTypeID: report.ReportTypeID,
+        ReportType: reportTypeMap[report.ReportTypeID]|| "Unknown",
         description: report.ProblemDescription,
         date: report.ReportedByDate,
         status: report.Status,
@@ -154,7 +165,7 @@ const Dashboard = () => {
       }));
   
       // Example: Setting the state or logging to console
-      console.log(testCases);
+      // console.log(testCases);
       setTestCases(testCases);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
@@ -189,7 +200,7 @@ const Dashboard = () => {
   };
 
   const viewTestCase = (testCase) => {
-    console.log(testCase);
+    // console.log(testCase);
     navigate(`/viewTestForm`, { state: { details:testCase, dashboardType: 'normal' } });
     navigate(`/viewTestForm`, { state: { details:testCase, dashboardType: 'normal' } });
   };
@@ -217,7 +228,7 @@ const Dashboard = () => {
         alert(`Failed to delete test case: ${errorText}`);
       }
     } catch (error) {
-      console.error('Error deleting test case:', error);
+      // console.error('Error deleting test case:', error);
       alert('Error deleting test case, please try again.');
     }
   }
@@ -337,7 +348,7 @@ const Dashboard = () => {
     setSearchQuery(query);
     // Split the input string by commas to get individual search terms
     const searchTerms = query.split(",");
-
+   
     const filtered = testCases.filter((testCase) => {
         // Check if any of the search terms match their corresponding selected column
         for (let i = 0; i < searchTerms.length; i++) {
@@ -351,6 +362,8 @@ const Dashboard = () => {
         return true; // Include the test case if all search terms match their corresponding selected columns
     });
     setFilteredTestCases(filtered);
+    console.log("filtered:",filtered)
+    // setFilteredTestCases([])
     // Extract unique values from filtered test cases for dropdown options
     const options = [];
     for (const testCase of filtered) {
@@ -404,10 +417,19 @@ const Dashboard = () => {
       const filtered = testCases.filter((testCase) =>
         String(testCase[selectedKey]).toLowerCase().includes(searchQuery.toLowerCase())
       );
-      setFilteredTestCases(filtered);
+      console.log(filtered)
+      if(filtered.length <=0 ){
+        // console.log("empty")
+        setFilteredTestCases(['']);
+        setDisplayedTestCases(['']);
+      }
+      else {
+        setFilteredTestCases(filtered);
+        setDisplayedTestCases(filtered);
+      }
       setSearchQuery("");
       setOpenSearchDropdown(false);
-      setDisplayedTestCases(filtered);
+      // setDisplayedTestCases(filtered);
     }
   };
 
@@ -648,7 +670,7 @@ const Dashboard = () => {
                     <tr key={testCase.id}>
                       <td className={classes}>{testCase.id}</td>
                       <td className={classes}>{testCase.Program}</td>
-                      <td className={classes}>{testCase.ReportTypeID}</td>
+                      <td className={classes}>{testCase.ReportType}</td>
                       <td className={classes}>{testCase.Severity}</td>
                       <td className={classes}>{testCase.FunctionalArea_id}</td>
                       <td className={classes}>
@@ -738,7 +760,7 @@ const Dashboard = () => {
                     <tr key={testCase.id}>
                       <td className={classes}>{testCase.id}</td>
                       <td className={classes}>{testCase.Program}</td>
-                      <td className={classes}>{testCase.ReportTypeID}</td>
+                      <td className={classes}>{testCase.ReportType}</td>
                       <td className={classes}>{testCase.Severity}</td>
                       <td className={classes}>{testCase.FunctionalArea_id}</td>
                       <td className={classes}>

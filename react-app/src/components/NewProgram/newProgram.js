@@ -6,14 +6,10 @@ const NewProgram = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProgram, setNewProgram] = useState({
     ProgramName: '',
-    Resolution: '',
-    ResolutionVersion: ''
   });
   const [editProgramId, setEditProgramId] = useState(null);
   const [editFormData, setEditFormData] = useState({
     ProgramName: '',
-    Resolution: '',
-    ResolutionVersion: ''
   });
   const token = localStorage.getItem('access-token')
   const headers = {
@@ -37,7 +33,7 @@ const NewProgram = () => {
 
   const handleAddProgram = async () => {
     
-    if (!newProgram.ProgramName || !newProgram.Resolution || !newProgram.ResolutionVersion) {
+    if (!newProgram.ProgramName) {
       alert('All fields are required');
       return;
     }
@@ -47,7 +43,7 @@ const NewProgram = () => {
       body: JSON.stringify(newProgram)
     });
     if (response.ok) {
-      setNewProgram({ ProgramName: '', Resolution: '', ResolutionVersion: '' }); // Reset the form
+      setNewProgram({ ProgramName: ''}); // Reset the form
       setShowAddForm(false); // Hide the form
       fetchPrograms(); // Refresh the list
     } else {
@@ -59,8 +55,6 @@ const NewProgram = () => {
     setEditProgramId(program.id);
     setEditFormData({
       ProgramName: program.ProgramName,
-      Resolution: program.Resolution,
-      ResolutionVersion: program.ResolutionVersion
     });
   };
 
@@ -105,8 +99,6 @@ const NewProgram = () => {
       {showAddForm ? (
         <div className="mb-4">
           <input type="text" name="ProgramName" placeholder="Enter Program Name" value={newProgram.ProgramName} onChange={(e) => setNewProgram({...newProgram, ProgramName: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
-          <input type="text" name="Resolution" placeholder="Enter Resolution" value={newProgram.Resolution} onChange={(e) => setNewProgram({...newProgram, Resolution: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
-          <input type="text" name="ResolutionVersion" placeholder="Enter Resolution Version" value={newProgram.ResolutionVersion} onChange={(e) => setNewProgram({...newProgram, ResolutionVersion: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
           <button onClick={handleAddProgram} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
           <button onClick={() => setShowAddForm(false)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-2">Cancel</button>
         </div>
@@ -119,8 +111,6 @@ const NewProgram = () => {
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program ID</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Resolution</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Resolution Version</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -132,12 +122,6 @@ const NewProgram = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <input type="text" name="ProgramName" value={editFormData.ProgramName} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <input type="text" name="Resolution" value={editFormData.Resolution} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <input type="text" name="ResolutionVersion" value={editFormData.ResolutionVersion} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button onClick={handleSave} className="text-green-600 hover:text-green-900">Save</button>
                     <button onClick={handleCancel} className="text-red-600 hover:text-red-900 ml-4">Cancel</button>
@@ -147,8 +131,6 @@ const NewProgram = () => {
                 <tr key={program.id} className="border-b">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{program.id}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{program.ProgramName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{program.Resolution}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{program.ResolutionVersion}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button onClick={() => handleEditClick(program)} className="text-indigo-600 hover:text-indigo-900">Edit</button>
                   </td>
