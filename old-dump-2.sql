@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: bugreports
 -- ------------------------------------------------------
--- Server version	8.3.0
+-- Server version       8.3.0
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -97,7 +97,7 @@ CREATE TABLE `auth_permission` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`),
   CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,7 +106,7 @@ CREATE TABLE `auth_permission` (
 
 LOCK TABLES `auth_permission` WRITE;
 /*!40000 ALTER TABLE `auth_permission` DISABLE KEYS */;
-INSERT INTO `auth_permission` VALUES (1,'Can add log entry',1,'add_logentry'),(2,'Can change log entry',1,'change_logentry'),(3,'Can delete log entry',1,'delete_logentry'),(4,'Can view log entry',1,'view_logentry'),(5,'Can add permission',2,'add_permission'),(6,'Can change permission',2,'change_permission'),(7,'Can delete permission',2,'delete_permission'),(8,'Can view permission',2,'view_permission'),(9,'Can add group',3,'add_group'),(10,'Can change group',3,'change_group'),(11,'Can delete group',3,'delete_group'),(12,'Can view group',3,'view_group'),(13,'Can add user',4,'add_user'),(14,'Can change user',4,'change_user'),(15,'Can delete user',4,'delete_user'),(16,'Can view user',4,'view_user'),(17,'Can add content type',5,'add_contenttype'),(18,'Can change content type',5,'change_contenttype'),(19,'Can delete content type',5,'delete_contenttype'),(20,'Can view content type',5,'view_contenttype'),(21,'Can add session',6,'add_session'),(22,'Can change session',6,'change_session'),(23,'Can delete session',6,'delete_session'),(24,'Can view session',6,'view_session'),(25,'Can add employee role',7,'add_employeerole'),(26,'Can change employee role',7,'change_employeerole'),(27,'Can delete employee role',7,'delete_employeerole'),(28,'Can view employee role',7,'view_employeerole'),(29,'Can add bug report',8,'add_bugreport'),(30,'Can change bug report',8,'change_bugreport'),(31,'Can delete bug report',8,'delete_bugreport'),(32,'Can view bug report',8,'view_bugreport'),(33,'Can add attachment',9,'add_attachment'),(34,'Can change attachment',9,'change_attachment'),(35,'Can delete attachment',9,'delete_attachment'),(36,'Can view attachment',9,'view_attachment'),(37,'Can add program',10,'add_program'),(38,'Can change program',10,'change_program'),(39,'Can delete program',10,'delete_program'),(40,'Can view program',10,'view_program'),(41,'Can add functional area',11,'add_functionalarea'),(42,'Can change functional area',11,'change_functionalarea'),(43,'Can delete functional area',11,'delete_functionalarea'),(44,'Can view functional area',11,'view_functionalarea'),(45,'Can add employee',12,'add_employee'),(46,'Can change employee',12,'change_employee'),(47,'Can delete employee',12,'delete_employee'),(48,'Can view employee',12,'view_employee'),(49,'Can add my user',13,'add_myuser'),(50,'Can change my user',13,'change_myuser'),(51,'Can delete my user',13,'delete_myuser'),(52,'Can view my user',13,'view_myuser'),(53,'Can add program functional area',14,'add_programfunctionalarea'),(54,'Can change program functional area',14,'change_programfunctionalarea'),(55,'Can delete program functional area',14,'delete_programfunctionalarea'),(56,'Can view program functional area',14,'view_programfunctionalarea'),(57,'Can add program updated',15,'add_programupdated'),(58,'Can change program updated',15,'change_programupdated'),(59,'Can delete program updated',15,'delete_programupdated'),(60,'Can view program updated',15,'view_programupdated'),(61,'Can add program version new',16,'add_programversionnew'),(62,'Can change program version new',16,'change_programversionnew'),(63,'Can delete program version new',16,'delete_programversionnew'),(64,'Can view program version new',16,'view_programversionnew'),(65,'Can add functional area new',17,'add_functionalareanew'),(66,'Can change functional area new',17,'change_functionalareanew'),(67,'Can delete functional area new',17,'delete_functionalareanew'),(68,'Can view functional area new',17,'view_functionalareanew');
+INSERT INTO `auth_permission` VALUES (1,'Can add log entry',1,'add_logentry'),(2,'Can change log entry',1,'change_logentry'),(3,'Can delete log entry',1,'delete_logentry'),(4,'Can view log entry',1,'view_logentry'),(5,'Can add permission',2,'add_permission'),(6,'Can change permission',2,'change_permission'),(7,'Can delete permission',2,'delete_permission'),(8,'Can view permission',2,'view_permission'),(9,'Can add group',3,'add_group'),(10,'Can change group',3,'change_group'),(11,'Can delete group',3,'delete_group'),(12,'Can view group',3,'view_group'),(13,'Can add user',4,'add_user'),(14,'Can change user',4,'change_user'),(15,'Can delete user',4,'delete_user'),(16,'Can view user',4,'view_user'),(17,'Can add content type',5,'add_contenttype'),(18,'Can change content type',5,'change_contenttype'),(19,'Can delete content type',5,'delete_contenttype'),(20,'Can view content type',5,'view_contenttype'),(21,'Can add session',6,'add_session'),(22,'Can change session',6,'change_session'),(23,'Can delete session',6,'delete_session'),(24,'Can view session',6,'view_session'),(25,'Can add employee role',7,'add_employeerole'),(26,'Can change employee role',7,'change_employeerole'),(27,'Can delete employee role',7,'delete_employeerole'),(28,'Can view employee role',7,'view_employeerole'),(29,'Can add bug report',8,'add_bugreport'),(30,'Can change bug report',8,'change_bugreport'),(31,'Can delete bug report',8,'delete_bugreport'),(32,'Can view bug report',8,'view_bugreport'),(33,'Can add attachment',9,'add_attachment'),(34,'Can change attachment',9,'change_attachment'),(35,'Can delete attachment',9,'delete_attachment'),(36,'Can view attachment',9,'view_attachment'),(37,'Can add program',10,'add_program'),(38,'Can change program',10,'change_program'),(39,'Can delete program',10,'delete_program'),(40,'Can view program',10,'view_program'),(41,'Can add functional area',11,'add_functionalarea'),(42,'Can change functional area',11,'change_functionalarea'),(43,'Can delete functional area',11,'delete_functionalarea'),(44,'Can view functional area',11,'view_functionalarea'),(45,'Can add employee',12,'add_employee'),(46,'Can change employee',12,'change_employee'),(47,'Can delete employee',12,'delete_employee'),(48,'Can view employee',12,'view_employee'),(49,'Can add my user',13,'add_myuser'),(50,'Can change my user',13,'change_myuser'),(51,'Can delete my user',13,'delete_myuser'),(52,'Can view my user',13,'view_myuser'),(53,'Can add program functional area',14,'add_programfunctionalarea'),(54,'Can change program functional area',14,'change_programfunctionalarea'),(55,'Can delete program functional area',14,'delete_programfunctionalarea'),(56,'Can view program functional area',14,'view_programfunctionalarea'),(57,'Can add resolution new',15,'add_resolutionnew'),(58,'Can change resolution new',15,'change_resolutionnew'),(59,'Can delete resolution new',15,'delete_resolutionnew'),(60,'Can view resolution new',15,'view_resolutionnew'),(61,'Can add program new',16,'add_programnew'),(62,'Can change program new',16,'change_programnew'),(63,'Can delete program new',16,'delete_programnew'),(64,'Can view program new',16,'view_programnew'),(65,'Can add program resolution mapping new',17,'add_programresolutionmappingnew'),(66,'Can change program resolution mapping new',17,'change_programresolutionmappingnew'),(67,'Can delete program resolution mapping new',17,'delete_programresolutionmappingnew'),(68,'Can view program resolution mapping new',17,'view_programresolutionmappingnew'),(69,'Can add functional area mapping new',18,'add_functionalareamappingnew'),(70,'Can change functional area mapping new',18,'change_functionalareamappingnew'),(71,'Can delete functional area mapping new',18,'delete_functionalareamappingnew'),(72,'Can view functional area mapping new',18,'view_functionalareamappingnew'),(73,'Can add functional areas',19,'add_functionalareas'),(74,'Can change functional areas',19,'change_functionalareas'),(75,'Can delete functional areas',19,'delete_functionalareas'),(76,'Can view functional areas',19,'view_functionalareas'),(77,'Can add resolution version new',20,'add_resolutionversionnew'),(78,'Can change resolution version new',20,'change_resolutionversionnew'),(79,'Can delete resolution version new',20,'delete_resolutionversionnew'),(80,'Can view resolution version new',20,'view_resolutionversionnew');
 /*!40000 ALTER TABLE `auth_permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -214,7 +214,7 @@ CREATE TABLE `bughoundapp_bugreport` (
 
 LOCK TABLES `bughoundapp_bugreport` WRITE;
 /*!40000 ALTER TABLE `bughoundapp_bugreport` DISABLE KEYS */;
-INSERT INTO `bughoundapp_bugreport` VALUES (423071,1,'Serious','Add Areas page has no means to cancel/quit after adding','Add Areas page has no means to cancel/quit after adding',1,'Add the above functions','2024-04-22','','Open','Normal','Pending','v1',NULL,NULL,0,NULL,11,5,39,NULL,NULL),(423095,1,'Fatal','Math.p library is not found by the linker','Math.p library is not found by the linker',1,'Find it!!','2024-04-22','','Open','Normal','Pending','v1',NULL,NULL,0,NULL,3,4,40,NULL,NULL),(423111,2,'Serious','La distance n\'est pas en kilometres!','Distance is not in kilometres',1,'Make it in kms','2024-04-22','','Open','Normal','Pending','v1',NULL,NULL,0,NULL,15,6,42,NULL,NULL),(423340,2,'Serious','Formulator missing capital Greek sigma','Formulator missing capital Greek sigma',1,'Check Formulator logs','2024-04-22','','Open','Normal','Pending','v1',NULL,NULL,0,NULL,36,10,44,NULL,NULL),(423367,2,'Minor','IDE File->Print defaults to PDF','Should be blank initially',1,'Look in the IDE File','2024-04-22','','Open','Normal','Pending','v1',NULL,NULL,0,NULL,4,4,39,NULL,NULL),(423488,1,'Minor','The last two lines of output are concatenated on a single line','Lines 32 and 33 in the o/p report are not in separate lines',1,'Look for lines 32,33','2024-04-22','','Open','Normal','Pending','v1',NULL,NULL,0,NULL,4,4,40,NULL,NULL),(423778,3,'Minor','IDE should have a toolbar','Toolbar for compiling, linking, running',1,'Check toolbar','2024-04-22','','Open','Normal','Pending','v1',NULL,NULL,0,NULL,32,9,43,NULL,NULL);
+INSERT INTO `bughoundapp_bugreport` VALUES (421837,4,'Fatal','c','c',1,'c','2024-04-23','','Open','Fix before next milestone','Withdrawn by Reporter','v3','2024-04-23','2024-04-27',0,55,31,16,59,54,58),(421864,2,'Minor','l','l',1,'l','2024-04-21','','Open','Fix immediately','Pending','v1',NULL,NULL,0,56,13,11,55,NULL,NULL);
 /*!40000 ALTER TABLE `bughoundapp_bugreport` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,7 +239,7 @@ CREATE TABLE `bughoundapp_employee` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `Username` (`username`),
   UNIQUE KEY `password` (`password`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,7 +248,7 @@ CREATE TABLE `bughoundapp_employee` (
 
 LOCK TABLES `bughoundapp_employee` WRITE;
 /*!40000 ALTER TABLE `bughoundapp_employee` DISABLE KEYS */;
-INSERT INTO `bughoundapp_employee` VALUES (15,'admin','Admin','Abhinav','pbkdf2_sha256$600000$4xI3SBIjhWXZkrwYwqZNuo$mOi7uAJJ92nJkxkwUCaZfglEdXEDHZKWc7voPKVskGo=',NULL,1,1,1,''),(38,'smithbob','Developer','Bob','pbkdf2_sha256$600000$tqibS7CDWWs1N9tqU6WZET$gAGwOKWUUesBaENLISeHj1Yg6LKGtAkLJ/QCu8XN7lE=',NULL,0,1,1,'bob@company.com'),(39,'jonessue','Designer','Sue','pbkdf2_sha256$600000$7quIj6egGo1tcnoSG4lZ5T$Q7KZCOjaycmAI1htlrITp/TXz6Yfz14t0qfISFvkItI=',NULL,0,1,1,'sue@company.com'),(40,'smithhabib','Designer','Habib','pbkdf2_sha256$600000$8zyzrxirpZX0UwbXqvoAbx$vceoM73Ft8jeAmy+3cevDB9+ZM75qKaMSstTP8NDlVo=',NULL,0,1,1,'habib@company.com'),(41,'jonesyoshi','Developer','Yoshi','pbkdf2_sha256$600000$4WhlwaCa26S3Ilt62uN123$A1Y1CAXEOhnLdPpEWAnSo80mZeVmPxOQ3iUhFb0PMtc=',NULL,0,1,1,'yoshi@company.com'),(42,'smithfrancois','Designer','Francois','pbkdf2_sha256$600000$SM0xsLFt78kxRa0LHEJxJ8$8fzRJVnpb2DDIQ9LFHlcLM1pdHCRhyjSez+h233LuFU=',NULL,0,1,1,'franc@company.com'),(43,'jonesbecky','Tester','Becky','pbkdf2_sha256$600000$FGhhXeswXx0PWybqul9zeX$mv1X4ZvSn/+WvhAH5bBM/yXHEu0I58YhzqBobd69Fw8=',NULL,0,1,1,'becky@company.com'),(44,'smithfelix','Designer','Felix','pbkdf2_sha256$600000$Qpu0OQur1F8CHPr45WH0MT$oUqq2wexmnDupFhibFZ/WVogo6V7eYqhLT+TJeyDrrU=',NULL,0,1,1,'felix@company.com');
+INSERT INTO `bughoundapp_employee` VALUES (15,'admin','Admin','admin','pbkdf2_sha256$600000$4xI3SBIjhWXZkrwYwqZNuo$mOi7uAJJ92nJkxkwUCaZfglEdXEDHZKWc7voPKVskGo=',NULL,1,1,1,'admin@company.com'),(45,'tester','Tester','Tester','pbkdf2_sha256$600000$Co1fKCJLvVcJ4mVllgmkIX$u9QH21gKh2+e3fLFZM/byiL63uvZcZVRrecPdnLxgZc=',NULL,0,1,1,'test@gmail.com'),(53,'smithbob','Developer','Bob','pbkdf2_sha256$600000$Pn3nraDuoZhKBBlclopSpt$fw/tJfcjCK6guslUA4r8WckhxPUoFpzRVQvA30lONxQ=',NULL,0,1,1,'bob@company.com'),(54,'jonessue','Designer','Sue','pbkdf2_sha256$600000$6uAzlKFIH30H37WGqdXSQQ$netEUqb4OJlOwPbMf66yNOynsw959IlFjlA2fRgN7dk=',NULL,0,1,1,'sue@company.com'),(55,'smithhabib','Designer','Habib','pbkdf2_sha256$600000$QpbZeMNA86ZubkRz3r2C1o$qFb310CRIp7PG+cUFA2dQ1jGymPIEoZrAlsIi5yQ9o4=',NULL,0,1,1,'habib@company.com'),(56,'jonesyoshi','Developer','Yoshi','pbkdf2_sha256$600000$Kov1D3TWEHS9agVuJr9RMz$DHSb401sFz769wrDu0shUm5jbU8Gb89/554Q9Cekilg=',NULL,0,1,1,'yoshi@company.com'),(57,'smithfrancois','Designer','Francois','pbkdf2_sha256$600000$0ngn2JRQoXxTbUL2eFsKcb$f9pXMlekAgxyLOcsHErYI4CwoZ6RXT5UCt8wnPEbko0=',NULL,0,1,1,'francois@company.com'),(58,'jonesbecky','Tester','Becky','pbkdf2_sha256$600000$rELQ7UchedGy1oCeO1t2NS$lWk0b5CxGj9oEaLVAbh6t0nlmWWAB9Cr/TbjHmgRWhg=',NULL,0,1,1,'becky@company.com'),(59,'smithfelix','Designer','Felix','pbkdf2_sha256$600000$QAZ47teqv7vXOF4Gy6ugyt$R/nhAXzIehbsIX7fiqwBDO2dfln9tCnhh/lCF70eRkc=',NULL,0,1,1,'felix@company.com');
 /*!40000 ALTER TABLE `bughoundapp_employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -347,7 +347,7 @@ CREATE TABLE `bughoundapp_functionalarea` (
   PRIMARY KEY (`id`),
   KEY `bughoundapp_function_Program_id_1198c83d_fk_bughounda` (`Program_id`),
   CONSTRAINT `bughoundapp_function_Program_id_1198c83d_fk_bughounda` FOREIGN KEY (`Program_id`) REFERENCES `bughoundapp_program` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -356,34 +356,59 @@ CREATE TABLE `bughoundapp_functionalarea` (
 
 LOCK TABLES `bughoundapp_functionalarea` WRITE;
 /*!40000 ALTER TABLE `bughoundapp_functionalarea` DISABLE KEYS */;
-INSERT INTO `bughoundapp_functionalarea` VALUES (2,'Ada95 Parser',4),(3,'Ada95 Lexer',4),(4,'Ada95 IDE',4),(5,'Logon',5),(6,'Start',5),(7,'DB Maintenance',5),(8,'Search',5),(9,'Insert New',5),(10,'Search Results',5),(11,'Add Edit Areeas',5),(12,'Add Employees',5),(13,'Add Programs',5),(14,'View Bugs',5),(15,'Lexer',6),(16,'Parser',6),(17,'Code Generator',6),(18,'Linker',6),(19,'Lexer',7),(20,'Parser',7),(21,'Code Generator',7),(22,'Linker',7),(23,'Lexer',8),(24,'Parser',8),(25,'Code Generator',8),(26,'Linker',8),(27,'IDE',8),(28,'Lexer',9),(29,'Parser',9),(30,'Code Generator',9),(31,'Linker',9),(32,'IDE',9),(33,'Editor',10),(34,'Spell Checker',10),(35,'Dynodraw',10),(36,'Formulator',10),(37,'Export',5);
+INSERT INTO `bughoundapp_functionalarea` VALUES (12,'Ada95 Parser',11),(13,'Ada95 Lexer',11),(14,'Ada95 IDE',11),(15,'Logon',12),(16,'Start',12),(17,'DB Maintenance',12),(18,'Search',12),(19,'Insert New',12),(20,'Search Results',12),(21,'Add Edit Areas',12),(22,'Add Employees',12),(23,'Add Programs',12),(24,'View Bugs',12),(25,'Lexer',13),(26,'Parser',13),(27,'Code Generator',13),(28,'Linker',13),(29,'IDE',13),(30,'Lexer',16),(31,'Parser',16),(32,'Code Generator',16),(33,'Linker',16),(34,'IDE',16),(35,'Editor',17),(36,'Spell Checker',17),(37,'Dynodraw',17),(38,'Formulator',17),(39,'Export',12);
 /*!40000 ALTER TABLE `bughoundapp_functionalarea` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `bughoundapp_functionalareanew`
+-- Table structure for table `bughoundapp_functionalareamappingnew`
 --
 
-DROP TABLE IF EXISTS `bughoundapp_functionalareanew`;
+DROP TABLE IF EXISTS `bughoundapp_functionalareamappingnew`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `bughoundapp_functionalareanew` (
+CREATE TABLE `bughoundapp_functionalareamappingnew` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `AreaName` varchar(255) NOT NULL,
-  `program_version_id` bigint NOT NULL,
+  `FunctionalAreaID_id` bigint NOT NULL,
+  `MappingID_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `bughoundapp_function_program_version_id_8afb4896_fk_bughounda` (`program_version_id`),
-  CONSTRAINT `bughoundapp_function_program_version_id_8afb4896_fk_bughounda` FOREIGN KEY (`program_version_id`) REFERENCES `bughoundapp_programversionnew` (`id`)
+  KEY `bughoundapp_function_FunctionalAreaID_id_2527062a_fk_bughounda` (`FunctionalAreaID_id`),
+  KEY `bughoundapp_function_MappingID_id_f6aa54b0_fk_bughounda` (`MappingID_id`),
+  CONSTRAINT `bughoundapp_function_FunctionalAreaID_id_2527062a_fk_bughounda` FOREIGN KEY (`FunctionalAreaID_id`) REFERENCES `bughoundapp_functionalareas` (`id`),
+  CONSTRAINT `bughoundapp_function_MappingID_id_f6aa54b0_fk_bughounda` FOREIGN KEY (`MappingID_id`) REFERENCES `bughoundapp_programresolutionmappingnew` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `bughoundapp_functionalareanew`
+-- Dumping data for table `bughoundapp_functionalareamappingnew`
 --
 
-LOCK TABLES `bughoundapp_functionalareanew` WRITE;
-/*!40000 ALTER TABLE `bughoundapp_functionalareanew` DISABLE KEYS */;
-/*!40000 ALTER TABLE `bughoundapp_functionalareanew` ENABLE KEYS */;
+LOCK TABLES `bughoundapp_functionalareamappingnew` WRITE;
+/*!40000 ALTER TABLE `bughoundapp_functionalareamappingnew` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bughoundapp_functionalareamappingnew` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `bughoundapp_functionalareas`
+--
+
+DROP TABLE IF EXISTS `bughoundapp_functionalareas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bughoundapp_functionalareas` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `FunctionalAreaName` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bughoundapp_functionalareas`
+--
+
+LOCK TABLES `bughoundapp_functionalareas` WRITE;
+/*!40000 ALTER TABLE `bughoundapp_functionalareas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bughoundapp_functionalareas` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -399,7 +424,7 @@ CREATE TABLE `bughoundapp_program` (
   `Resolution` varchar(100) NOT NULL,
   `ResolutionVersion` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -408,18 +433,18 @@ CREATE TABLE `bughoundapp_program` (
 
 LOCK TABLES `bughoundapp_program` WRITE;
 /*!40000 ALTER TABLE `bughoundapp_program` DISABLE KEYS */;
-INSERT INTO `bughoundapp_program` VALUES (4,'Ada95 Coder 1,1','1','1'),(5,'Bughound 1,1','1','1'),(6,'COBOL Coder 1,1','1','1'),(7,'COBOL Coder 1,2','1','1'),(8,'COBOL Coder 2,1','1','1'),(9,'Pascal Coder 1,1','1','1'),(10,'Word Writer 2019 1,1','1','1');
+INSERT INTO `bughoundapp_program` VALUES (11,'Ada95 Coder','1','1'),(12,'Bughound','1','1'),(13,'COBOL Coder','1','1'),(14,'COBOL Coder','1','2'),(15,'COBOL Coder','2','1'),(16,'Pascal Coder','1','1'),(17,'Word Writer 2019','1','1');
 /*!40000 ALTER TABLE `bughoundapp_program` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `bughoundapp_programupdated`
+-- Table structure for table `bughoundapp_programnew`
 --
 
-DROP TABLE IF EXISTS `bughoundapp_programupdated`;
+DROP TABLE IF EXISTS `bughoundapp_programnew`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `bughoundapp_programupdated` (
+CREATE TABLE `bughoundapp_programnew` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `ProgramName` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
@@ -427,38 +452,92 @@ CREATE TABLE `bughoundapp_programupdated` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `bughoundapp_programupdated`
+-- Dumping data for table `bughoundapp_programnew`
 --
 
-LOCK TABLES `bughoundapp_programupdated` WRITE;
-/*!40000 ALTER TABLE `bughoundapp_programupdated` DISABLE KEYS */;
-/*!40000 ALTER TABLE `bughoundapp_programupdated` ENABLE KEYS */;
+LOCK TABLES `bughoundapp_programnew` WRITE;
+/*!40000 ALTER TABLE `bughoundapp_programnew` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bughoundapp_programnew` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `bughoundapp_programversionnew`
+-- Table structure for table `bughoundapp_programresolutionmappingnew`
 --
 
-DROP TABLE IF EXISTS `bughoundapp_programversionnew`;
+DROP TABLE IF EXISTS `bughoundapp_programresolutionmappingnew`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `bughoundapp_programversionnew` (
+CREATE TABLE `bughoundapp_programresolutionmappingnew` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `version_number` varchar(100) NOT NULL,
-  `program_id` bigint NOT NULL,
+  `ProgramID_id` bigint NOT NULL,
+  `ResolutionID_id` bigint NOT NULL,
+  `ResolutionVersionID_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `bughoundapp_programv_program_id_679a8f62_fk_bughounda` (`program_id`),
-  CONSTRAINT `bughoundapp_programv_program_id_679a8f62_fk_bughounda` FOREIGN KEY (`program_id`) REFERENCES `bughoundapp_programupdated` (`id`)
+  KEY `bughoundapp_programr_ProgramID_id_29511951_fk_bughounda` (`ProgramID_id`),
+  KEY `bughoundapp_programr_ResolutionID_id_ffaee7c7_fk_bughounda` (`ResolutionID_id`),
+  KEY `bughoundapp_programr_ResolutionVersionID__eba86379_fk_bughounda` (`ResolutionVersionID_id`),
+  CONSTRAINT `bughoundapp_programr_ProgramID_id_29511951_fk_bughounda` FOREIGN KEY (`ProgramID_id`) REFERENCES `bughoundapp_programnew` (`id`),
+  CONSTRAINT `bughoundapp_programr_ResolutionID_id_ffaee7c7_fk_bughounda` FOREIGN KEY (`ResolutionID_id`) REFERENCES `bughoundapp_resolutionnew` (`id`),
+  CONSTRAINT `bughoundapp_programr_ResolutionVersionID__eba86379_fk_bughounda` FOREIGN KEY (`ResolutionVersionID_id`) REFERENCES `bughoundapp_resolutionversionnew` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `bughoundapp_programversionnew`
+-- Dumping data for table `bughoundapp_programresolutionmappingnew`
 --
 
-LOCK TABLES `bughoundapp_programversionnew` WRITE;
-/*!40000 ALTER TABLE `bughoundapp_programversionnew` DISABLE KEYS */;
-/*!40000 ALTER TABLE `bughoundapp_programversionnew` ENABLE KEYS */;
+LOCK TABLES `bughoundapp_programresolutionmappingnew` WRITE;
+/*!40000 ALTER TABLE `bughoundapp_programresolutionmappingnew` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bughoundapp_programresolutionmappingnew` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `bughoundapp_resolutionnew`
+--
+
+DROP TABLE IF EXISTS `bughoundapp_resolutionnew`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bughoundapp_resolutionnew` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `ResolutionName` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bughoundapp_resolutionnew`
+--
+
+LOCK TABLES `bughoundapp_resolutionnew` WRITE;
+/*!40000 ALTER TABLE `bughoundapp_resolutionnew` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bughoundapp_resolutionnew` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `bughoundapp_resolutionversionnew`
+--
+
+DROP TABLE IF EXISTS `bughoundapp_resolutionversionnew`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bughoundapp_resolutionversionnew` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `VersionName` varchar(255) NOT NULL,
+  `ResolutionID_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `bughoundapp_resoluti_ResolutionID_id_a3b12023_fk_bughounda` (`ResolutionID_id`),
+  CONSTRAINT `bughoundapp_resoluti_ResolutionID_id_a3b12023_fk_bughounda` FOREIGN KEY (`ResolutionID_id`) REFERENCES `bughoundapp_resolutionnew` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bughoundapp_resolutionversionnew`
+--
+
+LOCK TABLES `bughoundapp_resolutionversionnew` WRITE;
+/*!40000 ALTER TABLE `bughoundapp_resolutionversionnew` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bughoundapp_resolutionversionnew` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -508,7 +587,7 @@ CREATE TABLE `django_content_type` (
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -517,7 +596,7 @@ CREATE TABLE `django_content_type` (
 
 LOCK TABLES `django_content_type` WRITE;
 /*!40000 ALTER TABLE `django_content_type` DISABLE KEYS */;
-INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(3,'auth','group'),(2,'auth','permission'),(4,'auth','user'),(9,'bughoundapp','attachment'),(8,'bughoundapp','bugreport'),(12,'bughoundapp','employee'),(7,'bughoundapp','employeerole'),(11,'bughoundapp','functionalarea'),(17,'bughoundapp','functionalareanew'),(13,'bughoundapp','myuser'),(10,'bughoundapp','program'),(14,'bughoundapp','programfunctionalarea'),(15,'bughoundapp','programupdated'),(16,'bughoundapp','programversionnew'),(5,'contenttypes','contenttype'),(6,'sessions','session');
+INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(3,'auth','group'),(2,'auth','permission'),(4,'auth','user'),(9,'bughoundapp','attachment'),(8,'bughoundapp','bugreport'),(12,'bughoundapp','employee'),(7,'bughoundapp','employeerole'),(11,'bughoundapp','functionalarea'),(18,'bughoundapp','functionalareamappingnew'),(19,'bughoundapp','functionalareas'),(13,'bughoundapp','myuser'),(10,'bughoundapp','program'),(14,'bughoundapp','programfunctionalarea'),(16,'bughoundapp','programnew'),(17,'bughoundapp','programresolutionmappingnew'),(15,'bughoundapp','resolutionnew'),(20,'bughoundapp','resolutionversionnew'),(5,'contenttypes','contenttype'),(6,'sessions','session');
 /*!40000 ALTER TABLE `django_content_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -534,7 +613,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -543,7 +622,7 @@ CREATE TABLE `django_migrations` (
 
 LOCK TABLES `django_migrations` WRITE;
 /*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
-INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2024-04-08 03:16:08.325571'),(2,'auth','0001_initial','2024-04-08 03:16:09.095488'),(3,'admin','0001_initial','2024-04-08 03:16:09.274055'),(4,'admin','0002_logentry_remove_auto_add','2024-04-08 03:16:09.289203'),(5,'admin','0003_logentry_add_action_flag_choices','2024-04-08 03:16:09.305926'),(6,'contenttypes','0002_remove_content_type_name','2024-04-08 03:16:09.419744'),(7,'auth','0002_alter_permission_name_max_length','2024-04-08 03:16:09.497212'),(8,'auth','0003_alter_user_email_max_length','2024-04-08 03:16:09.537088'),(9,'auth','0004_alter_user_username_opts','2024-04-08 03:16:09.552445'),(10,'auth','0005_alter_user_last_login_null','2024-04-08 03:16:09.624452'),(11,'auth','0006_require_contenttypes_0002','2024-04-08 03:16:09.632053'),(12,'auth','0007_alter_validators_add_error_messages','2024-04-08 03:16:09.646130'),(13,'auth','0008_alter_user_username_max_length','2024-04-08 03:16:09.732869'),(14,'auth','0009_alter_user_last_name_max_length','2024-04-08 03:16:09.818300'),(15,'auth','0010_alter_group_name_max_length','2024-04-08 03:16:09.850866'),(16,'auth','0011_update_proxy_permissions','2024-04-08 03:16:09.870377'),(17,'auth','0012_alter_user_first_name_max_length','2024-04-08 03:16:09.954900'),(18,'sessions','0001_initial','2024-04-08 03:16:10.008069'),(19,'bughoundapp','0001_initial','2024-04-08 03:25:09.137414'),(20,'bughoundapp','0002_alter_attachment_filepath_and_more','2024-04-13 09:32:55.728750'),(21,'bughoundapp','0003_rename_assignedtoemployee_bugreport_assignedtoemployee_id','2024-04-14 09:23:33.033897'),(22,'bughoundapp','0004_rename_assignedtoemployee_id_bugreport_assignedtoemployee','2024-04-14 09:27:31.386489'),(23,'bughoundapp','0002_alter_bugreport_assignedtoemployee_and_more','2024-04-15 22:19:32.630147'),(24,'bughoundapp','0002_alter_bugreport_comments','2024-04-15 22:37:05.121703'),(25,'bughoundapp','0003_alter_bugreport_priority_alter_bugreport_status','2024-04-15 22:41:05.170278'),(26,'bughoundapp','0002_remove_employee_contactinfo_remove_employee_name','2024-04-16 08:32:02.286827'),(27,'bughoundapp','0003_employee_name','2024-04-16 08:40:39.304136'),(28,'bughoundapp','0004_employee_contactinfo','2024-04-16 08:45:34.335437'),(29,'bughoundapp','0002_remove_employee_contact_info','2024-04-17 09:54:17.317345'),(30,'bughoundapp','0003_alter_employee_email','2024-04-17 09:59:08.371796'),(31,'bughoundapp','0004_alter_employee_is_staff_alter_employee_is_superuser','2024-04-17 10:52:03.822106'),(32,'bughoundapp','0005_alter_employee_password','2024-04-17 10:58:15.935665'),(33,'bughoundapp','0006_alter_employee_email','2024-04-17 11:09:17.198199'),(34,'bughoundapp','0002_alter_employee_email','2024-04-17 11:28:46.682326'),(35,'bughoundapp','0003_alter_employee_email_alter_employee_password','2024-04-17 12:14:20.095302'),(36,'bughoundapp','0002_program_resolution_program_resolutionversion','2024-04-18 05:27:38.192894'),(37,'bughoundapp','0002_alter_program_programname','2024-04-23 23:48:03.633246'),(38,'bughoundapp','0003_functionalareas_programnew_resolutionnew_and_more','2024-04-23 23:48:03.903454'),(39,'bughoundapp','0004_programupdated_programversionnew_functionalareanew','2024-04-23 23:48:03.990456'),(40,'bughoundapp','0005_remove_programresolutionmappingnew_programid_and_more','2024-04-23 23:48:04.172042');
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2024-04-08 03:16:08.325571'),(2,'auth','0001_initial','2024-04-08 03:16:09.095488'),(3,'admin','0001_initial','2024-04-08 03:16:09.274055'),(4,'admin','0002_logentry_remove_auto_add','2024-04-08 03:16:09.289203'),(5,'admin','0003_logentry_add_action_flag_choices','2024-04-08 03:16:09.305926'),(6,'contenttypes','0002_remove_content_type_name','2024-04-08 03:16:09.419744'),(7,'auth','0002_alter_permission_name_max_length','2024-04-08 03:16:09.497212'),(8,'auth','0003_alter_user_email_max_length','2024-04-08 03:16:09.537088'),(9,'auth','0004_alter_user_username_opts','2024-04-08 03:16:09.552445'),(10,'auth','0005_alter_user_last_login_null','2024-04-08 03:16:09.624452'),(11,'auth','0006_require_contenttypes_0002','2024-04-08 03:16:09.632053'),(12,'auth','0007_alter_validators_add_error_messages','2024-04-08 03:16:09.646130'),(13,'auth','0008_alter_user_username_max_length','2024-04-08 03:16:09.732869'),(14,'auth','0009_alter_user_last_name_max_length','2024-04-08 03:16:09.818300'),(15,'auth','0010_alter_group_name_max_length','2024-04-08 03:16:09.850866'),(16,'auth','0011_update_proxy_permissions','2024-04-08 03:16:09.870377'),(17,'auth','0012_alter_user_first_name_max_length','2024-04-08 03:16:09.954900'),(18,'sessions','0001_initial','2024-04-08 03:16:10.008069'),(19,'bughoundapp','0001_initial','2024-04-08 03:25:09.137414'),(20,'bughoundapp','0002_alter_attachment_filepath_and_more','2024-04-13 09:32:55.728750'),(21,'bughoundapp','0003_rename_assignedtoemployee_bugreport_assignedtoemployee_id','2024-04-14 09:23:33.033897'),(22,'bughoundapp','0004_rename_assignedtoemployee_id_bugreport_assignedtoemployee','2024-04-14 09:27:31.386489'),(23,'bughoundapp','0002_alter_bugreport_assignedtoemployee_and_more','2024-04-15 22:19:32.630147'),(24,'bughoundapp','0002_alter_bugreport_comments','2024-04-15 22:37:05.121703'),(25,'bughoundapp','0003_alter_bugreport_priority_alter_bugreport_status','2024-04-15 22:41:05.170278'),(26,'bughoundapp','0002_remove_employee_contactinfo_remove_employee_name','2024-04-16 08:32:02.286827'),(27,'bughoundapp','0003_employee_name','2024-04-16 08:40:39.304136'),(28,'bughoundapp','0004_employee_contactinfo','2024-04-16 08:45:34.335437'),(29,'bughoundapp','0002_remove_employee_contact_info','2024-04-17 09:54:17.317345'),(30,'bughoundapp','0003_alter_employee_email','2024-04-17 09:59:08.371796'),(31,'bughoundapp','0004_alter_employee_is_staff_alter_employee_is_superuser','2024-04-17 10:52:03.822106'),(32,'bughoundapp','0005_alter_employee_password','2024-04-17 10:58:15.935665'),(33,'bughoundapp','0006_alter_employee_email','2024-04-17 11:09:17.198199'),(34,'bughoundapp','0002_alter_employee_email','2024-04-17 11:28:46.682326'),(35,'bughoundapp','0003_alter_employee_email_alter_employee_password','2024-04-17 12:14:20.095302'),(36,'bughoundapp','0002_program_resolution_program_resolutionversion','2024-04-18 05:27:38.192894'),(37,'bughoundapp','0002_alter_program_programname','2024-04-20 02:58:17.914390'),(38,'bughoundapp','0003_functionalareas_programnew_resolutionnew_and_more','2024-04-22 05:39:34.950970');
 /*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -599,4 +678,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-24  5:57:48
+-- Dump completed on 2024-04-22  5:58:53

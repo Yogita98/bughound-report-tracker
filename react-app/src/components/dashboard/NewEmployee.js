@@ -82,7 +82,7 @@ const NewEmployee = ({user}) => {
         });
 
         if (response.ok) {
-            setNewEmployee({ name: '', username: '', password: '', ConfirmPassword: '', email: '', role: '' }); // Reset the form
+            setNewEmployee({ name: '', username: '', password: '', confirmPassword: '', email: '', role: '' }); // Reset the form
             setShowAddForm(false); // Hide the form
             fetchEmployees(); // Refresh the list
         } else {
@@ -157,7 +157,7 @@ const NewEmployee = ({user}) => {
           <input type="text" name="name" placeholder="Enter Name" value={newEmployee.name} onChange={(e) => setNewEmployee({...newEmployee, name: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
           <input type="text" name="username" placeholder="Enter Username" value={newEmployee.username} onChange={(e) => setNewEmployee({...newEmployee, username: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
           <input type="password" name="password" placeholder="Enter Password" value={newEmployee.password} onChange={(e) => setNewEmployee({...newEmployee, password: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
-          <input type="password" name="ConfirmPassword" placeholder="Confirm Password" value={newEmployee.ConfirmPassword} onChange={(e) => setNewEmployee({...newEmployee, confirmPassword: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
+          <input type="password" name="confirmPassword" placeholder="Confirm Password" value={newEmployee.confirmPassword} onChange={(e) => setNewEmployee({...newEmployee, confirmPassword: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
           <input type="text" name="email" placeholder="Enter Contact Info (Email)" value={newEmployee.email} onChange={(e) => setNewEmployee({...newEmployee, email: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
           <input type="text" name="role" placeholder="Enter Role" value={newEmployee.role} onChange={(e) => setNewEmployee({...newEmployee, role: e.target.value})} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" />
           <button onClick={handleAddEmployee} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
@@ -202,10 +202,10 @@ const NewEmployee = ({user}) => {
                 <tr key={employee.id} className="border-b">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{employee.id}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <input type="text" name="Name" value={editFormData.name} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                    <input type="text" name="name" value={editFormData.name} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <input type="text" name="Username" value={editFormData.username} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                    <input type="text" name="username" value={editFormData.username} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <input type="text" name="email" value={editFormData.email} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />

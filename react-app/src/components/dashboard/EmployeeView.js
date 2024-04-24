@@ -38,7 +38,9 @@ const EmployeeView = () => {
   };
 
   const handleEditFormChange = (event) => {
+    console.log(event)
     const { name, value } = event.target;
+    console.log(name,value)
     setEditFormData({
       ...editFormData,
       [name]: value
@@ -100,10 +102,10 @@ const EmployeeView = () => {
                 <tr key={employee.id} className="border-b">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{employee.id}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <input type="text" name="Name" value={editFormData.name} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                    <input type="text" name="name" value={editFormData.name} onChange={(event) => handleEditFormChange(event)} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <input type="text" name="Username" value={editFormData.username} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                    <input type="text" name="username" value={editFormData.username} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <input type="text" name="email" value={editFormData.email} onChange={handleEditFormChange} className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />

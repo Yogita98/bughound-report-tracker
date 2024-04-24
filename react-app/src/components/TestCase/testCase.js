@@ -1,6 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
+const FilePreviewModal = ({ filePreviewUrl, handleClose }) => {
+  return (
+    <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white rounded-lg p-6 max-w-md">
+        <button className="absolute top-2 right-2 text-gray-700 hover:text-gray-900" onClick={handleClose}>
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+        <img src={filePreviewUrl} alt="File Preview" className="w-full" />
+      </div>
+    </div>
+  );
+};
 
 const TestCase = () => {
   // Initial state for the form data
@@ -22,6 +36,9 @@ const TestCase = () => {
   const [programs, setPrograms] = useState([]);
   const [functionalAreas, setFunctionalAreas] = useState([]);
   const[selectedProgramId, setSelectedProgramId] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
+  const [filePreviewUrl, setFilePreviewUrl] = useState(""); // State variable to store file preview URL
+
   const token = localStorage.getItem('access-token')
   const headers = {
     'Content-Type': 'application/json',
@@ -197,6 +214,37 @@ const handleFunctionalAreaChange = (event) => {
     } catch (error) {
       console.error("There was an error submitting the form:", error);
     }
+  };
+
+  const handleRemoveFile = () => {
+    console.log("Removing file...");
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      file: null,
+    }));
+      // Reset file input to clear the selected file
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) {
+      fileInput.value = ''; // Reset file input
+    }
+  };  
+
+  // Function to handle preview button click
+  const handlePreview = () => {
+    if (formData.file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setFilePreviewUrl(event.target.result); // Set file preview URL
+        setShowPreview(true); // Show the preview modal
+      };
+      reader.readAsDataURL(formData.file); // Read file as Data URL
+    }
+  };
+
+  // Function to remove file preview
+  const handleClosePreview = () => {
+    setShowPreview(false); // Close the preview modal
+    setFilePreviewUrl(""); // Clear file preview URL
   };
 
   return (
@@ -588,6 +636,24 @@ const handleFunctionalAreaChange = (event) => {
             onChange={handleChange}
             className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-transparent"
           />
+          {formData.file && (
+            <>
+              <button
+                type="button"
+                onClick={handlePreview}
+                className="ml-2 py-1 px-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              >
+                Preview
+              </button>
+              <button
+                type="button"
+                onClick={handleRemoveFile}
+                className="ml-2 py-1 px-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              >
+                Clear
+              </button>
+            </>
+          )}
         </div>
 
         {/* Form submission and reset buttons */}
@@ -600,7 +666,10 @@ const handleFunctionalAreaChange = (event) => {
           </button>
           <button
             type="button"
-            onClick={() => setFormData({})} // Reset form state
+            onClick={() => {
+              setFormData({}); // Reset form state
+              handleRemoveFile();   // Clear uploaded file 
+            }} 
             className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Reset
@@ -613,6 +682,13 @@ const handleFunctionalAreaChange = (event) => {
             Cancel
           </button>
         </div>
+
+        {showPreview && (
+            <FilePreviewModal
+              filePreviewUrl={filePreviewUrl}
+              handleClose={handleClosePreview}
+            />
+          )}
       </form>
     </div>
   );
